@@ -1,0 +1,44 @@
+{
+  "name": "shlink-dashboard",
+  "description": "",
+  "main": "build/server.js",
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint --ext .js,.ts,.tsx app",
+    "lint:fix": "npm run lint:js:fix",
+    "lint:js:fix": "npm run lint:js -- --fix",
+    "types": "tsc",
+    "start": "node ./server.js",
+    "preview": "NODE_ENV=production node ./server.js"
+  },
+  "dependencies": {
+    "@remix-run/express": "^2.8.1",
+    "@remix-run/node": "^2.8.1",
+    "@remix-run/react": "^2.8.1",
+    "@shlinkio/shlink-frontend-kit": "^0.5.1",
+    "@shlinkio/shlink-js-sdk": "^1.1.0",
+    "@shlinkio/shlink-web-component": "^0.6.2",
+    "bootstrap": "5.2.3",
+    "express": "^4.19.2",
+    "isbot": "^4.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.8.1",
+    "@shlinkio/eslint-config-js-coding-standard": "^2.4.1",
+    "@types/react": "^18.2.78",
+    "@types/react-dom": "^18.2.25",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "eslint": "^8.57.0",
+    "sass": "^1.75.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8"
+  }
+}
