@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, json } from '@remix-run/node';
 import { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { NodeHttpClient } from '@shlinkio/shlink-js-sdk/node';
+import { readFileSync } from 'node:fs';
 
 type Callback = (...args: unknown[]) => unknown;
 
@@ -17,21 +18,19 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
 }
 
 export async function action({ params, request }: ActionFunctionArgs) {
-  const client = new ShlinkApiClient(new NodeHttpClient(), {
-    apiKey: '',
-    baseUrl: '',
-  });
-  const action = params.action;
-  if (!action || !actionInApiClient(action, client)) {
-    return json({}, 404); // TODO Return some useful info in Problem Details format
-  }
-
-  const apiMethod = client[action];
-  if (!actionIsCallback(apiMethod)) {
-    return json({}, 404); // TODO Return some useful info in Problem Details format
-  }
-
   try {
+    const credentials = JSON.parse(readFileSync('./credentials.json').toString());
+    const client = new ShlinkApiClient(new NodeHttpClient(), credentials);
+    const action = params.action;
+    if (!action || !actionInApiClient(action, client)) {
+      return json({}, 404); // TODO Return some useful info in Problem Details format
+    }
+
+    const apiMethod = client[action];
+    if (!actionIsCallback(apiMethod)) {
+      return json({}, 404); // TODO Return some useful info in Problem Details format
+    }
+
     const { args } = await request.json();
     if (!args || !Array.isArray(args) || !argsAreValidForAction(args, apiMethod)) {
       return json({}, 400); // TODO Return some useful info in Problem Details format
