@@ -1,4 +1,5 @@
 import { Links, Meta, Outlet, Scripts } from '@remix-run/react';
+import { MainHeader } from './common/MainHeader';
 import './index.scss';
 
 /* eslint-disable-next-line no-restricted-exports */
@@ -12,8 +13,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-
-        <Outlet />
+        <MainHeader />
+        <div className="app">
+          <Outlet />
+        </div>
         <Scripts />
       </body>
     </html>
