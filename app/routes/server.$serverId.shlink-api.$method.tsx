@@ -1,16 +1,17 @@
-import { ActionFunctionArgs, json } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { NodeHttpClient } from '@shlinkio/shlink-js-sdk/node';
 import { readFileSync } from 'node:fs';
 
 type Callback = (...args: unknown[]) => unknown;
 
-function actionInApiClient(action: string, client: ShlinkApiClient): action is keyof typeof client {
-  return action in client;
+function actionInApiClient(method: string, client: ShlinkApiClient): method is keyof typeof client {
+  return method in client;
 }
 
-function actionIsCallback(action: any): action is Callback {
-  return typeof action === 'function';
+function actionIsCallback(method: any): method is Callback {
+  return typeof method === 'function';
 }
 
 function argsAreValidForAction(args: any[], callback: Callback): args is Parameters<typeof callback> {
@@ -19,14 +20,16 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
 
 export async function action({ params, request }: ActionFunctionArgs) {
   try {
-    const credentials = JSON.parse(readFileSync('./credentials.json').toString());
+    const { method, serverId } = params;
+    // TODO Read credentials from database
+    const credentials = JSON.parse(readFileSync(`./credentials.${serverId}.json`).toString());
+
     const client = new ShlinkApiClient(new NodeHttpClient(), credentials);
-    const action = params.action;
-    if (!action || !actionInApiClient(action, client)) {
+    if (!method || !actionInApiClient(method, client)) {
       return json({}, 404); // TODO Return some useful info in Problem Details format
     }
 
-    const apiMethod = client[action];
+    const apiMethod = client[method];
     if (!actionIsCallback(apiMethod)) {
       return json({}, 404); // TODO Return some useful info in Problem Details format
     }
