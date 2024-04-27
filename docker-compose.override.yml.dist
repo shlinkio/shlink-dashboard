@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  shlink_dashboard_node:
+    user: 1000:1000
+    volumes:
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - ./home:/home/alejandro
+
+  shlink_dashboard_db_postgres:
+    user: 1000:1000
+    volumes:
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
