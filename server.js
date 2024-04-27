@@ -1,5 +1,6 @@
 import { createRequestHandler } from "@remix-run/express";
 import express from "express";
+import { AppDataSource } from './app/data-source.js';
 
 const viteDevServer =
   process.env.NODE_ENV === "production"
@@ -22,6 +23,8 @@ const build = viteDevServer
   : await import("./build/server/index.js");
 
 app.all("*", createRequestHandler({ build }));
+
+await AppDataSource.initialize();
 
 app.listen(3005, () => {
   console.log("App listening on http://localhost:3005");

@@ -26,13 +26,17 @@
     "bootstrap": "5.2.3",
     "express": "^4.19.2",
     "isbot": "^4.4.0",
+    "pg": "^8.11.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactstrap": "^9.2.2"
+    "reactstrap": "^9.2.2",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.8.1",
     "@shlinkio/eslint-config-js-coding-standard": "^2.4.1",
+    "@types/node": "^20.12.7",
     "@types/react": "^18.2.78",
     "@types/react-dom": "^18.2.25",
     "@typescript-eslint/eslint-plugin": "^7.6.0",

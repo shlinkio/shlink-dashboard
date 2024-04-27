@@ -21,6 +21,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
 
     // Vite takes care of building everything, not tsc.
     "noEmit": true
