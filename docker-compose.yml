@@ -3,8 +3,8 @@ version: '3'
 services:
   shlink_dashboard_node:
     container_name: shlink_dashboard_node
-    image: node:20.7-alpine
-    command: /bin/sh -c "cd /home/shlink-dashboard && npm install && npm run start"
+    image: node:22.0-alpine
+    command: /bin/sh -c "cd /home/shlink-dashboard && npm install && node --run start"
     volumes:
       - ./:/home/shlink-dashboard
     ports:
