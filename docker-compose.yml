@@ -18,6 +18,8 @@ services:
       SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
       SHLINK_DASHBOARD_DB_USER: postgres
       SHLINK_DASHBOARD_DB_PASSWORD: root
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   shlink_dashboard_db_postgres:
     container_name: shlink_dashboard_db_postgres
