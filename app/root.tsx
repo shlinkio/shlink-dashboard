@@ -1,12 +1,6 @@
 import { Links, Meta, Outlet, Scripts } from '@remix-run/react';
 import { MainHeader } from './common/MainHeader';
-import { getEm } from './db/entity-manager.server';
 import './index.scss';
-
-export async function loader() {
-  await getEm();
-  return {};
-}
 
 /* eslint-disable-next-line no-restricted-exports */
 export default function App() {
