@@ -27,11 +27,11 @@ function resolveOptions(): DataSourceOptions {
     port,
     username: env.SHLINK_DASHBOARD_DB_USER,
     password: env.SHLINK_DASHBOARD_DB_PASSWORD,
-    database: env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink-dashboard',
+    database: env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink_dashboard',
     synchronize: false,
     logging: false,
     entities: [],
-    migrations: [],
+    migrations: ['app/db/migrations/*.ts'],
     subscribers: [],
   };
 }
