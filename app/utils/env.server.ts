@@ -6,9 +6,9 @@ export type DbEngine = typeof supportedDbEngines[number];
 
 const envVariables = z.object({
   SHLINK_DASHBOARD_DB_DRIVER: z.enum(supportedDbEngines).optional(),
-  SHLINK_DASHBOARD_DB_HOST: z.string(),
+  SHLINK_DASHBOARD_DB_HOST: z.string().optional(),
   SHLINK_DASHBOARD_DB_PORT: z.string().transform(Number).optional(),
-  SHLINK_DASHBOARD_DB_USER: z.string(),
+  SHLINK_DASHBOARD_DB_USER: z.string().optional(),
   SHLINK_DASHBOARD_DB_PASSWORD: z.string().optional(),
   SHLINK_DASHBOARD_DB_NAME: z.string().optional(),
 });
