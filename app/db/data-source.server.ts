@@ -1,8 +1,11 @@
-import 'reflect-metadata';
 import type { DataSourceOptions } from 'typeorm';
 import { DataSource } from 'typeorm';
+import { ServerEntity } from '../entities/Server';
+import { SettingsEntity } from '../entities/Settings';
+import { TagEntity } from '../entities/Tag';
+import { UserEntity } from '../entities/User';
 import type { DbEngine } from '../utils/env.server';
-import { env } from '../utils/env.server';
+import { env, isProd } from '../utils/env.server';
 
 const DEFAULT_PORTS: Record<Exclude<DbEngine, 'sqlite'>, number | undefined> = {
   mysql: 3306,
@@ -29,11 +32,10 @@ function resolveOptions(): DataSourceOptions {
     password: env.SHLINK_DASHBOARD_DB_PASSWORD,
     database: env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink_dashboard',
     synchronize: false,
-    logging: false,
-    entities: [],
-    migrations: ['app/db/migrations/*.ts'],
-    subscribers: [],
+    logging: !isProd(),
+    entities: [UserEntity, SettingsEntity, TagEntity, ServerEntity],
+    migrations: ['app/db/migrations/*.ts'], // FIXME These won't work when bundling for prod. Revisit
   };
 }
 
-export const AppDataSource = new DataSource(resolveOptions());
+export const appDataSource = new DataSource(resolveOptions());

@@ -5,6 +5,9 @@ const supportedDbEngines = ['mysql', 'postgres', 'mariadb', 'sqlite', 'mssql'] a
 export type DbEngine = typeof supportedDbEngines[number];
 
 const envVariables = z.object({
+  NODE_ENV: z.enum(['production', 'development']).optional(),
+
+  // Database connection options
   SHLINK_DASHBOARD_DB_DRIVER: z.enum(supportedDbEngines).optional(),
   SHLINK_DASHBOARD_DB_HOST: z.string().optional(),
   SHLINK_DASHBOARD_DB_PORT: z.string().transform(Number).optional(),
@@ -14,3 +17,5 @@ const envVariables = z.object({
 });
 
 export const env = envVariables.parse(process.env);
+
+export const isProd = () => env.NODE_ENV === 'production';
