@@ -3,7 +3,7 @@ version: '3'
 services:
   shlink_dashboard_node:
     container_name: shlink_dashboard_node
-    image: node:22.0-alpine
+    image: node:22.1-alpine
     command: /bin/sh -c "cd /home/shlink-dashboard && npm install && node --run start"
     volumes:
       - ./:/home/shlink-dashboard
@@ -18,6 +18,8 @@ services:
       SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
       SHLINK_DASHBOARD_DB_USER: postgres
       SHLINK_DASHBOARD_DB_PASSWORD: root
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   shlink_dashboard_db_postgres:
     container_name: shlink_dashboard_db_postgres

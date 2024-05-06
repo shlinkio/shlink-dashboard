@@ -42,7 +42,8 @@ export async function action({ params, request }: ActionFunctionArgs) {
     const response = await apiMethod.bind(client)(...args);
 
     return json(response);
-  } catch {
+  } catch (e) {
+    console.error(e);
     return json({}, 500); // TODO Return some useful info in Problem Details format
   }
 }
