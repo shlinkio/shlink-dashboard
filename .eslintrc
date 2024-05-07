@@ -6,10 +6,18 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "overrides": [{
-    "files": ["**/app/routes/**"],
-    "rules": {
-      "no-restricted-exports": "off"
+  "overrides": [
+    {
+      "files": ["**/app/routes/**"],
+      "rules": {
+        "no-restricted-exports": "off"
+      }
+    },
+    {
+      "files": ["**/app/db/migrations/**"],
+      "rules": {
+        "class-methods-use-this": "off"
+      }
     }
-  }]
+  ]
 }
