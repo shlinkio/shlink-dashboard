@@ -5,5 +5,11 @@
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
-  }
+  },
+  "overrides": [{
+    "files": ["**/app/routes/**"],
+    "rules": {
+      "no-restricted-exports": "off"
+    }
+  }]
 }

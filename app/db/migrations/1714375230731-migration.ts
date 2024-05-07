@@ -1,5 +1,5 @@
 import type { MigrationInterface, QueryRunner, TableColumnOptions } from 'typeorm';
-import { Table, TableForeignKey } from 'typeorm';
+import { Table, TableForeignKey, TableIndex } from 'typeorm';
 
 function idColumn(): TableColumnOptions {
   return {
@@ -17,6 +17,15 @@ function userIdFK(): TableForeignKey {
     columnNames: ['user_id'],
     referencedColumnNames: ['id'],
     referencedTableName: 'users',
+    onDelete: 'CASCADE',
+  });
+}
+
+function serverIdFK(): TableForeignKey {
+  return new TableForeignKey({
+    columnNames: ['server_id'],
+    referencedColumnNames: ['id'],
+    referencedTableName: 'servers',
     onDelete: 'CASCADE',
   });
 }
@@ -41,27 +50,6 @@ export class Migration1714375230731 implements MigrationInterface {
         },
       ],
     }));
-
-    await queryRunner.createTable(new Table({
-      name: 'tags',
-      columns: [
-        idColumn(),
-        {
-          name: 'tag',
-          type: 'varchar',
-        },
-        {
-          name: 'color',
-          type: 'varchar',
-        },
-        {
-          name: 'user_id',
-          type: 'bigint',
-          unsigned: true,
-        },
-      ],
-    }));
-    await queryRunner.createForeignKey('tags', userIdFK());
 
     await queryRunner.createTable(new Table({
       name: 'settings',
@@ -119,11 +107,37 @@ export class Migration1714375230731 implements MigrationInterface {
       ],
     }));
     await queryRunner.createForeignKey('user_has_servers', userIdFK());
-    await queryRunner.createForeignKey('user_has_servers', new TableForeignKey({
-      columnNames: ['server_id'],
-      referencedColumnNames: ['id'],
-      referencedTableName: 'servers',
-      onDelete: 'CASCADE',
+    await queryRunner.createForeignKey('user_has_servers', serverIdFK());
+
+    await queryRunner.createTable(new Table({
+      name: 'tags',
+      columns: [
+        idColumn(),
+        {
+          name: 'tag',
+          type: 'varchar',
+        },
+        {
+          name: 'color',
+          type: 'varchar',
+        },
+        {
+          name: 'user_id',
+          type: 'bigint',
+          unsigned: true,
+        },
+        {
+          name: 'server_id',
+          type: 'bigint',
+          unsigned: true,
+        },
+      ],
+    }));
+    await queryRunner.createForeignKey('tags', userIdFK());
+    await queryRunner.createForeignKey('tags', serverIdFK());
+    await queryRunner.createIndex('tags', new TableIndex({
+      isUnique: true,
+      columnNames: ['tag', 'user_id', 'server_id'],
     }));
   }
 
