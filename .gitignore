@@ -1,5 +1,4 @@
 build
 home
 node_modules
-credentials.*.json
 docker-compose.override.yml

@@ -2,7 +2,8 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { NodeHttpClient } from '@shlinkio/shlink-js-sdk/node';
-import { readFileSync } from 'node:fs';
+import { appDataSource } from '../db/data-source.server';
+import { ServerEntity } from '../entities/Server';
 
 type Callback = (...args: unknown[]) => unknown;
 
@@ -21,10 +22,14 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
 export async function action({ params, request }: ActionFunctionArgs) {
   try {
     const { method, serverId } = params;
-    // TODO Read credentials from database
-    const credentials = JSON.parse(readFileSync(`./credentials.${serverId}.json`).toString());
 
-    const client = new ShlinkApiClient(new NodeHttpClient(), credentials);
+    // TODO Make sure current user has access for this server
+    const server = await appDataSource.manager.findOneBy(ServerEntity, { publicId: serverId });
+    if (!server) {
+      return json({}, 404); // TODO Return some useful info in Problem Details format
+    }
+
+    const client = new ShlinkApiClient(new NodeHttpClient(), server);
     if (!method || !actionInApiClient(method, client)) {
       return json({}, 404); // TODO Return some useful info in Problem Details format
     }

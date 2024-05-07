@@ -8,6 +8,7 @@ export type Server = Base & {
   baseUrl: string;
   apiKey: string;
   publicId: string;
+  name: string;
   users: User[];
 };
 
@@ -20,6 +21,7 @@ export const ServerEntity = new EntitySchema<Server>({
       type: 'varchar',
       name: 'base_url',
     },
+    name: { type: 'varchar' },
     apiKey: {
       type: 'varchar',
       name: 'api_key',
