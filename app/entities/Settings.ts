@@ -5,9 +5,9 @@ import { BaseColumnSchema } from './Base';
 import type { User } from './User';
 import { UserEntity } from './User';
 
-export type Settings<T extends ShlinkWebComponentSettings = ShlinkWebComponentSettings> = Base & {
+export type Settings = Base & {
   user: User;
-  settings: T;
+  settings: ShlinkWebComponentSettings;
 };
 
 export const SettingsEntity = new EntitySchema<Settings>({

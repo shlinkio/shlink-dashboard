@@ -1,16 +1,32 @@
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useLocation, useParams } from '@remix-run/react';
 import type { Settings } from '@shlinkio/shlink-web-component';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient';
+import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
+import { SettingsService } from '../settings/SettingsService.server';
+import { TagsService } from '../tags/TagsService.server';
+import { TagsStorage } from '../tags/TagsStorage.client';
 
-export async function loader(): Promise<Settings> {
-  return {};
+export async function loader(
+  { params }: LoaderFunctionArgs,
+  tagsService = new TagsService(),
+  settingsService = new SettingsService(),
+): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
+  const { serverId: serverPublicId } = params;
+  const userId = 1; // FIXME Get from session
+
+  const [tagColors, settings] = await Promise.all([
+    tagsService.tagColors({ userId, serverPublicId }),
+    settingsService.userSettings(userId),
+  ]);
+
+  return { settings, tagColors };
 }
 
 export default function ShlinkWebComponentContainer() {
   const [component, setComponent] = useState<ReactNode>(null);
-  const settings = useLoaderData<ReturnType<typeof loader>>();
+  const { settings, tagColors } = useLoaderData<ReturnType<typeof loader>>();
   const params = useParams();
   const { serverId } = params;
   const { pathname } = useLocation();
@@ -40,11 +56,11 @@ export default function ShlinkWebComponentContainer() {
           apiClient={apiClient}
           routesPrefix={prefix}
           settings={settings}
-          // tagColorsStorage={} // TODO
+          tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
         />,
       );
     });
-  }, [prefix, serverId, settings]);
+  }, [prefix, serverId, settings, tagColors]);
 
   return component;
 }
