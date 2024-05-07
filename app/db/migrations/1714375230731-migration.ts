@@ -7,7 +7,8 @@ function idColumn(): TableColumnOptions {
     type: 'bigint',
     unsigned: true,
     isPrimary: true,
-    // charset: '' // TODO Set proper charset based on database engine
+    isGenerated: true,
+    generationStrategy: 'increment',
   };
 }
 
@@ -22,8 +23,6 @@ function userIdFK(): TableForeignKey {
 
 export class Migration1714375230731 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // const { type: databaseType } = queryRunner.connection.options;
-
     await queryRunner.createTable(new Table({
       name: 'users',
       columns: [
@@ -85,6 +84,10 @@ export class Migration1714375230731 implements MigrationInterface {
       name: 'servers',
       columns: [
         idColumn(),
+        {
+          name: 'name',
+          type: 'varchar',
+        },
         {
           name: 'base_url',
           type: 'varchar',

@@ -19,7 +19,7 @@ export const SettingsEntity = new EntitySchema<Settings>({
   },
   relations: {
     user: {
-      type: 'many-to-one',
+      type: 'one-to-one',
       target: UserEntity,
       joinColumn: { name: 'user_id' },
     },
