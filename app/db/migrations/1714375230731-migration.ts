@@ -136,12 +136,14 @@ export class Migration1714375230731 implements MigrationInterface {
     await queryRunner.createForeignKey('tags', userIdFK());
     await queryRunner.createForeignKey('tags', serverIdFK());
     await queryRunner.createIndex('tags', new TableIndex({
+      name: 'IDX_tag_user_server',
       isUnique: true,
       columnNames: ['tag', 'user_id', 'server_id'],
     }));
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropIndex('tags', 'IDX_tag_user_server');
     await queryRunner.dropTable('tags');
     await queryRunner.dropTable('settings');
     await queryRunner.dropTable('user_has_servers');

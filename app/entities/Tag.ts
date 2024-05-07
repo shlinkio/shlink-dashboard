@@ -35,8 +35,9 @@ export const TagEntity = new EntitySchema<Tag>({
   },
   indices: [
     {
+      name: 'IDX_tag_user_server',
       unique: true,
-      columns: ['tag', 'user_id', 'server_id'],
+      columns: ['tag', 'user', 'server'],
     },
   ],
 });
