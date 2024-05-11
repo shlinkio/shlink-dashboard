@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import { TagsService } from '../tags/TagsService.server';
 
 export async function action({ params, request }: ActionFunctionArgs, tagsService = new TagsService()) {
@@ -10,6 +9,5 @@ export async function action({ params, request }: ActionFunctionArgs, tagsServic
 
   await tagsService.updateTagColors({ colors, userId, serverPublicId });
 
-  // TODO Return new colors
-  return json({});
+  return new Response(null, { status: 204 });
 }

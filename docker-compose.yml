@@ -9,6 +9,7 @@ services:
       - ./:/home/shlink-dashboard
     ports:
       - "3005:3005"
+      - "24678:24678" # Vite dev server web socket port
     links:
       - shlink_dashboard_db_postgres
     environment:

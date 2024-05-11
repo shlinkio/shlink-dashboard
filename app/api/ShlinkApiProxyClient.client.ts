@@ -22,7 +22,7 @@ import type {
 } from '@shlinkio/shlink-js-sdk/api-contract';
 
 export class ShlinkApiProxyClient implements ShlinkApiClient {
-  constructor(private readonly serverId: string) {
+  constructor(private readonly serverId: string, private readonly fetch = window.fetch.bind(window)) {
   }
 
   createShortUrl(options: ShlinkCreateShortUrlData): Promise<ShlinkShortUrl> {
@@ -126,7 +126,7 @@ export class ShlinkApiProxyClient implements ShlinkApiClient {
   }
 
   private async performRequest<T>(action: string, ...args: unknown[]): Promise<T> {
-    const resp = await fetch(`/server/${this.serverId}/shlink-api/${action}`, {
+    const resp = await this.fetch(`/server/${this.serverId}/shlink-api/${action}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

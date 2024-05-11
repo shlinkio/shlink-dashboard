@@ -13,7 +13,11 @@ function diffObjects(obj1: Record<string, string>, obj2: Record<string, string>)
 }
 
 export class TagsStorage implements TagColorsStorage {
-  constructor(private colors: Record<string, string>, private readonly saveEndpoint: string) {
+  constructor(
+    private colors: Record<string, string>,
+    private readonly saveEndpoint: string,
+    private readonly fetch = window.fetch.bind(window),
+  ) {
   }
 
   getTagColors(): Record<string, string> {
@@ -30,7 +34,7 @@ export class TagsStorage implements TagColorsStorage {
       return;
     }
 
-    fetch(this.saveEndpoint, {
+    this.fetch(this.saveEndpoint, {
       method: 'POST',
       body: JSON.stringify(changedColors),
       headers: { 'Content-Type': 'application/json' },

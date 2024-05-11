@@ -15,6 +15,11 @@ export type UpdateTagColorsParam = FindTagsParam & {
   colors: Record<string, string>;
 };
 
+type ServerAndUserResult = {
+  server: Server | null;
+  user: User | null;
+};
+
 export class TagsService {
   constructor(private readonly em: EntityManager = appDataSource.manager) {
   }
@@ -42,22 +47,31 @@ export class TagsService {
       return;
     }
 
-    // FIXME MS SQL Server does not support upsert
-    await this.em.transaction((em) => em.upsert(
-      TagEntity,
-      Object.entries(colors).map(([tag, color]) => ({
-        tag,
-        color: color as string,
-        user,
-        server,
-      })),
-      ['tag', 'user', 'server'],
-    ));
+    const isMs = this.em.connection.options.type === 'mssql';
+    await this.em.transaction((em): Promise<unknown> => {
+      if (!isMs) {
+        return em.upsert(
+          TagEntity,
+          Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
+          ['tag', 'user', 'server'],
+        );
+      }
+
+      // MS SQL Server does not support upsert
+      return Promise.all(Object.entries(colors).map(async ([tag, color]) => {
+        const tagEntity = await em.findOneBy(TagEntity, { user, server, tag }).then(
+          // If a tag was not found, create it
+          (result) => result ?? em.create(TagEntity, { user, server, tag, color }),
+        );
+
+        tagEntity.color = color;
+
+        await em.save(tagEntity);
+      }));
+    });
   }
 
-  private async resolveServerAndUser(
-    { userId, serverPublicId }: FindTagsParam,
-  ): Promise<{ server: Server | null; user: User | null }> {
+  private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
       serverPublicId ? this.em.findOneBy(ServerEntity, { publicId: serverPublicId }) : null,
       this.em.findOneBy(UserEntity, { id: userId }),

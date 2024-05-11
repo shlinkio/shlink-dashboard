@@ -2,8 +2,8 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { NodeHttpClient } from '@shlinkio/shlink-js-sdk/node';
-import { appDataSource } from '../db/data-source.server';
-import { ServerEntity } from '../entities/Server';
+import type { Server } from '../entities/Server';
+import { ServersService } from '../servers/ServersService.server';
 
 type Callback = (...args: unknown[]) => unknown;
 
@@ -19,17 +19,18 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
   return args.length >= callback.length;
 }
 
-export async function action({ params, request }: ActionFunctionArgs) {
+export async function action(
+  { params, request }: ActionFunctionArgs,
+  serversService = new ServersService(),
+  createApiClient = (server: Server) => new ShlinkApiClient(new NodeHttpClient(), server),
+) {
   try {
-    const { method, serverId } = params;
+    const { method, serverId = '' } = params;
 
     // TODO Make sure current user has access for this server
-    const server = await appDataSource.manager.findOneBy(ServerEntity, { publicId: serverId });
-    if (!server) {
-      return json({}, 404); // TODO Return some useful info in Problem Details format
-    }
+    const server = await serversService.getByPublicId(serverId);
 
-    const client = new ShlinkApiClient(new NodeHttpClient(), server);
+    const client = createApiClient(server);
     if (!method || !actionInApiClient(method, client)) {
       return json({}, 404); // TODO Return some useful info in Problem Details format
     }

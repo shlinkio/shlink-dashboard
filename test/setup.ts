@@ -14,4 +14,6 @@ axe.configure({
   ],
 });
 
-HTMLCanvasElement.prototype.getContext = (() => {}) as any;
+if (typeof HTMLCanvasElement !== 'undefined') {
+  HTMLCanvasElement.prototype.getContext = (() => {}) as any;
+}
