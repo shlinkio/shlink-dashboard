@@ -44,7 +44,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
       return json({}, 400); // TODO Return some useful info in Problem Details format
     }
 
-    const response = await apiMethod.bind(client)(...args);
+    const response = await apiMethod.bind(client)(...args as Parameters<typeof apiMethod>);
 
     return json(response);
   } catch (e) {

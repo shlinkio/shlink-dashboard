@@ -7,7 +7,12 @@ const viteDevServer = isProd()
   : await import('vite').then(
     (vite) =>
       vite.createServer({
-        server: { middlewareMode: true },
+        server: {
+          middlewareMode: true,
+          watch: {
+            ignored: ['**/home/**', '**/build/**', '**/.idea/**', '**/node_modules/**', '**/.git/**'],
+          },
+        },
       }),
   );
 
@@ -20,6 +25,8 @@ app.use(
 
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule('virtual:remix/server-build')
+  // @ts-expect-error This code branch is used only when that file is built
+  // eslint-disable-next-line import/extensions
   : await import('./build/server/index.js');
 
 app.all('*', createRequestHandler({ build }));
