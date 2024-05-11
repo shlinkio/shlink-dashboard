@@ -52,12 +52,7 @@ export class TagsService {
       if (!isMs) {
         return em.upsert(
           TagEntity,
-          Object.entries(colors).map(([tag, color]) => ({
-            tag,
-            color: color as string,
-            user,
-            server,
-          })),
+          Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
           ['tag', 'user', 'server'],
         );
       }
