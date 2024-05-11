@@ -3,7 +3,7 @@ import { appDataSource } from '../db/data-source.server';
 import type { Server } from '../entities/Server';
 import { ServerEntity } from '../entities/Server';
 
-export class ServersServiceServer {
+export class ServersService {
   constructor(private readonly em: EntityManager = appDataSource.manager) {}
 
   public async getByPublicId(publicId: string): Promise<Server> {
