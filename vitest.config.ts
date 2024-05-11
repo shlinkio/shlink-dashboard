@@ -6,9 +6,13 @@ export default defineConfig({
   plugins: [react()],
 
   test: {
-    environment: 'jsdom',
     globals: true,
     allowOnly: true,
+    environment: 'jsdom',
+    environmentMatchGlobs: [
+      ['**/*.server.test.{ts|tsx}', 'node'],
+      ['*', 'jsdom'],
+    ],
     setupFiles: './test/setup.ts',
     dir: 'test',
     coverage: {
@@ -17,6 +21,8 @@ export default defineConfig({
       include: [
         'app/**/*.ts',
         'app/**/*.tsx',
+        '!app/db/migrations/*.ts',
+        '!app/entities/*.ts',
       ],
       reporter: ['text', 'text-summary', 'clover', 'html'],
 

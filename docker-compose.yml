@@ -4,11 +4,12 @@ services:
   shlink_dashboard_node:
     container_name: shlink_dashboard_node
     image: node:22.1-alpine
-    command: /bin/sh -c "cd /home/shlink-dashboard && npm install && node --run start"
+    command: /bin/sh -c "cd /home/shlink-dashboard && npm install && npm run start"
     volumes:
       - ./:/home/shlink-dashboard
     ports:
       - "3005:3005"
+      - "24678:24678" # Vite dev server web socket port
     links:
       - shlink_dashboard_db_postgres
     environment:
