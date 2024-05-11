@@ -8,7 +8,7 @@
   },
   "overrides": [
     {
-      "files": ["**/app/routes/**"],
+      "files": ["**/app/routes/**", "vite*.config.ts"],
       "rules": {
         "no-restricted-exports": "off"
       }

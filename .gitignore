@@ -2,3 +2,4 @@ build
 home
 node_modules
 docker-compose.override.yml
+coverage
