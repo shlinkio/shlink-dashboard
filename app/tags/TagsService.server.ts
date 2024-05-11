@@ -15,6 +15,11 @@ export type UpdateTagColorsParam = FindTagsParam & {
   colors: Record<string, string>;
 };
 
+type ServerAndUserResult = {
+  server: Server | null;
+  user: User | null;
+};
+
 export class TagsService {
   constructor(private readonly em: EntityManager = appDataSource.manager) {
   }
@@ -71,9 +76,7 @@ export class TagsService {
     });
   }
 
-  private async resolveServerAndUser(
-    { userId, serverPublicId }: FindTagsParam,
-  ): Promise<{ server: Server | null; user: User | null }> {
+  private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
       serverPublicId ? this.em.findOneBy(ServerEntity, { publicId: serverPublicId }) : null,
       this.em.findOneBy(UserEntity, { id: userId }),

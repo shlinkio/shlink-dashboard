@@ -8,10 +8,9 @@ export default defineConfig({
   test: {
     globals: true,
     allowOnly: true,
-    environment: 'jsdom',
     environmentMatchGlobs: [
       ['**/*.server.test.{ts|tsx}', 'node'],
-      ['*', 'jsdom'],
+      ['**/*', 'jsdom'],
     ],
     setupFiles: './test/setup.ts',
     dir: 'test',
