@@ -42,17 +42,33 @@ export class TagsService {
       return;
     }
 
-    // FIXME MS SQL Server does not support upsert
-    await this.em.transaction((em) => em.upsert(
-      TagEntity,
-      Object.entries(colors).map(([tag, color]) => ({
-        tag,
-        color: color as string,
-        user,
-        server,
-      })),
-      ['tag', 'user', 'server'],
-    ));
+    const isMs = this.em.connection.options.type === 'mssql';
+    await this.em.transaction((em): Promise<unknown> => {
+      if (!isMs) {
+        return em.upsert(
+          TagEntity,
+          Object.entries(colors).map(([tag, color]) => ({
+            tag,
+            color: color as string,
+            user,
+            server,
+          })),
+          ['tag', 'user', 'server'],
+        );
+      }
+
+      // MS SQL Server does not support upsert
+      return Promise.all(Object.entries(colors).map(async ([tag, color]) => {
+        const tagEntity = await em.findOneBy(TagEntity, { user, server, tag }).then(
+          // If a tag was not found, create it
+          (result) => result ?? em.create(TagEntity, { user, server, tag, color }),
+        );
+
+        tagEntity.color = color;
+
+        await em.save(tagEntity);
+      }));
+    });
   }
 
   private async resolveServerAndUser(
