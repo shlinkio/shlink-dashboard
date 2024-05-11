@@ -22,9 +22,9 @@
     "migration:create": "tsx node_modules/.bin/typeorm migration:create app/db/migrations/migration"
   },
   "dependencies": {
-    "@remix-run/express": "^2.9.1",
-    "@remix-run/node": "^2.9.1",
-    "@remix-run/react": "^2.9.1",
+    "@remix-run/express": "^2.9.2",
+    "@remix-run/node": "^2.9.2",
+    "@remix-run/react": "^2.9.2",
     "@shlinkio/shlink-frontend-kit": "^0.5.1",
     "@shlinkio/shlink-js-sdk": "^1.1.0",
     "@shlinkio/shlink-web-component": "^0.6.2",
@@ -39,8 +39,8 @@
     "zod": "^3.23.4"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.9.1",
-    "@remix-run/testing": "^2.9.1",
+    "@remix-run/dev": "^2.9.2",
+    "@remix-run/testing": "^2.9.2",
     "@shlinkio/eslint-config-js-coding-standard": "^2.4.1",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
