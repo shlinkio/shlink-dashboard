@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
-import { NodeHttpClient } from '@shlinkio/shlink-js-sdk/node';
-import type { Server } from '../entities/Server';
+import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
+import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
+import { serverContainer } from '../container/container.server';
 import { ServersService } from '../servers/ServersService.server';
 
 type Callback = (...args: unknown[]) => unknown;
@@ -21,8 +21,8 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
 
 export async function action(
   { params, request }: ActionFunctionArgs,
-  serversService = new ServersService(),
-  createApiClient = (server: Server) => new ShlinkApiClient(new NodeHttpClient(), server),
+  serversService: ServersService = serverContainer[ServersService.name],
+  createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
 ) {
   try {
     const { method, serverId = '' } = params;
