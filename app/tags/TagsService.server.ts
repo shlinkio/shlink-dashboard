@@ -1,5 +1,4 @@
 import type { EntityManager } from 'typeorm';
-import { appDataSource } from '../db/data-source.server';
 import type { Server } from '../entities/Server';
 import { ServerEntity } from '../entities/Server';
 import { TagEntity } from '../entities/Tag';
@@ -21,8 +20,7 @@ type ServerAndUserResult = {
 };
 
 export class TagsService {
-  constructor(private readonly em: EntityManager = appDataSource.manager) {
-  }
+  constructor(private readonly em: EntityManager) {}
 
   async tagColors(param: FindTagsParam): Promise<Record<string, string>> {
     const { server, user } = await this.resolveServerAndUser(param);

@@ -4,14 +4,15 @@ import type { Settings } from '@shlinkio/shlink-web-component';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
+import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';
 import { TagsStorage } from '../tags/TagsStorage.client';
 
 export async function loader(
   { params }: LoaderFunctionArgs,
-  tagsService = new TagsService(),
-  settingsService = new SettingsService(),
+  tagsService: TagsService = serverContainer[TagsService.name],
+  settingsService: SettingsService = serverContainer[SettingsService.name],
 ): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
   const { serverId: serverPublicId } = params;
   const userId = 1; // FIXME Get from session
