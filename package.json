@@ -55,7 +55,7 @@
     "@typescript-eslint/parser": "^7.6.0",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.6.0",
-    "axe-core": "4.9.0",
+    "axe-core": "4.9.1",
     "eslint": "^8.57.0",
     "jsdom": "^24.0.0",
     "sass": "^1.77.1",
