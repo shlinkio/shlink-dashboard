@@ -14,6 +14,11 @@ axe.configure({
   ],
 });
 
+// Clears all mocks after every test
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = (() => {}) as any;
 }

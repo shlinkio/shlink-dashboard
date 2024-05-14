@@ -31,7 +31,6 @@ describe('TagsService', () => {
   beforeEach(() => {
     tagsService = new TagsService(em);
     transaction.mockImplementation((callback) => callback(em));
-    vi.clearAllMocks();
   });
 
   describe('tagColors', () => {
