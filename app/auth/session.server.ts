@@ -2,12 +2,13 @@ import { createCookieSessionStorage } from '@remix-run/node';
 import { env, isProd } from '../utils/env.server';
 
 export type SessionData = {
-  userId: string;
+  userId: number;
+  [key: string]: unknown;
 };
 
 export const createSessionStorage = () => createCookieSessionStorage<SessionData>({
   cookie: {
-    name: '__shlink_dashboard_session',
+    name: 'shlink_dashboard_session',
     httpOnly: true,
     maxAge: 30 * 60, // 30 minutes
     path: '/',

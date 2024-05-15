@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 
-export const hashPassword = async (plainTextPassword: string) => bcrypt.hash(plainTextPassword, 10);
+export const hashPassword = async (plainTextPassword: string) => argon2.hash(plainTextPassword);
 
 export const verifyPassword = async (plainTextPassword: string, hashedPassword: string) =>
-  bcrypt.compare(plainTextPassword, hashedPassword);
+  argon2.verify(hashedPassword, plainTextPassword);

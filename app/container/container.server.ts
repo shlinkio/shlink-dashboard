@@ -20,6 +20,6 @@ bottle.service(UsersService.name, UsersService, 'em');
 
 bottle.constant('apiClientBuilder', apiClientBuilder);
 bottle.serviceFactory('sessionStorage', createSessionStorage);
-bottle.serviceFactory(Authenticator.name, createAuthenticator, 'em', 'sessionStorage');
+bottle.serviceFactory(Authenticator.name, createAuthenticator, UsersService.name, 'sessionStorage');
 
 export const { container: serverContainer } = bottle;

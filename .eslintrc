@@ -6,6 +6,11 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "rules": {
+    "jsx-a11y/label-has-associated-control": ["error", {
+      "controlComponents": ["Input", "DateInput"]
+    }]
+  },
   "overrides": [
     {
       "files": ["**/app/routes/**", "vite*.config.ts"],

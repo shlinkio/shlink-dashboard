@@ -2,7 +2,7 @@ import type { Strategy } from 'remix-auth';
 import { Authenticator } from 'remix-auth';
 import { FormStrategy } from 'remix-auth-form';
 import type { UsersService } from '../users/UsersService.server';
-import type { SessionStorage } from './session.server';
+import type { SessionData, SessionStorage } from './session.server';
 
 export const CREDENTIALS_STRATEGY = 'credentials';
 
@@ -10,15 +10,15 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<any
   const strategies = new Map<string, Strategy<any, any>>();
 
   // Add strategy to login via credentials form
-  strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }) => {
+  strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }): Promise<SessionData> => {
     const username = form.get('username');
     const password = form.get('password');
     if (typeof username !== 'string' || typeof password !== 'string') {
-      // TODO Check if this is the right way to handle this error
       throw new Error('Username or password missing');
     }
 
-    return usersService.getUserByCredentials(username, password);
+    const user = await usersService.getUserByCredentials(username, password);
+    return { userId: user.id };
   }));
 
   // TODO Add other strategies, like oAuth for SSO

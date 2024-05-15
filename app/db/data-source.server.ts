@@ -32,7 +32,7 @@ function resolveOptions(): DataSourceOptions {
     password: env.SHLINK_DASHBOARD_DB_PASSWORD,
     database: env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink_dashboard',
     synchronize: false,
-    logging: !isProd(),
+    logging: false,
     entities: [UserEntity, SettingsEntity, TagEntity, ServerEntity],
     migrations: ['app/db/migrations/*.ts'], // FIXME These won't work when bundling for prod. Revisit
   };
