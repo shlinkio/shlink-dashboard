@@ -2,6 +2,7 @@ import type { Strategy } from 'remix-auth';
 import { Authenticator } from 'remix-auth';
 import { FormStrategy } from 'remix-auth-form';
 import type { UsersService } from '../users/UsersService.server';
+import { credentialsSchema } from './credentials-schema.server';
 import type { SessionData, SessionStorage } from './session.server';
 
 export const CREDENTIALS_STRATEGY = 'credentials';
@@ -11,11 +12,10 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<any
 
   // Add strategy to login via credentials form
   strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }): Promise<SessionData> => {
-    const username = form.get('username');
-    const password = form.get('password');
-    if (typeof username !== 'string' || typeof password !== 'string') {
-      throw new Error('Username or password missing');
-    }
+    const { username, password } = credentialsSchema.parse({
+      username: form.get('username'),
+      password: form.get('password'),
+    });
 
     const user = await usersService.getUserByCredentials(username, password);
     return { userId: user.id };

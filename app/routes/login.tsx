@@ -29,7 +29,7 @@ export async function loader(
 
   const session = await getSession(request.headers.get('cookie'));
   const error = session.get(authenticator.sessionErrorKey);
-  return json({ hasError: !!error }, {
+  return json({ error }, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },
@@ -39,7 +39,7 @@ export async function loader(
 export default function Login() {
   const usernameId = useId();
   const passwordId = useId();
-  const { hasError } = useLoaderData<typeof loader>();
+  const { error } = useLoaderData<typeof loader>();
 
   return (
     <form
@@ -49,14 +49,14 @@ export default function Login() {
     >
       <div>
         <label htmlFor={usernameId}>Username:</label>
-        <Input id={usernameId} name="username" />
+        <Input id={usernameId} name="username" required />
       </div>
       <div>
         <label htmlFor={passwordId}>Password:</label>
-        <Input id={passwordId} type="password" name="password" />
+        <Input id={passwordId} type="password" name="password" required />
       </div>
       <Button color="primary" type="submit">Login</Button>
-      {hasError && <div className="text-danger">Username or password are incorrect</div>}
+      {!!error && <div className="text-danger">Username or password are incorrect</div>}
     </form>
   );
 }
