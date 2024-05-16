@@ -56,7 +56,7 @@ export default function Login() {
         <Input id={passwordId} type="password" name="password" required />
       </div>
       <Button color="primary" type="submit">Login</Button>
-      {!!error && <div className="text-danger">Username or password are incorrect</div>}
+      {!!error && <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>}
     </form>
   );
 }
