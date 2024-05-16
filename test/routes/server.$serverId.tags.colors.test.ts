@@ -9,7 +9,6 @@ describe('server.$serverId.tags.colors', () => {
 
   beforeEach(() => {
     tagsService = fromPartial<TagsService>({ updateTagColors });
-    vi.clearAllMocks();
   });
 
   it('updates tags in action and returns response', async () => {

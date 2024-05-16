@@ -11,7 +11,6 @@ describe('ServersService', () => {
   beforeEach(() => {
     em = fromPartial<EntityManager>({ findOneBy });
     service = new ServersService(em);
-    vi.clearAllMocks();
   });
 
   describe('getByPublicId', () => {

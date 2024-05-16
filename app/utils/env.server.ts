@@ -14,6 +14,12 @@ const envVariables = z.object({
   SHLINK_DASHBOARD_DB_USER: z.string().optional(),
   SHLINK_DASHBOARD_DB_PASSWORD: z.string().optional(),
   SHLINK_DASHBOARD_DB_NAME: z.string().optional(),
+
+  // Sessions
+  SHLINK_DASHBOARD_SESSION_SECRETS: z.string().transform(
+    // Split the comma-separated list of secrets
+    (secrets) => secrets.split(',').map((v) => v.trim()),
+  ).optional(),
 });
 
 export const env = envVariables.parse(process.env);

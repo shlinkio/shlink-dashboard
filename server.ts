@@ -7,12 +7,7 @@ const viteDevServer = isProd()
   : await import('vite').then(
     (vite) =>
       vite.createServer({
-        server: {
-          middlewareMode: true,
-          watch: {
-            ignored: ['**/home/**', '**/build/**', '**/.idea/**', '**/node_modules/**', '**/.git/**'],
-          },
-        },
+        server: { middlewareMode: true },
       }),
   );
 

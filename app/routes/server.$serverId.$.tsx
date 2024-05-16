@@ -27,7 +27,7 @@ export async function loader(
 
 export default function ShlinkWebComponentContainer() {
   const [component, setComponent] = useState<ReactNode>(null);
-  const { settings, tagColors } = useLoaderData<ReturnType<typeof loader>>();
+  const { settings, tagColors } = useLoaderData<typeof loader>();
   const params = useParams();
   const { serverId } = params;
   const { pathname } = useLocation();
