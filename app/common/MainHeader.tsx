@@ -7,7 +7,7 @@ import { ShlinkLogo } from './ShlinkLogo';
 export const MainHeader: FC = () => (
   <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
     <NavbarBrand tag={Link} to="/">
-      <ShlinkLogo className="main-header__brand-logo" color="white" /> Shlink
+      <ShlinkLogo className="tw-inline-block tw-mr-1 tw-w-[26px]" color="white" /> Shlink
     </NavbarBrand>
   </Navbar>
 );

@@ -44,8 +44,7 @@ export default function Login() {
   return (
     <form
       method="post"
-      className="d-flex flex-column gap-3 p-3 mt-5 mx-auto w-50 rounded-2 border-opacity-25 border-secondary"
-      style={{ borderWidth: '1px', borderStyle: 'solid' }}
+      className="tw-flex tw-flex-col tw-gap-4 tw-p-4 tw-mt-8 tw-mx-auto tw-w-[50%] tw-rounded-lg tw-border tw-border-gray-300"
     >
       <div>
         <label htmlFor={usernameId}>Username:</label>
