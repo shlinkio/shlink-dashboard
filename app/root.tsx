@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import { Links, Meta, Outlet, Scripts } from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
 import { Authenticator } from 'remix-auth';
+import type { SessionData } from './auth/session-context';
+import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
 import { appDataSource } from './db/data-source.server';
@@ -8,8 +10,9 @@ import './index.scss';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
-  authenticator: Authenticator = serverContainer[Authenticator.name],
+  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
 ) {
+  // FIXME This should be done during server start-up, not here
   if (!appDataSource.isInitialized) {
     console.log('Initializing database connection...');
     await appDataSource.initialize();
@@ -17,32 +20,41 @@ export async function loader(
   }
 
   const { pathname } = new URL(request.url);
-  const isPublicRoute = ['/login'].includes(pathname);
-  if (!isPublicRoute) {
-    await authenticator.isAuthenticated(request, {
-      failureRedirect: `/login?redirect-to=${encodeURIComponent(pathname)}`,
-    });
-  }
-
-  return {};
+  const isPublicRoute = ['/login', '/logout'].includes(pathname);
+  const session = await (isPublicRoute
+    ? authenticator.isAuthenticated(request) // For public routes, do not redirect
+    : authenticator.isAuthenticated(
+      request,
+      { failureRedirect: `/login?redirect-to=${encodeURIComponent(pathname)}` },
+    ));
+  return { session };
 }
 
 /* eslint-disable-next-line no-restricted-exports */
 export default function App() {
+  const { session } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
         <title>Shlink dashboard</title>
-        <link rel="icon" href="data:image/x-icon;base64,AA" />
+
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="theme-color" content="#4696e5" />
         <Meta />
+
+        <link rel="icon" href="data:image/x-icon;base64,AA" />
         <Links />
       </head>
       <body>
-        <MainHeader />
-        <div className="app">
-          <Outlet />
-        </div>
-        <Scripts />
+        <SessionProvider value={session}>
+          <MainHeader />
+          <div className="app">
+            <Outlet />
+          </div>
+          <Scripts />
+        </SessionProvider>
       </body>
     </html>
   );

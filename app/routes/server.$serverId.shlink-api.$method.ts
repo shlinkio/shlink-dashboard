@@ -4,7 +4,7 @@ import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
 import { Authenticator } from 'remix-auth';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
-import type { SessionData } from '../auth/session.server';
+import type { SessionData } from '../auth/session-context';
 import { serverContainer } from '../container/container.server';
 import { ServersService } from '../servers/ServersService.server';
 import { problemDetails } from '../utils/response.server';

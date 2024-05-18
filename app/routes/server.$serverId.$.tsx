@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Authenticator } from 'remix-auth';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
-import type { SessionData } from '../auth/session.server';
+import type { SessionData } from '../auth/session-context';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';

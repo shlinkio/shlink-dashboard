@@ -1,13 +1,40 @@
+import { faArrowRightFromBracket as faLogout, faChevronDown as arrowIcon } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from '@remix-run/react';
+import { useToggle } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import React from 'react';
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { useSession } from '../auth/session-context';
 import { ShlinkLogo } from './ShlinkLogo';
 
-export const MainHeader: FC = () => (
-  <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
-    <NavbarBrand tag={Link} to="/">
-      <ShlinkLogo className="tw-inline-block tw-mr-1 tw-w-[26px]" color="white" /> Shlink
-    </NavbarBrand>
-  </Navbar>
-);
+export const MainHeader: FC = () => {
+  const session = useSession();
+  const [isOpen, toggleCollapse] = useToggle();
+
+  return (
+    <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
+      <NavbarBrand tag={Link} to="/">
+        <ShlinkLogo className="tw-inline-block tw-mr-1 tw-w-[26px]" color="white" /> Shlink
+      </NavbarBrand>
+
+      {session !== null && (
+        <>
+          <NavbarToggler onClick={toggleCollapse}>
+            <FontAwesomeIcon icon={arrowIcon} />
+          </NavbarToggler>
+
+          <Collapse navbar isOpen={isOpen}>
+            <Nav navbar className="tw-ml-auto">
+              <NavItem>
+                <NavLink tag={Link} to="/logout">
+                  <FontAwesomeIcon icon={faLogout} className="tw-w-[26px] tw-inline-block" /> Logout
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </>
+      )}
+    </Navbar>
+  );
+};

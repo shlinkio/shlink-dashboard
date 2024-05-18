@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { Authenticator } from 'remix-auth';
-import type { SessionData } from '../../app/auth/session.server';
+import type { SessionData } from '../../app/auth/session-context';
 import { action } from '../../app/routes/server.$serverId.tags.colors';
 import type { TagsService } from '../../app/tags/TagsService.server';
 
