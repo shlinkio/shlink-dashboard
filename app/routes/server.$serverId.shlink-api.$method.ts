@@ -37,6 +37,7 @@ export async function action(
   serversService: ServersService = serverContainer[ServersService.name],
   createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
   authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  console_ = console,
 ) {
   const sessionData = await authenticator.isAuthenticated(request);
   if (!sessionData) {
@@ -44,7 +45,7 @@ export async function action(
       status: 403,
       type: 'https://shlink.io/api/error/access-denied',
       title: 'Access denied',
-      detail: 'You need to log-in in order to fetch data from Shlink server',
+      detail: 'You need to log-in to fetch data from Shlink',
     });
   }
 
@@ -89,10 +90,9 @@ export async function action(
 
   try {
     const response = await apiMethod.bind(client)(...args as Parameters<typeof apiMethod>);
-
     return json(response);
   } catch (e) {
-    console.error(e);
+    console_.error(e);
     return problemDetails({
       status: 500,
       type: 'https://shlink.io/api/error/internal-server-error',
