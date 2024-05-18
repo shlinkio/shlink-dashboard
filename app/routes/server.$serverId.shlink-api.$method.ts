@@ -1,11 +1,13 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
+import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
 import { Authenticator } from 'remix-auth';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
 import type { SessionData } from '../auth/session.server';
 import { serverContainer } from '../container/container.server';
 import { ServersService } from '../servers/ServersService.server';
+import { problemDetails } from '../utils/response.server';
 
 type Callback = (...args: unknown[]) => unknown;
 
@@ -21,44 +23,81 @@ function argsAreValidForAction(args: any[], callback: Callback): args is Paramet
   return args.length >= callback.length;
 }
 
+function resolveApiMethod(client: ShlinkApiClient, method?: string): Callback | undefined {
+  if (!method || !actionInApiClient(method, client)) {
+    return undefined;
+  }
+
+  const apiMethod = client[method];
+  return actionIsCallback(apiMethod) ? apiMethod : undefined;
+}
+
 export async function action(
   { params, request }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
   createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
   authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  console_ = console,
 ) {
+  const sessionData = await authenticator.isAuthenticated(request);
+  if (!sessionData) {
+    return problemDetails({
+      status: 403,
+      type: 'https://shlink.io/api/error/access-denied',
+      title: 'Access denied',
+      detail: 'You need to log-in to fetch data from Shlink',
+    });
+  }
+
+  const { userId } = sessionData;
+  const { method, serverId = '' } = params;
+  let server;
   try {
-    const { method, serverId = '' } = params;
+    server = await serversService.getByPublicIdAndUser(serverId, userId);
+  } catch (e) {
+    return problemDetails({
+      status: 404,
+      type: ErrorType.NOT_FOUND,
+      title: 'Server not found',
+      detail: `Server with ID ${serverId} not found`,
+      serverId,
+    });
+  }
 
-    // TODO Make sure current user has access for this server
-    const sessionData = await authenticator.isAuthenticated(request);
-    if (!sessionData) {
-      return json({}, 403); // TODO Return some useful info in Problem Details format
-    }
+  const client = createApiClient(server);
+  const apiMethod = resolveApiMethod(client, method);
+  if (!apiMethod) {
+    return problemDetails({
+      status: 404,
+      type: ErrorType.NOT_FOUND,
+      title: 'Action not found',
+      detail: `The ${method} action is not a valid Shlink SDK method`,
+      method,
+    });
+  }
 
-    const { userId } = sessionData;
-    const server = await serversService.getByPublicIdAndUser(serverId, userId);
+  const { args } = await request.json();
+  if (!args || !Array.isArray(args) || !argsAreValidForAction(args, apiMethod)) {
+    return problemDetails({
+      status: 400,
+      type: 'https://shlink.io/api/error/invalid-arguments',
+      title: 'Invalid arguments',
+      detail: `Provided arguments are not valid for ${method} action`,
+      args,
+      method,
+    });
+  }
 
-    const client = createApiClient(server);
-    if (!method || !actionInApiClient(method, client)) {
-      return json({}, 404); // TODO Return some useful info in Problem Details format
-    }
-
-    const apiMethod = client[method];
-    if (!actionIsCallback(apiMethod)) {
-      return json({}, 404); // TODO Return some useful info in Problem Details format
-    }
-
-    const { args } = await request.json();
-    if (!args || !Array.isArray(args) || !argsAreValidForAction(args, apiMethod)) {
-      return json({}, 400); // TODO Return some useful info in Problem Details format
-    }
-
+  try {
     const response = await apiMethod.bind(client)(...args as Parameters<typeof apiMethod>);
-
     return json(response);
   } catch (e) {
-    console.error(e);
-    return json({}, 500); // TODO Return some useful info in Problem Details format
+    console_.error(e);
+    return problemDetails({
+      status: 500,
+      type: 'https://shlink.io/api/error/internal-server-error',
+      title: 'Unexpected error',
+      detail: 'An unexpected error occurred while calling Shlink API',
+    });
   }
 }

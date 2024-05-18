@@ -3,6 +3,7 @@ import { Authenticator } from 'remix-auth';
 import type { SessionData } from '../auth/session.server';
 import { serverContainer } from '../container/container.server';
 import { TagsService } from '../tags/TagsService.server';
+import { empty } from '../utils/response.server';
 
 export async function action(
   { params, request }: ActionFunctionArgs,
@@ -11,7 +12,7 @@ export async function action(
 ) {
   const sessionData = await authenticator.isAuthenticated(request);
   if (!sessionData) {
-    return new Response(null, { status: 204 });
+    return empty();
   }
 
   const { userId } = sessionData;
@@ -20,5 +21,5 @@ export async function action(
 
   await tagsService.updateTagColors({ colors, userId, serverPublicId });
 
-  return new Response(null, { status: 204 });
+  return empty();
 }

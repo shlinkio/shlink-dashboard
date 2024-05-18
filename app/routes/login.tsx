@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
 import { Button, Input } from 'reactstrap';
 import { Authenticator } from 'remix-auth';
@@ -45,20 +46,21 @@ export default function Login() {
   const { error } = useLoaderData<typeof loader>();
 
   return (
-    <form
-      method="post"
-      className="tw-flex tw-flex-col tw-gap-4 tw-p-4 tw-mt-8 tw-mx-auto tw-w-[50%] tw-rounded-lg tw-border tw-border-gray-300"
-    >
-      <div>
-        <label htmlFor={usernameId}>Username:</label>
-        <Input id={usernameId} name="username" required />
-      </div>
-      <div>
-        <label htmlFor={passwordId}>Password:</label>
-        <Input id={passwordId} type="password" name="password" required />
-      </div>
-      <Button color="primary" type="submit">Login</Button>
-      {!!error && <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>}
-    </form>
+    <div className="tw-mt-8 tw-mx-8 lg:tw-mx-auto lg:tw-w-[50%]">
+      <SimpleCard>
+        <form method="post" className="tw-flex tw-flex-col tw-gap-4">
+          <div>
+            <label htmlFor={usernameId}>Username:</label>
+            <Input id={usernameId} name="username" required />
+          </div>
+          <div>
+            <label htmlFor={passwordId}>Password:</label>
+            <Input id={passwordId} type="password" name="password" required />
+          </div>
+          <Button color="primary" type="submit">Login</Button>
+          {!!error && <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>}
+        </form>
+      </SimpleCard>
+    </div>
   );
 }
