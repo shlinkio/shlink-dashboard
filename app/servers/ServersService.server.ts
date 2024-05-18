@@ -1,12 +1,11 @@
-import type { EntityManager } from 'typeorm';
 import type { Server } from '../entities/Server';
-import { ServerEntity } from '../entities/Server';
+import type { ServersRepository } from './ServersRepository.server';
 
 export class ServersService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(private readonly serversRepository: ServersRepository) {}
 
-  public async getByPublicId(publicId: string): Promise<Server> {
-    const server = await this.em.findOneBy(ServerEntity, { publicId });
+  public async getByPublicIdAndUser(publicId: string, userId: number): Promise<Server> {
+    const server = await this.serversRepository.findByPublicIdAndUserId(publicId, userId);
     if (!server) {
       throw new Error(`Server with public ID ${publicId} not found`);
     }

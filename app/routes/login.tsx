@@ -13,8 +13,11 @@ export async function action(
   authenticator: Authenticator = serverContainer[Authenticator.name],
 ) {
   const { searchParams } = new URL(request.url);
+  const redirectTo = searchParams.get('redirect-to');
+  const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
+
   return authenticator.authenticate(CREDENTIALS_STRATEGY, request, {
-    successRedirect: searchParams.get('redirect-to') ?? '/', // TODO Make sure "redirect-to" is a relative URL
+    successRedirect,
     failureRedirect: request.url,
   });
 }

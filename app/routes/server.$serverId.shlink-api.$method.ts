@@ -1,7 +1,9 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
+import { Authenticator } from 'remix-auth';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
+import type { SessionData } from '../auth/session.server';
 import { serverContainer } from '../container/container.server';
 import { ServersService } from '../servers/ServersService.server';
 
@@ -23,12 +25,19 @@ export async function action(
   { params, request }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
   createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
+  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
 ) {
   try {
     const { method, serverId = '' } = params;
 
     // TODO Make sure current user has access for this server
-    const server = await serversService.getByPublicId(serverId);
+    const sessionData = await authenticator.isAuthenticated(request);
+    if (!sessionData) {
+      return json({}, 403); // TODO Return some useful info in Problem Details format
+    }
+
+    const { userId } = sessionData;
+    const server = await serversService.getByPublicIdAndUser(serverId, userId);
 
     const client = createApiClient(server);
     if (!method || !actionInApiClient(method, client)) {

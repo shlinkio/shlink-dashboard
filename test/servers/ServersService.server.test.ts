@@ -1,30 +1,30 @@
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { EntityManager } from 'typeorm';
 import type { Server } from '../../app/entities/Server';
+import type { ServersRepository } from '../../app/servers/ServersRepository.server';
 import { ServersService } from '../../app/servers/ServersService.server';
 
 describe('ServersService', () => {
-  const findOneBy = vi.fn();
-  let em: EntityManager;
+  const findByPublicIdAndUserId = vi.fn();
+  let repo: ServersRepository;
   let service: ServersService;
 
   beforeEach(() => {
-    em = fromPartial<EntityManager>({ findOneBy });
-    service = new ServersService(em);
+    repo = fromPartial<ServersRepository>({ findByPublicIdAndUserId });
+    service = new ServersService(repo);
   });
 
-  describe('getByPublicId', () => {
+  describe('getByPublicIdAndUser', () => {
     it('throws error if server is not found', async () => {
-      await expect(() => service.getByPublicId('123')).rejects.toEqual(
+      await expect(() => service.getByPublicIdAndUser('123', 1)).rejects.toEqual(
         new Error('Server with public ID 123 not found'),
       );
     });
 
     it('returns server when found', async () => {
       const server = fromPartial<Server>({});
-      findOneBy.mockResolvedValue(server);
+      findByPublicIdAndUserId.mockResolvedValue(server);
 
-      const result = await service.getByPublicId('123');
+      const result = await service.getByPublicIdAndUser('123', 1);
 
       expect(result).toEqual(server);
     });
