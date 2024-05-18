@@ -40,6 +40,10 @@ export const ServerEntity = new EntitySchema<Server>({
       joinTable: {
         name: 'user_has_servers',
         joinColumn: {
+          name: 'server_id',
+          referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
           name: 'user_id',
           referencedColumnName: 'id',
         },

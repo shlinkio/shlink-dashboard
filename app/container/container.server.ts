@@ -4,6 +4,7 @@ import { apiClientBuilder } from '../api/apiClientBuilder.server';
 import { createAuthenticator } from '../auth/auth.server';
 import { createSessionStorage } from '../auth/session.server';
 import { appDataSource } from '../db/data-source.server';
+import { createServersRepository } from '../servers/ServersRepository.server';
 import { ServersService } from '../servers/ServersService.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';
@@ -13,8 +14,10 @@ const bottle = new Bottle();
 
 bottle.serviceFactory('em', () => appDataSource.manager);
 
+bottle.serviceFactory('ServersRepository', createServersRepository, 'em');
+
 bottle.service(TagsService.name, TagsService, 'em');
-bottle.service(ServersService.name, ServersService, 'em');
+bottle.service(ServersService.name, ServersService, 'ServersRepository');
 bottle.service(SettingsService.name, SettingsService, 'em');
 bottle.service(UsersService.name, UsersService, 'em');
 

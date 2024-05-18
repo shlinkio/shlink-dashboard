@@ -20,6 +20,8 @@ describe('login', () => {
     it.each([
       ['http://example.com', '/'],
       [`http://example.com?redirect-to=${encodeURIComponent('/foo/bar')}`, '/foo/bar'],
+      [`http://example.com?redirect-to=${encodeURIComponent('https://example.com')}`, '/'],
+      [`http://example.com?redirect-to=${encodeURIComponent('HTTPS://example.com')}`, '/'],
     ])('authenticates user and redirects to expected location', (url, expectedSuccessRedirect) => {
       const request = fromPartial<Request>({ url });
       action(fromPartial({ request }), authenticator);
