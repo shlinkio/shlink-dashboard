@@ -16,8 +16,8 @@ bottle.serviceFactory('em', () => appDataSource.manager);
 
 bottle.serviceFactory('ServersRepository', createServersRepository, 'em');
 
-bottle.service(TagsService.name, TagsService, 'em');
 bottle.service(ServersService.name, ServersService, 'ServersRepository');
+bottle.service(TagsService.name, TagsService, 'em', ServersService.name);
 bottle.service(SettingsService.name, SettingsService, 'em');
 bottle.service(UsersService.name, UsersService, 'em');
 

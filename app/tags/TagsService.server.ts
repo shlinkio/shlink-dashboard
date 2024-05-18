@@ -1,9 +1,9 @@
 import type { EntityManager } from 'typeorm';
 import type { Server } from '../entities/Server';
-import { ServerEntity } from '../entities/Server';
 import { TagEntity } from '../entities/Tag';
 import type { User } from '../entities/User';
 import { UserEntity } from '../entities/User';
+import type { ServersService } from '../servers/ServersService.server';
 
 export type FindTagsParam = {
   userId: number;
@@ -20,7 +20,7 @@ type ServerAndUserResult = {
 };
 
 export class TagsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(private readonly em: EntityManager, private readonly serversService: ServersService) {}
 
   async tagColors(param: FindTagsParam): Promise<Record<string, string>> {
     const { server, user } = await this.resolveServerAndUser(param);
@@ -71,7 +71,7 @@ export class TagsService {
 
   private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
-      serverPublicId ? this.em.findOneBy(ServerEntity, { publicId: serverPublicId }) : null,
+      serverPublicId ? this.serversService.getByPublicIdAndUser(serverPublicId, userId) : null,
       this.em.findOneBy(UserEntity, { id: userId }),
     ]);
 
