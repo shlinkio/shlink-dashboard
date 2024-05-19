@@ -26,12 +26,12 @@ export default defineConfig({
       reporter: ['text', 'text-summary', 'clover', 'html'],
 
       // Required code coverage. Lower than this will make the check fail
-      // thresholds: {
-      //   statements: 95,
-      //   branches: 90,
-      //   functions: 85,
-      //   lines: 95,
-      // },
+      thresholds: {
+        statements: 80,
+        branches: 90,
+        functions: 90,
+        lines: 80,
+      },
     },
   },
 });

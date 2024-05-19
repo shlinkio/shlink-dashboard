@@ -1,11 +1,11 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { EntityManager } from 'typeorm';
 import type { Server } from '../../app/entities/Server';
-import { ServerEntity } from '../../app/entities/Server';
 import type { Tag } from '../../app/entities/Tag';
 import { TagEntity } from '../../app/entities/Tag';
 import type { User } from '../../app/entities/User';
 import { UserEntity } from '../../app/entities/User';
+import type { ServersService } from '../../app/servers/ServersService.server';
 import { TagsService } from '../../app/tags/TagsService.server';
 
 describe('TagsService', () => {
@@ -26,10 +26,12 @@ describe('TagsService', () => {
       options: { type: 'mysql' },
     },
   });
+  const getByPublicIdAndUser = vi.fn();
+  const serversService = fromPartial<ServersService>({ getByPublicIdAndUser });
   let tagsService: TagsService;
 
   beforeEach(() => {
-    tagsService = new TagsService(em);
+    tagsService = new TagsService(em, serversService);
     transaction.mockImplementation((callback) => callback(em));
   });
 
@@ -39,17 +41,15 @@ describe('TagsService', () => {
       [fromPartial<Server>({}), null],
       [null, fromPartial<User>({})],
     ])('returns empty map when server or user are not found', async (server, user) => {
-      findOneBy
-        .mockResolvedValueOnce(server)
-        .mockResolvedValueOnce(user);
+      getByPublicIdAndUser.mockResolvedValue(server);
+      findOneBy.mockResolvedValue(user);
 
       const result = await tagsService.tagColors({ userId: 1, serverPublicId: '2' });
 
       expect(result).toEqual({});
       expect(find).not.toHaveBeenCalled();
-      expect(findOneBy).toHaveBeenCalledTimes(2);
-      expect(findOneBy).toHaveBeenNthCalledWith(1, ServerEntity, { publicId: '2' });
-      expect(findOneBy).toHaveBeenNthCalledWith(2, UserEntity, { id: 1 });
+      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
+      expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', 1);
     });
 
     it('returns empty map serverPublicId is not provided', async () => {
@@ -59,6 +59,7 @@ describe('TagsService', () => {
 
       expect(result).toEqual({});
       expect(find).not.toHaveBeenCalled();
+      expect(getByPublicIdAndUser).not.toHaveBeenCalled();
       expect(findOneBy).toHaveBeenCalledOnce();
     });
 
@@ -66,9 +67,8 @@ describe('TagsService', () => {
       const server = fromPartial<Server>({});
       const user = fromPartial<User>({});
 
-      findOneBy
-        .mockResolvedValueOnce(server)
-        .mockResolvedValueOnce(user);
+      getByPublicIdAndUser.mockResolvedValue(server);
+      findOneBy.mockResolvedValue(user);
       find.mockResolvedValue([
         fromPartial<Tag>({ tag: 'foo', color: 'red' }),
         fromPartial<Tag>({ tag: 'bar', color: 'green' }),
@@ -82,9 +82,8 @@ describe('TagsService', () => {
         where: { user, server },
         order: { tag: 'ASC' },
       });
-      expect(findOneBy).toHaveBeenCalledTimes(2);
-      expect(findOneBy).toHaveBeenNthCalledWith(1, ServerEntity, { publicId: '2' });
-      expect(findOneBy).toHaveBeenNthCalledWith(2, UserEntity, { id: 1 });
+      expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', 1);
+      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
     });
   });
 
@@ -94,16 +93,14 @@ describe('TagsService', () => {
       [fromPartial<Server>({}), null],
       [null, fromPartial<User>({})],
     ])('does nothing when server or user are not found', async (server, user) => {
-      findOneBy
-        .mockResolvedValueOnce(server)
-        .mockResolvedValueOnce(user);
+      getByPublicIdAndUser.mockResolvedValue(server);
+      findOneBy.mockResolvedValue(user);
 
       await tagsService.updateTagColors({ userId: 1, serverPublicId: '2', colors: {} });
 
       expect(transaction).not.toHaveBeenCalled();
-      expect(findOneBy).toHaveBeenCalledTimes(2);
-      expect(findOneBy).toHaveBeenNthCalledWith(1, ServerEntity, { publicId: '2' });
-      expect(findOneBy).toHaveBeenNthCalledWith(2, UserEntity, { id: 1 });
+      expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', 1);
+      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
     });
 
     it('upserts tags for non-ms databases', async () => {
@@ -111,9 +108,8 @@ describe('TagsService', () => {
       const user = fromPartial<User>({});
       const colors = { foo: 'red', bar: 'green' };
 
-      findOneBy
-        .mockResolvedValueOnce(server)
-        .mockResolvedValueOnce(user);
+      getByPublicIdAndUser.mockResolvedValue(server);
+      findOneBy.mockResolvedValue(user);
 
       await tagsService.updateTagColors({ userId: 1, serverPublicId: '2', colors });
 
@@ -136,8 +132,8 @@ describe('TagsService', () => {
       const secondTag = fromPartial<Tag>({ tag: 'bar', user, server });
       const colors = { foo: 'red', bar: 'green' };
 
+      getByPublicIdAndUser.mockResolvedValue(server);
       findOneBy
-        .mockResolvedValueOnce(server)
         .mockResolvedValueOnce(user)
         .mockResolvedValueOnce(firstTag) // First tag
         .mockResolvedValueOnce(null); // Second tag. It does not exist

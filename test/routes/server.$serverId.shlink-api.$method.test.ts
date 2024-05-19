@@ -4,7 +4,7 @@ import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { Authenticator } from 'remix-auth';
 import { expect } from 'vitest';
-import type { SessionData } from '../../app/auth/session.server';
+import type { SessionData } from '../../app/auth/session-context';
 import { action } from '../../app/routes/server.$serverId.shlink-api.$method';
 import type { ServersService } from '../../app/servers/ServersService.server';
 

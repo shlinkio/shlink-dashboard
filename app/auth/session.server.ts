@@ -1,10 +1,6 @@
 import { createCookieSessionStorage } from '@remix-run/node';
 import { env, isProd } from '../utils/env.server';
-
-export type SessionData = {
-  userId: number;
-  [key: string]: unknown;
-};
+import type { SessionData } from './session-context';
 
 export const createSessionStorage = () => createCookieSessionStorage<SessionData>({
   cookie: {

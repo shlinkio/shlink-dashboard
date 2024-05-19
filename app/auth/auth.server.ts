@@ -3,7 +3,8 @@ import { Authenticator } from 'remix-auth';
 import { FormStrategy } from 'remix-auth-form';
 import type { UsersService } from '../users/UsersService.server';
 import { credentialsSchema } from './credentials-schema.server';
-import type { SessionData, SessionStorage } from './session.server';
+import type { SessionStorage } from './session.server';
+import type { SessionData } from './session-context';
 
 export const CREDENTIALS_STRATEGY = 'credentials';
 

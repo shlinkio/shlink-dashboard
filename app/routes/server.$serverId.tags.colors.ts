@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { Authenticator } from 'remix-auth';
-import type { SessionData } from '../auth/session.server';
+import type { SessionData } from '../auth/session-context';
 import { serverContainer } from '../container/container.server';
 import { TagsService } from '../tags/TagsService.server';
 import { empty } from '../utils/response.server';
