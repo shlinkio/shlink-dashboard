@@ -30,7 +30,6 @@ export async function loader(
   return { session };
 }
 
-/* eslint-disable-next-line no-restricted-exports */
 export default function App() {
   const { session } = useLoaderData<typeof loader>();
 

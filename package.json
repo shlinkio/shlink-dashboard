@@ -32,7 +32,7 @@
     "@remix-run/react": "^2.9.2",
     "@shlinkio/shlink-frontend-kit": "^0.5.1",
     "@shlinkio/shlink-js-sdk": "^1.1.0",
-    "@shlinkio/shlink-web-component": "^0.6.2",
+    "@shlinkio/shlink-web-component": "^0.7.0",
     "argon2": "^0.40.1",
     "bootstrap": "5.2.3",
     "bottlejs": "^2.0.1",

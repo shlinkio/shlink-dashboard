@@ -1,6 +1,10 @@
-import { faArrowRightFromBracket as faLogout, faChevronDown as arrowIcon } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowRightFromBracket as faLogout,
+  faChevronDown as arrowIcon,
+  faCogs,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from '@remix-run/react';
+import { Link, useLocation } from '@remix-run/react';
 import { useToggle } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import React from 'react';
@@ -11,6 +15,7 @@ import { ShlinkLogo } from './ShlinkLogo';
 export const MainHeader: FC = () => {
   const session = useSession();
   const [isOpen, toggleCollapse] = useToggle();
+  const { pathname } = useLocation();
 
   return (
     <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
@@ -26,6 +31,11 @@ export const MainHeader: FC = () => {
 
           <Collapse navbar isOpen={isOpen}>
             <Nav navbar className="tw-ml-auto">
+              <NavItem>
+                <NavLink tag={Link} to="/settings" active={pathname.startsWith('/settings')}>
+                  <FontAwesomeIcon icon={faCogs} className="tw-w-[26px] tw-inline-block" /> Settings
+                </NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink tag={Link} to="/logout">
                   <FontAwesomeIcon icon={faLogout} className="tw-w-[26px] tw-inline-block" /> Logout

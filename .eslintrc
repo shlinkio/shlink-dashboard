@@ -13,7 +13,7 @@
   },
   "overrides": [
     {
-      "files": ["**/app/routes/**", "vite*.config.ts"],
+      "files": ["**/app/routes/**", "**/app/root.tsx", "vite*.config.ts"],
       "rules": {
         "no-restricted-exports": "off"
       }
