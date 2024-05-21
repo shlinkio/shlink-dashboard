@@ -29,9 +29,11 @@ describe('<MainHeader />', () => {
     if (session) {
       expect(screen.getByRole('button')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Logout' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument();
     } else {
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'Logout' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Settings' })).not.toBeInTheDocument();
     }
   });
 });
