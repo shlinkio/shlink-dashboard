@@ -1,4 +1,4 @@
-import type { Settings } from '@shlinkio/shlink-web-component';
+import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { EntityManager } from 'typeorm';
 import { SettingsEntity } from '../entities/Settings';
 import { UserEntity } from '../entities/User';
@@ -9,10 +9,19 @@ export class SettingsService {
   async userSettings(userId: number): Promise<Settings> {
     const user = await this.em.findOneBy(UserEntity, { id: userId });
     if (!user) {
-      throw new Error(`No user found for id ${userId}`);
+      return {};
     }
 
     const s = await this.em.findOneBy(SettingsEntity, { user });
     return s?.settings ?? {};
+  }
+
+  async saveUserSettings(userId: number, newSettings: Settings): Promise<void> {
+    const user = await this.em.findOneBy(UserEntity, { id: userId });
+    if (!user) {
+      return;
+    }
+
+    await this.em.upsert(SettingsEntity, { user, settings: newSettings }, ['user']);
   }
 }

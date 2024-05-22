@@ -1,4 +1,4 @@
-import type { Settings as ShlinkWebComponentSettings } from '@shlinkio/shlink-web-component';
+import type { Settings as ShlinkWebComponentSettings } from '@shlinkio/shlink-web-component/settings';
 import { EntitySchema } from 'typeorm';
 import type { Base } from './Base';
 import { BaseColumnSchema } from './Base';

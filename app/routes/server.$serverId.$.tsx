@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useLocation, useParams } from '@remix-run/react';
-import type { Settings } from '@shlinkio/shlink-web-component';
+import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Authenticator } from 'remix-auth';

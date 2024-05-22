@@ -1,16 +1,19 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
+import { getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
 import { Authenticator } from 'remix-auth';
 import type { SessionData } from './auth/session-context';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
 import { appDataSource } from './db/data-source.server';
+import { SettingsService } from './settings/SettingsService.server';
 import './index.scss';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
   authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
   // FIXME This should be done during server start-up, not here
   if (!appDataSource.isInitialized) {
@@ -27,15 +30,17 @@ export async function loader(
       request,
       { failureRedirect: `/login?redirect-to=${encodeURIComponent(pathname)}` },
     ));
-  return { session };
+
+  const settings = session && await settingsService.userSettings(session.userId);
+
+  return { session, settings };
 }
 
-/* eslint-disable-next-line no-restricted-exports */
 export default function App() {
-  const { session } = useLoaderData<typeof loader>();
+  const { session, settings } = useLoaderData<typeof loader>();
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme={settings?.ui?.theme ?? getSystemPreferredTheme()}>
       <head>
         <title>Shlink dashboard</title>
 

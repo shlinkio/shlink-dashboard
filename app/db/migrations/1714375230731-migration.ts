@@ -67,6 +67,11 @@ export class Migration1714375230731 implements MigrationInterface {
       ],
     }));
     await queryRunner.createForeignKey('settings', userIdFK());
+    await queryRunner.createIndex('settings', new TableIndex({
+      name: 'IDX_user_settings',
+      isUnique: true,
+      columnNames: ['user_id'],
+    }));
 
     await queryRunner.createTable(new Table({
       name: 'servers',
