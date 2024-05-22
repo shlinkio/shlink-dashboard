@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
+import type { Theme } from '@shlinkio/shlink-frontend-kit';
 import { getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
+import { useEffect, useState } from 'react';
 import { Authenticator } from 'remix-auth';
 import type { SessionData } from './auth/session-context';
 import { SessionProvider } from './auth/session-context';
@@ -38,9 +40,15 @@ export async function loader(
 
 export default function App() {
   const { session, settings } = useLoaderData<typeof loader>();
+  const [systemPreferredTheme, setSystemPreferredTheme] = useState<Theme>('light');
+
+  useEffect(() => {
+    // This check does not make sense in the server, so doing in useEffect to make sure it is run in the browser
+    setSystemPreferredTheme(getSystemPreferredTheme());
+  }, []);
 
   return (
-    <html lang="en" data-theme={settings?.ui?.theme ?? getSystemPreferredTheme()}>
+    <html lang="en" data-theme={settings?.ui?.theme ?? systemPreferredTheme}>
       <head>
         <title>Shlink dashboard</title>
 
