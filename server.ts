@@ -1,9 +1,8 @@
 import { createRequestHandler } from '@react-router/express';
 import express from 'express';
 import { serverContainer } from './app/container/container.server';
-import { isProd } from './app/utils/env.server';
 
-const viteDevServer = isProd()
+const viteDevServer = process.env.NODE_ENV === 'production'
   ? null
   : await import('vite').then(
     (vite) =>
@@ -16,13 +15,13 @@ const app = express();
 app.use(
   viteDevServer
     ? viteDevServer.middlewares
-    : express.static('build/client'),
+    : express.static('client'),
 );
 
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule('virtual:react-router/server-build')
   // @ts-expect-error This code branch is used only when that file is built
-  : await import('./build/server/index.js');
+  : await import('./server/index.js');
 
 // Fork entity manager on every request
 app.use(serverContainer.emForkMiddleware);
