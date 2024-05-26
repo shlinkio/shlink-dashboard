@@ -1,11 +1,11 @@
 ./.github
 ./build
 ./coverage
-./node_modules
-./test
-./home
 ./data
 ./docs
+./home
+./node_modules
+./test
 ./.eslintrc
 ./docker-compose*
 ./indocker
