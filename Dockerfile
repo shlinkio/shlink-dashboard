@@ -1,9 +1,11 @@
 FROM node:22.2-alpine as builder
-COPY . /shlink-dashboard
 ARG VERSION="latest"
 ENV VERSION ${VERSION}
+
+COPY . /shlink-dashboard
+WORKDIR /shlink-dashboard
 # Install dev dependencies and build project
-RUN cd /shlink-dashboard && npm ci && node --run build
+RUN npm ci && node --run build
 
 
 FROM node:22.2-alpine
