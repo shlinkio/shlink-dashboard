@@ -1,0 +1,12 @@
+./.github
+./build
+./coverage
+./node_modules
+./test
+./home
+./data
+./docs
+./.eslintrc
+./docker-compose*
+./indocker
+./vitest.config.ts
