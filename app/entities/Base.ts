@@ -1,13 +1,11 @@
-import type { EntitySchemaColumnOptions } from 'typeorm';
+import type { EntitySchemaProperty } from '@mikro-orm/core';
 
-export type Base = {
-  id: number;
-};
+export class BaseEntity {
+  id!: string;
+}
 
-export const BaseColumnSchema: Record<keyof Base, EntitySchemaColumnOptions> = {
-  id: {
-    type: Number,
-    primary: true,
-    generated: true,
-  },
+export const idColumnSchema: EntitySchemaProperty<any, BaseEntity> = {
+  type: 'bigint',
+  primary: true,
+  autoincrement: true,
 };

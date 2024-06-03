@@ -1,20 +1,19 @@
-import { EntitySchema } from 'typeorm';
-import type { Base } from './Base';
-import { BaseColumnSchema } from './Base';
+import { EntitySchema } from '@mikro-orm/core';
+import { BaseEntity, idColumnSchema } from './Base';
 
-export type User = Base & {
-  username: string;
-  password: string;
-  role: string;
-};
+export class User extends BaseEntity {
+  username!: string;
+  password!: string;
+  role!: string;
+}
 
-export const UserEntity = new EntitySchema<User>({
-  name: 'User',
+export const UserSchema = new EntitySchema({
+  class: User,
   tableName: 'users',
-  columns: {
-    ...BaseColumnSchema,
-    username: { type: 'varchar' },
-    password: { type: 'varchar' },
-    role: { type: 'varchar' },
+  properties: {
+    id: idColumnSchema,
+    username: { type: 'string' },
+    password: { type: 'string' },
+    role: { type: 'string' },
   },
 });

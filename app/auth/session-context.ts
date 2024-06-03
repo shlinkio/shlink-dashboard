@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 export type SessionData = {
-  userId: number;
+  userId: string;
   [key: string]: unknown;
 };
 

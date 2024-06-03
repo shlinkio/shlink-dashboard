@@ -3,7 +3,7 @@ import { Authenticator } from 'remix-auth';
 import { apiClientBuilder } from '../api/apiClientBuilder.server';
 import { createAuthenticator } from '../auth/auth.server';
 import { createSessionStorage } from '../auth/session.server';
-import { appDataSource } from '../db/data-source.server';
+import { createEntityManager, createEntityManagerForkingMiddleware } from '../db/db.server';
 import { createServersRepository } from '../servers/ServersRepository.server';
 import { ServersService } from '../servers/ServersService.server';
 import { SettingsService } from '../settings/SettingsService.server';
@@ -12,7 +12,8 @@ import { UsersService } from '../users/UsersService.server';
 
 const bottle = new Bottle();
 
-bottle.serviceFactory('em', () => appDataSource.manager);
+bottle.serviceFactory('em', createEntityManager);
+bottle.serviceFactory('emForkMiddleware', createEntityManagerForkingMiddleware, 'em');
 
 bottle.serviceFactory('ServersRepository', createServersRepository, 'em');
 

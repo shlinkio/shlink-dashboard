@@ -1,53 +1,43 @@
-import { EntitySchema } from 'typeorm';
-import type { Base } from './Base';
-import { BaseColumnSchema } from './Base';
-import type { User } from './User';
-import { UserEntity } from './User';
+import { EntitySchema, ReferenceKind } from '@mikro-orm/core';
+import { ServersRepository } from '../servers/ServersRepository.server';
+import { BaseEntity, idColumnSchema } from './Base';
+import { User } from './User';
 
-export type Server = Base & {
-  baseUrl: string;
-  apiKey: string;
-  publicId: string;
-  name: string;
-  users: User[];
-};
+export class Server extends BaseEntity {
+  publicId!: string;
+  baseUrl!: string;
+  apiKey!: string;
+  name!: string;
+  users!: User[];
+}
 
-export const ServerEntity = new EntitySchema<Server>({
-  name: 'Server',
+export const ServerSchema = new EntitySchema({
+  class: Server,
+  repository: () => ServersRepository,
   tableName: 'servers',
-  columns: {
-    ...BaseColumnSchema,
+  properties: {
+    id: idColumnSchema,
     baseUrl: {
-      type: 'varchar',
+      type: 'string',
       name: 'base_url',
     },
-    name: { type: 'varchar' },
     apiKey: {
-      type: 'varchar',
+      type: 'string',
       name: 'api_key',
     },
+    name: { type: 'string' },
     publicId: {
-      type: 'varchar',
+      type: 'string',
       name: 'public_id',
       unique: true,
       generated: 'uuid',
     },
-  },
-  relations: {
     users: {
-      type: 'many-to-many',
-      target: UserEntity,
-      joinTable: {
-        name: 'user_has_servers',
-        joinColumn: {
-          name: 'server_id',
-          referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-          name: 'user_id',
-          referencedColumnName: 'id',
-        },
-      },
+      kind: ReferenceKind.MANY_TO_MANY,
+      entity: () => User,
+      pivotTable: 'user_has_servers',
+      joinColumn: 'server_id',
+      inverseJoinColumn: 'user_id',
     },
   },
 });

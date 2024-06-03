@@ -1,43 +1,40 @@
-import { EntitySchema } from 'typeorm';
-import type { Base } from './Base';
-import { BaseColumnSchema } from './Base';
-import type { Server } from './Server';
-import { ServerEntity } from './Server';
-import type { User } from './User';
-import { UserEntity } from './User';
+import { EntitySchema, ReferenceKind } from '@mikro-orm/core';
+import { BaseEntity, idColumnSchema } from './Base';
+import { Server } from './Server';
+import { User } from './User';
 
-export type Tag = Base & {
-  tag: string;
-  color: string;
-  user: User;
-  server: Server;
-};
+export class Tag extends BaseEntity {
+  tag!: string;
+  color!: string;
+  user!: User;
+  server!: Server;
+}
 
-export const TagEntity = new EntitySchema<Tag>({
-  name: 'Tag',
+export const TagSchema = new EntitySchema({
+  class: Tag,
   tableName: 'tags',
-  columns: {
-    ...BaseColumnSchema,
-    tag: { type: 'varchar' },
-    color: { type: 'varchar' },
-  },
-  relations: {
+  properties: {
+    id: idColumnSchema,
+    tag: { type: 'string' },
+    color: { type: 'string' },
     user: {
-      type: 'many-to-one',
-      target: UserEntity,
-      joinColumn: { name: 'user_id' },
+      kind: ReferenceKind.MANY_TO_ONE,
+      entity: () => User,
+      joinColumn: 'user_id',
     },
     server: {
-      type: 'many-to-one',
-      target: ServerEntity,
-      joinColumn: { name: 'server_id' },
+      kind: ReferenceKind.MANY_TO_ONE,
+      entity: () => Server,
+      joinColumn: 'server_id',
     },
   },
-  indices: [
+  indexes: [
     {
       name: 'IDX_tag_user_server',
-      unique: true,
-      columns: ['tag', 'user', 'server'],
+      properties: ['tag', 'user', 'server'],
+      options: {
+        unique: true,
+      },
     },
   ],
 });

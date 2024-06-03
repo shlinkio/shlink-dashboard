@@ -1,27 +1,25 @@
+import { EntitySchema, ReferenceKind } from '@mikro-orm/core';
 import type { Settings as ShlinkWebComponentSettings } from '@shlinkio/shlink-web-component/settings';
-import { EntitySchema } from 'typeorm';
-import type { Base } from './Base';
-import { BaseColumnSchema } from './Base';
-import type { User } from './User';
-import { UserEntity } from './User';
+import { BaseEntity, idColumnSchema } from './Base';
+import { User } from './User';
 
-export type Settings = Base & {
-  user: User;
-  settings: ShlinkWebComponentSettings;
-};
+export class Settings extends BaseEntity {
+  user!: User;
+  settings!: ShlinkWebComponentSettings;
+}
 
-export const SettingsEntity = new EntitySchema<Settings>({
-  name: 'Settings',
+export const SettingsSchema = new EntitySchema({
+  class: Settings,
   tableName: 'settings',
-  columns: {
-    ...BaseColumnSchema,
-    settings: { type: 'json' },
-  },
-  relations: {
+  properties: {
+    id: idColumnSchema,
+    settings: {
+      type: 'json',
+    },
     user: {
-      type: 'one-to-one',
-      target: UserEntity,
-      joinColumn: { name: 'user_id' },
+      kind: ReferenceKind.ONE_TO_ONE,
+      entity: () => User,
+      joinColumn: 'user_id',
     },
   },
 });

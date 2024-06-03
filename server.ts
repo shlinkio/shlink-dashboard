@@ -1,5 +1,6 @@
 import { createRequestHandler } from '@remix-run/express';
 import express from 'express';
+import { serverContainer } from './app/container/container.server';
 import { isProd } from './app/utils/env.server';
 
 const viteDevServer = isProd()
@@ -24,9 +25,8 @@ const build = viteDevServer
   // eslint-disable-next-line import/extensions
   : await import('./build/server/index.js');
 
+// Fork entity manager on every request
+app.use(serverContainer.emForkMiddleware);
 app.all('*', createRequestHandler({ build }));
-
-// FIXME For some reason, this doesn't work here, so it's set conditionally in root's loader. Investigate.
-// await appDataSource.initialize();
 
 app.listen(3005, () => console.log('App listening on http://localhost:3005'));

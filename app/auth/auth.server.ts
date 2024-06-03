@@ -19,7 +19,7 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<any
     });
 
     const user = await usersService.getUserByCredentials(username, password);
-    return { userId: user.id };
+    return { userId: user.id.toString() };
   }));
 
   // TODO Add other strategies, like oAuth for SSO

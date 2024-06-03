@@ -8,7 +8,6 @@ import type { SessionData } from './auth/session-context';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
-import { appDataSource } from './db/data-source.server';
 import { SettingsService } from './settings/SettingsService.server';
 import './index.scss';
 
@@ -17,13 +16,6 @@ export async function loader(
   authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  // FIXME This should be done during server start-up, not here
-  if (!appDataSource.isInitialized) {
-    console.log('Initializing database connection...');
-    await appDataSource.initialize();
-    console.log('Database connection initialized');
-  }
-
   const { pathname } = new URL(request.url);
   const isPublicRoute = ['/login', '/logout'].includes(pathname);
   const session = await (isPublicRoute
