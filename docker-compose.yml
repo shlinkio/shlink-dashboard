@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   shlink_dashboard_node:
     container_name: shlink_dashboard_node
