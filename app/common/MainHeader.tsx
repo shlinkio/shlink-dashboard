@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useLocation } from '@remix-run/react';
 import { useToggle } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
-import React from 'react';
 import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { useSession } from '../auth/session-context';
 import { ShlinkLogo } from './ShlinkLogo';
