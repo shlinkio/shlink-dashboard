@@ -52,7 +52,7 @@
     "@remix-run/testing": "^2.9.2",
     "@shlinkio/eslint-config-js-coding-standard": "~2.5.0",
     "@testing-library/jest-dom": "^6.4.5",
-    "@testing-library/react": "^15.0.7",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@total-typescript/shoehorn": "^0.1.2",
     "@types/bcrypt": "^5.0.2",
