@@ -1,6 +1,7 @@
 import { BetterSqliteDriver } from '@mikro-orm/better-sqlite';
 import type { Options } from '@mikro-orm/core';
 import { MariaDbDriver } from '@mikro-orm/mariadb';
+import { Migrator } from '@mikro-orm/migrations';
 import { MsSqlDriver } from '@mikro-orm/mssql';
 import { MySqlDriver } from '@mikro-orm/mysql';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
@@ -29,9 +30,11 @@ function resolveOptions(): Options {
   const commonOptions: Options = {
     entities: [User, Settings, Server, Tag],
     migrations: {
-      path: '', // TODO
-      pathTs: '', // TODO
+      path: 'build/db/migrations', // TODO
+      pathTs: 'app/db/migrations',
+      snapshot: false,
     },
+    extensions: [Migrator],
     debug: !isProd(),
   };
 

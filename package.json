@@ -17,9 +17,8 @@
     "types": "tsc",
     "start": "tsx ./server.ts",
     "preview": "NODE_ENV=production tsx ./server.ts",
-    "migration:run": "tsx node_modules/.bin/typeorm migration:run -d app/db/data-source.server.ts",
-    "migration:revert": "tsx node_modules/.bin/typeorm migration:revert -d app/db/data-source.server.ts",
-    "migration:create": "tsx node_modules/.bin/typeorm migration:create app/db/migrations/migration"
+    "migration:create": "tsx ./scripts/migration-create.ts",
+    "migration:run": "tsx ./scripts/migration-up.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
