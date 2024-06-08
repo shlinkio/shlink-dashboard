@@ -20,7 +20,7 @@ export default defineConfig({
       include: [
         'app/**/*.ts',
         'app/**/*.tsx',
-        '!app/db/migrations/*.ts',
+        '!app/db/**/*.ts',
         '!app/entities/*.ts',
       ],
       reporter: ['text', 'text-summary', 'clover', 'html'],
