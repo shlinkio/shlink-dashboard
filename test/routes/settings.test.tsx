@@ -22,7 +22,7 @@ describe('settings', () => {
         ui: { theme: 'dark' },
       });
       userSettings.mockResolvedValue(settings);
-      isAuthenticated.mockResolvedValue({ userId: 1 });
+      isAuthenticated.mockResolvedValue({ userId: '1' });
 
       const result = await loader(fromPartial({ request: {} }), authenticator, settingsService);
 
@@ -50,12 +50,12 @@ describe('settings', () => {
     it('saves settings when user is logged in', async () => {
       const action = setUp();
 
-      isAuthenticated.mockResolvedValue({ userId: 1 });
+      isAuthenticated.mockResolvedValue({ userId: '1' });
 
       await action(fromPartial({ request }));
 
       expect(isAuthenticated).toHaveBeenCalledWith(request);
-      expect(saveUserSettings).toHaveBeenCalledWith(1, {});
+      expect(saveUserSettings).toHaveBeenCalledWith('1', {});
     });
   });
 

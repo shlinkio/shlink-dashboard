@@ -51,7 +51,7 @@ describe('server.$serverId.shlink-api.$method', () => {
   });
 
   it('returns error if server is not found', async () => {
-    isAuthenticated.mockResolvedValue({ userId: 123 });
+    isAuthenticated.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockRejectedValue(new Error('Server not found'));
     const action = setUp();
 
@@ -73,7 +73,7 @@ describe('server.$serverId.shlink-api.$method', () => {
   });
 
   it('returns error if requested method is invalid', async () => {
-    isAuthenticated.mockResolvedValue({ userId: 123 });
+    isAuthenticated.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -101,7 +101,7 @@ describe('server.$serverId.shlink-api.$method', () => {
     ['editTag', []],
     ['editTag', ['just_one_arg']],
   ])('returns error if provided args are invalid', async (method, args) => {
-    isAuthenticated.mockResolvedValue({ userId: 123 });
+    isAuthenticated.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -126,7 +126,7 @@ describe('server.$serverId.shlink-api.$method', () => {
   });
 
   it('returns error if invoking SDK fails', async () => {
-    isAuthenticated.mockResolvedValue({ userId: 123 });
+    isAuthenticated.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -152,7 +152,7 @@ describe('server.$serverId.shlink-api.$method', () => {
     ['getShortUrl', ['foo'], { shortCode: 'foo' }],
     ['editTag', ['foo', 'bar'], { oldTag: 'foo', newTag: 'bar' }],
   ])('returns result from calling corresponding SDK method', async (method, args, expectedResponse) => {
-    isAuthenticated.mockResolvedValue({ userId: 123 });
+    isAuthenticated.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 

@@ -24,7 +24,7 @@ describe('server.$serverId.tags.colors', () => {
   });
 
   it('updates tags in action and returns response', async () => {
-    isAuthenticated.mockResolvedValue({ userId: 1 });
+    isAuthenticated.mockResolvedValue({ userId: '1' });
 
     const colors = { foo: 'red' };
     const request = fromPartial<ActionFunctionArgs['request']>({ json: vi.fn().mockResolvedValue(colors) });
@@ -33,6 +33,6 @@ describe('server.$serverId.tags.colors', () => {
 
     expect(resp.status).toEqual(204);
     expect(isAuthenticated).toHaveBeenCalledWith(request);
-    expect(updateTagColors).toHaveBeenCalledWith(expect.objectContaining({ colors, userId: 1 }));
+    expect(updateTagColors).toHaveBeenCalledWith(expect.objectContaining({ colors, userId: '1' }));
   });
 });
