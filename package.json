@@ -54,7 +54,6 @@
     "@mikro-orm/mariadb": "^6.2.8",
     "@mikro-orm/mssql": "^6.2.8",
     "@mikro-orm/mysql": "^6.2.8",
-    "@mikro-orm/sqlite": "^6.2.8",
     "@remix-run/dev": "^2.9.2",
     "@remix-run/testing": "^2.9.2",
     "@shlinkio/eslint-config-js-coding-standard": "~2.5.0",
