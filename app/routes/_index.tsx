@@ -1,6 +1,9 @@
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
+import clsx from 'clsx';
 import { Authenticator } from 'remix-auth';
 import type { SessionData } from '../auth/session-context';
 import { Layout } from '../common/Layout';
@@ -23,11 +26,19 @@ export default function Index() {
 
   return (
     <Layout>
-      <SimpleCard>
+      <SimpleCard bodyClassName="!tw-p-0 tw-overflow-hidden tw-rounded-[inherit]">
         {servers.map((server) => (
-          <div key={server.publicId}>
-            <Link to={`/server/${server.publicId}`}>{server.name}</Link>
-          </div>
+          <Link
+            key={server.publicId}
+            to={`/server/${server.publicId}`}
+            className={clsx(
+              'tw-flex tw-justify-between tw-items-center tw-py-3 tw-px-4',
+              'tw-border-b last:tw-border-0 tw-border-b-[var(--border-color)] hover:tw-bg-[var(--secondary-color)]',
+            )}
+          >
+            <span>{server.name}</span>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Link>
         ))}
       </SimpleCard>
     </Layout>
