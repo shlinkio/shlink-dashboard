@@ -22,7 +22,6 @@ app.use(
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule('virtual:remix/server-build')
   // @ts-expect-error This code branch is used only when that file is built
-  // eslint-disable-next-line import/extensions
   : await import('./build/server/index.js');
 
 // Fork entity manager on every request

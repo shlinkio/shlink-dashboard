@@ -15,7 +15,7 @@ describe('ServersService', () => {
 
   describe('getByPublicIdAndUser', () => {
     it('throws error if server is not found', async () => {
-      await expect(() => service.getByPublicIdAndUser('123', 1)).rejects.toEqual(
+      await expect(() => service.getByPublicIdAndUser('123', '1')).rejects.toEqual(
         new Error('Server with public ID 123 not found'),
       );
     });
@@ -24,7 +24,7 @@ describe('ServersService', () => {
       const server = fromPartial<Server>({});
       findByPublicIdAndUserId.mockResolvedValue(server);
 
-      const result = await service.getByPublicIdAndUser('123', 1);
+      const result = await service.getByPublicIdAndUser('123', '1');
 
       expect(result).toEqual(server);
     });
