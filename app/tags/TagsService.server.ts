@@ -1,12 +1,12 @@
-import type { EntityManager } from 'typeorm';
+import type { EntityManager } from '@mikro-orm/core';
 import type { Server } from '../entities/Server';
-import { TagEntity } from '../entities/Tag';
+import { Tag as TagEntity } from '../entities/Tag';
 import type { User } from '../entities/User';
-import { UserEntity } from '../entities/User';
+import { User as UserEntity } from '../entities/User';
 import type { ServersService } from '../servers/ServersService.server';
 
 export type FindTagsParam = {
-  userId: number;
+  userId: string;
   serverPublicId?: string;
 };
 
@@ -28,10 +28,7 @@ export class TagsService {
       return {};
     }
 
-    const tags = await this.em.find(TagEntity, {
-      where: { user, server },
-      order: { tag: 'ASC' },
-    });
+    const tags = await this.em.find(TagEntity, { user, server });
 
     return tags.reduce<Record<string, string>>((acc, tag) => {
       acc[tag.tag] = tag.color;
@@ -45,34 +42,24 @@ export class TagsService {
       return;
     }
 
-    const isMs = this.em.connection.options.type === 'mssql';
-    await this.em.transaction((em): Promise<unknown> => {
-      if (!isMs) {
-        return em.upsert(
-          TagEntity,
-          Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
-          ['tag', 'user', 'server'],
-        );
-      }
-
-      // MS SQL Server does not support upsert
-      return Promise.all(Object.entries(colors).map(async ([tag, color]) => {
-        const tagEntity = await em.findOneBy(TagEntity, { user, server, tag }).then(
-          // If a tag was not found, create it
-          (result) => result ?? em.create(TagEntity, { user, server, tag, color }),
-        );
-
-        tagEntity.color = color;
-
-        await em.save(tagEntity);
-      }));
-    });
+    // FIXME em.upsertMany seems to ignore the options object somehow. Using em.upsert instead
+    // await this.em.transactional((em) => em.upsertMany(
+    //   TagEntity,
+    //   Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
+    //   { onConflictFields: ['tag', 'user', 'server'] },
+    // ));
+    await this.em.transactional((em) => Promise.all(Object.entries(colors).map(([tag, color]) => {
+      const tagObj: Partial<TagEntity> = { tag, color, user, server };
+      return em.upsert(TagEntity, tagObj, {
+        onConflictFields: ['tag', 'user', 'server'],
+      });
+    })));
   }
 
   private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
       serverPublicId ? this.serversService.getByPublicIdAndUser(serverPublicId, userId) : null,
-      this.em.findOneBy(UserEntity, { id: userId }),
+      this.em.findOne(UserEntity, { id: userId }),
     ]);
 
     return { server, user };

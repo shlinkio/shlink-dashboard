@@ -1,18 +1,18 @@
-import type { EntityManager } from 'typeorm';
-import type { Server } from '../entities/Server';
-import { ServerEntity } from '../entities/Server';
+import type { EntityManager } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/postgresql';
+import { Server } from '../entities/Server';
 
-export function createServersRepository(em: EntityManager) {
-  return em.getRepository(ServerEntity).extend({
-    findByPublicIdAndUserId(publicId: string, userId: number): Promise<Server | null> {
-      const qb = this.createQueryBuilder('server');
-      qb.innerJoin('server.users', 'user')
-        .where('server.publicId = :publicId', { publicId })
-        .andWhere('user.id = :userId', { userId: `${userId}` });
+export class ServersRepository extends EntityRepository<Server> {
+  findByPublicIdAndUserId(publicId: string, userId: string): Promise<Server | null> {
+    const qb = this.em.qb(Server, 'server');
+    qb.innerJoin('server.users', 'user')
+      .where({ publicId, 'user.id': userId })
+      .limit(1);
 
-      return qb.getOne();
-    },
-  });
+    return qb.getSingleResult();
+  }
 }
 
-export type ServersRepository = ReturnType<typeof createServersRepository>;
+export function createServersRepository(em: EntityManager): ServersRepository {
+  return em.getRepository(Server);
+}

@@ -1,16 +1,16 @@
+import type { EntityManager } from '@mikro-orm/core';
 import type { Settings as ShlinkSettingsConfig } from '@shlinkio/shlink-web-component/settings';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { EntityManager } from 'typeorm';
 import type { Settings } from '../../app/entities/Settings';
-import { SettingsEntity } from '../../app/entities/Settings';
+import { Settings as SettingsEntity } from '../../app/entities/Settings';
 import type { User } from '../../app/entities/User';
-import { UserEntity } from '../../app/entities/User';
+import { User as UserEntity } from '../../app/entities/User';
 import { SettingsService } from '../../app/settings/SettingsService.server';
 
 describe('SettingsService', () => {
-  const findOneBy = vi.fn();
+  const findOne = vi.fn();
   const upsert = vi.fn();
-  const em = fromPartial<EntityManager>({ findOneBy, upsert });
+  const em = fromPartial<EntityManager>({ findOne, upsert });
   let settingsService: SettingsService;
 
   beforeEach(() => {
@@ -19,27 +19,27 @@ describe('SettingsService', () => {
 
   describe('userSettings', () => {
     it('returns no settings when user is not found', async () => {
-      findOneBy.mockResolvedValue(null);
+      findOne.mockResolvedValue(null);
 
-      const settings = await settingsService.userSettings(1);
+      const settings = await settingsService.userSettings('1');
 
       expect(settings).toEqual({});
-      expect(findOneBy).toHaveBeenCalledOnce();
-      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
+      expect(findOne).toHaveBeenCalledOnce();
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
     });
 
     it('returns no settings when user does not have any', async () => {
       const user = fromPartial<User>({});
-      findOneBy
+      findOne
         .mockResolvedValueOnce(user)
         .mockResolvedValueOnce(null);
 
-      const settings = await settingsService.userSettings(1);
+      const settings = await settingsService.userSettings('1');
 
       expect(settings).toEqual({});
-      expect(findOneBy).toHaveBeenCalledTimes(2);
-      expect(findOneBy).toHaveBeenNthCalledWith(1, UserEntity, { id: 1 });
-      expect(findOneBy).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
+      expect(findOne).toHaveBeenCalledTimes(2);
+      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
     });
 
     it('returns user settings when found', async () => {
@@ -49,26 +49,26 @@ describe('SettingsService', () => {
         tags: { defaultOrdering: {} },
         shortUrlCreation: { tagFilteringMode: 'includes' },
       });
-      findOneBy
+      findOne
         .mockResolvedValueOnce(user)
         .mockResolvedValueOnce(fromPartial<Settings>({ settings }));
 
-      const result = await settingsService.userSettings(1);
+      const result = await settingsService.userSettings('1');
 
       expect(result).toEqual(settings);
-      expect(findOneBy).toHaveBeenCalledTimes(2);
-      expect(findOneBy).toHaveBeenNthCalledWith(1, UserEntity, { id: 1 });
-      expect(findOneBy).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
+      expect(findOne).toHaveBeenCalledTimes(2);
+      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
     });
   });
 
   describe('saveUserSettings', () => {
     it('saves nothing when user is not found', async () => {
-      findOneBy.mockResolvedValue(null);
+      findOne.mockResolvedValue(null);
 
-      await settingsService.saveUserSettings(1, fromPartial({}));
+      await settingsService.saveUserSettings('1', fromPartial({}));
 
-      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
       expect(upsert).not.toHaveBeenCalledOnce();
     });
 
@@ -76,12 +76,12 @@ describe('SettingsService', () => {
       const user = fromPartial<User>({});
       const newSettings = fromPartial<ShlinkSettingsConfig>({});
 
-      findOneBy.mockResolvedValue(user);
+      findOne.mockResolvedValue(user);
 
-      await settingsService.saveUserSettings(1, newSettings);
+      await settingsService.saveUserSettings('1', newSettings);
 
-      expect(findOneBy).toHaveBeenCalledWith(UserEntity, { id: 1 });
-      expect(upsert).toHaveBeenCalledWith(SettingsEntity, { user, settings: newSettings }, ['user']);
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(upsert).toHaveBeenCalledWith(SettingsEntity, { user, settings: newSettings });
     });
   });
 });
