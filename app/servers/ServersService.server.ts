@@ -12,4 +12,8 @@ export class ServersService {
 
     return server;
   }
+
+  public async getUserServers(userId: string): Promise<Server[]> {
+    return this.serversRepository.findByUserId(userId);
+  }
 }
