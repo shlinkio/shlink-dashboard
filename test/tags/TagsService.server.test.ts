@@ -105,18 +105,14 @@ describe('TagsService', () => {
 
       expect(transactional).toHaveBeenCalled();
       expect(upsert).toHaveBeenCalledTimes(3);
-      expect(upsert).toHaveBeenNthCalledWith(
-        1,
-        TagEntity,
-        { tag: 'foo', color: 'red', user, server },
-        { onConflictFields: ['tag', 'user', 'server'] },
-      );
-      expect(upsert).toHaveBeenNthCalledWith(
-        2,
-        TagEntity,
-        { tag: 'bar', color: 'green', user, server },
-        { onConflictFields: ['tag', 'user', 'server'] },
-      );
+      Object.entries(colors).forEach(([tag, color], index) => {
+        expect(upsert).toHaveBeenNthCalledWith(
+          index + 1,
+          TagEntity,
+          { tag, color, user, server },
+          { onConflictFields: ['tag', 'user', 'server'] },
+        );
+      });
     });
   });
 });
