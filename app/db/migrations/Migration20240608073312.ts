@@ -18,7 +18,7 @@ export class Migration20240608073312 extends Migration {
 
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
 
-      table.unique('user_id', { indexName: 'IDX_user_settings' })
+      table.unique('user_id', { indexName: 'IDX_user_settings' });
     });
 
     await knex.schema.createTable('servers', (table) => {
@@ -48,7 +48,7 @@ export class Migration20240608073312 extends Migration {
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
       table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
 
-      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' })
+      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' });
     });
   }
 

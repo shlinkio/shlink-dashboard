@@ -9,8 +9,7 @@
   "rules": {
     "jsx-a11y/label-has-associated-control": ["error", {
       "controlComponents": ["Input", "DateInput"]
-    }],
-    "object-curly-spacing": ["error", "always"]
+    }]
   },
   "overrides": [
     {
