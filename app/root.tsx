@@ -55,7 +55,7 @@ export default function App() {
       <body>
         <SessionProvider value={session}>
           <MainHeader />
-          <div className="app">
+          <div className="app tw-h-full">
             <Outlet />
           </div>
           <Scripts />

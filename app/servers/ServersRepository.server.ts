@@ -15,7 +15,8 @@ export class ServersRepository extends EntityRepository<Server> {
   findByUserId(userId: string): Promise<Server[]> {
     const qb = this.em.qb(Server, 'server');
     qb.innerJoin('server.users', 'user')
-      .where({ 'user.id': userId });
+      .where({ 'user.id': userId })
+      .orderBy({ name: 'ASC' });
 
     return qb.getResult();
   }
