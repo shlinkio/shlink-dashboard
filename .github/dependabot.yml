@@ -23,6 +23,11 @@ updates:
       remix:
         patterns:
           - '@remix-run/*'
+      orm:
+        patterns:
+          - '@mikro-orm/*'
+          - 'libsql'
+          - 'better-sqlite3'
       react:
         patterns:
           - 'react'
