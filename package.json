@@ -51,7 +51,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@mikro-orm/better-sqlite": "^6.2.8",
+    "@mikro-orm/better-sqlite": "^6.2.9",
     "@mikro-orm/mariadb": "^6.2.8",
     "@mikro-orm/mssql": "^6.2.8",
     "@mikro-orm/mysql": "^6.2.9",
