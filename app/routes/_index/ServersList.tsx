@@ -10,7 +10,7 @@ export type ServersListProps = {
 };
 
 export const ServersList: FC<ServersListProps> = ({ servers }) => (
-  <div className="md:tw-max-h-64 md:tw-min-h-48 tw-overflow-auto">
+  <div className="md:tw-max-h-64 md:tw-min-h-48 tw-overflow-auto" data-testid="servers-list">
     {servers.map((server, index) => (
       <Link
         key={`${server.publicId}${index}`}
