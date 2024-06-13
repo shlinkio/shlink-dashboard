@@ -81,7 +81,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "jsdom": "^24.1.0",
-    "libsql": "^0.3.18",
+    "libsql": "^0.3.19",
     "postcss": "^8.4.38",
     "sass": "^1.77.4",
     "sqlite3": "^5.1.7",
