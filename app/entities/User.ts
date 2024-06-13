@@ -5,6 +5,7 @@ export class User extends BaseEntity {
   username!: string;
   password!: string;
   role!: string;
+  displayName!: string | null;
 }
 
 export const UserSchema = new EntitySchema({
@@ -12,8 +13,13 @@ export const UserSchema = new EntitySchema({
   tableName: 'users',
   properties: {
     id: idColumnSchema,
-    username: { type: 'string' },
+    username: { type: 'string', unique: true },
     password: { type: 'string' },
     role: { type: 'string' },
+    displayName: {
+      name: 'display_name',
+      type: 'string',
+      nullable: true,
+    },
   },
 });

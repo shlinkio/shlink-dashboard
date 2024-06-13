@@ -38,6 +38,9 @@ export const MainHeader: FC = () => {
               <NavItem>
                 <NavLink tag={Link} to="/logout">
                   <FontAwesomeIcon icon={faLogout} className="tw-w-[26px] tw-inline-block" /> Logout
+                  {session.displayName && (
+                    <span className="tw-ml-2" data-testid="display-name">({session.displayName})</span>
+                  )}
                 </NavLink>
               </NavItem>
             </Nav>

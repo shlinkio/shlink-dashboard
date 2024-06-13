@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 
 export type SessionData = {
   userId: string;
+  displayName: string | null;
   [key: string]: unknown;
 };
 

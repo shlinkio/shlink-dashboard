@@ -6,9 +6,10 @@ export class Migration20240608073312 extends Migration {
 
     await knex.schema.createTable('users', (table) => {
       table.bigIncrements('id').primary();
-      table.string('username').notNullable();
+      table.string('username').notNullable().unique();
       table.string('password').notNullable();
       table.string('role').notNullable();
+      table.string('display_name');
     });
 
     await knex.schema.createTable('settings', (table) => {
@@ -18,7 +19,7 @@ export class Migration20240608073312 extends Migration {
 
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
 
-      table.unique('user_id', { indexName: 'IDX_user_settings' })
+      table.unique('user_id', { indexName: 'IDX_user_settings' });
     });
 
     await knex.schema.createTable('servers', (table) => {
@@ -26,7 +27,7 @@ export class Migration20240608073312 extends Migration {
       table.string('name').notNullable();
       table.string('base_url').notNullable();
       table.string('api_key').notNullable();
-      table.string('public_id').notNullable();
+      table.string('public_id').notNullable().unique();
     });
 
     await knex.schema.createTable('user_has_servers', (table) => {
@@ -48,7 +49,7 @@ export class Migration20240608073312 extends Migration {
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
       table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
 
-      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' })
+      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' });
     });
   }
 

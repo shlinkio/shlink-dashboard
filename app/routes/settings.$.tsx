@@ -5,6 +5,7 @@ import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
 import { useCallback } from 'react';
 import { Authenticator } from 'remix-auth';
 import type { SessionData } from '../auth/session-context';
+import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 
@@ -44,12 +45,12 @@ export default function Settings() {
   }), [fetcher]);
 
   return (
-    <div className="tw-container lg:tw-p-5 tw-p-3 mx-auto">
+    <Layout>
       <ShlinkWebSettings
         settings={settings}
         updateSettings={submitSettings}
         defaultShortUrlsListOrdering={{}}
       />
-    </div>
+    </Layout>
   );
 }

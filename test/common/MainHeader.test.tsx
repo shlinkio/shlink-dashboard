@@ -36,4 +36,17 @@ describe('<MainHeader />', () => {
       expect(screen.queryByRole('link', { name: 'Settings' })).not.toBeInTheDocument();
     }
   });
+
+  it.each([
+    [fromPartial<SessionData>({})],
+    [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
+  ])('shows display name only if not null', (session) => {
+    setUp(session);
+
+    if (session.displayName) {
+      expect(screen.getByTestId('display-name')).toHaveTextContent(`(${session.displayName})`);
+    } else {
+      expect(screen.queryByTestId('display-name')).not.toBeInTheDocument();
+    }
+  });
 });

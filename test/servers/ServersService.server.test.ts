@@ -5,11 +5,12 @@ import { ServersService } from '../../app/servers/ServersService.server';
 
 describe('ServersService', () => {
   const findByPublicIdAndUserId = vi.fn();
+  const findByUserId = vi.fn();
   let repo: ServersRepository;
   let service: ServersService;
 
   beforeEach(() => {
-    repo = fromPartial<ServersRepository>({ findByPublicIdAndUserId });
+    repo = fromPartial<ServersRepository>({ findByPublicIdAndUserId, findByUserId });
     service = new ServersService(repo);
   });
 
@@ -27,6 +28,13 @@ describe('ServersService', () => {
       const result = await service.getByPublicIdAndUser('123', '1');
 
       expect(result).toEqual(server);
+    });
+  });
+
+  describe('getUserServers', () => {
+    it('delegates into repository', () => {
+      service.getUserServers('1');
+      expect(findByUserId).toHaveBeenCalledWith('1');
     });
   });
 });
