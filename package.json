@@ -74,7 +74,7 @@
     "@vitest/coverage-v8": "^1.6.0",
     "autoprefixer": "^10.4.19",
     "axe-core": "4.9.1",
-    "better-sqlite3": "^10.0.0",
+    "better-sqlite3": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.2",
