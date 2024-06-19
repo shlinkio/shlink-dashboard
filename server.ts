@@ -1,10 +1,9 @@
 import { createRequestHandler } from '@react-router/express';
 import express from 'express';
 import { serverContainer } from './app/container/container.server';
+import { env, isProd } from './app/utils/env.server';
 
-const { NODE_ENV, SHLINK_DASHBOARD_PORT = '3005' } = process.env;
-
-const viteDevServer = NODE_ENV === 'production'
+const viteDevServer = isProd()
   ? null
   : await import('vite').then(
     (vite) =>
@@ -30,6 +29,6 @@ app.use(serverContainer.emForkMiddleware);
 app.all('*', createRequestHandler({ build }));
 
 app.listen(
-  Number(SHLINK_DASHBOARD_PORT),
-  () => console.log(`App listening on http://localhost:${SHLINK_DASHBOARD_PORT}`),
+  env.SHLINK_DASHBOARD_PORT,
+  () => console.log(`App listening on http://localhost:${env.SHLINK_DASHBOARD_PORT}`),
 );
