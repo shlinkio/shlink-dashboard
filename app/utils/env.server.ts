@@ -6,6 +6,7 @@ export type DbEngine = typeof supportedDbEngines[number];
 
 const envVariables = z.object({
   NODE_ENV: z.enum(['production', 'development', 'test']).optional(),
+  SHLINK_DASHBOARD_PORT: z.number().optional().default(3005),
 
   // Database connection options
   SHLINK_DASHBOARD_DB_DRIVER: z.enum(supportedDbEngines).optional(),
