@@ -14,7 +14,7 @@ export const WelcomeCard: FC<WelcomeCardProps> = ({ servers }) => (
   <SimpleCard bodyClassName="!tw-p-0 tw-overflow-hidden tw-rounded-[inherit] tw-flex tw-justify-stretch">
     <div className={clsx(
       'tw-w-4/12 tw-hidden md:tw-flex tw-items-center p-3',
-      'tw-border-r tw-border-r-[var(--border-color)]'
+      'tw-border-r tw-border-r-[var(--border-color)]',
     )}>
       <ShlinkLogo />
     </div>
