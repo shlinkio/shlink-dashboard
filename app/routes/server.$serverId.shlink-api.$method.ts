@@ -54,7 +54,7 @@ export async function action(
   let server;
   try {
     server = await serversService.getByPublicIdAndUser(serverId, userId);
-  } catch (e) {
+  } catch {
     return problemDetails({
       status: 404,
       type: ErrorType.NOT_FOUND,
