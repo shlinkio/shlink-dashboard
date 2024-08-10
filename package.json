@@ -58,7 +58,7 @@
     "@remix-run/dev": "^2.11.1",
     "@remix-run/testing": "^2.11.1",
     "@shlinkio/eslint-config-js-coding-standard": "~3.0.1",
-    "@stylistic/eslint-plugin": "^2.6.1",
+    "@stylistic/eslint-plugin": "^2.6.2",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
@@ -85,7 +85,7 @@
     "tailwindcss": "^3.4.7",
     "tsx": "^4.17.0",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^8.0.0",
+    "typescript-eslint": "^8.0.1",
     "vite": "^5.4.0",
     "vitest": "^2.0.2"
   }
