@@ -36,7 +36,7 @@
     "@shlinkio/shlink-frontend-kit": "^0.5.2",
     "@shlinkio/shlink-js-sdk": "^1.2.0",
     "@shlinkio/shlink-web-component": "^0.7.0",
-    "argon2": "^0.41.0",
+    "argon2": "^0.41.1",
     "bootstrap": "5.2.3",
     "bottlejs": "^2.0.1",
     "express": "^4.19.2",
