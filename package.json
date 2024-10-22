@@ -57,7 +57,7 @@
     "@mikro-orm/mysql": "^6.3.13",
     "@remix-run/dev": "^2.13.1",
     "@remix-run/testing": "^2.13.1",
-    "@shlinkio/eslint-config-js-coding-standard": "~3.2.0",
+    "@shlinkio/eslint-config-js-coding-standard": "~3.2.1",
     "@stylistic/eslint-plugin": "^2.9.0",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
