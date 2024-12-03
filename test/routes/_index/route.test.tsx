@@ -1,8 +1,8 @@
-import type { SessionStorage } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { createRemixStub } from '@remix-run/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
 import type { Server } from '../../../app/entities/Server';
 import Index, { loader } from '../../../app/routes/_index/route';
@@ -11,23 +11,23 @@ import type { ServersService } from '../../../app/servers/ServersService.server'
 describe('_index.route', () => {
   describe('loader', () => {
     const getSession = vi.fn();
-    const sessionStorage: SessionStorage = fromPartial({ getSession });
+    const authHelper: AuthHelper = fromPartial({ getSession });
     const getUserServers = vi.fn();
     const serversService: ServersService = fromPartial({ getUserServers });
 
     it('returns list of servers', async () => {
-      const session: SessionData = fromPartial({ userId: '1' });
-      getSession.mockResolvedValue({ get: () => session });
+      const sessionData: SessionData = fromPartial({ userId: '1' });
+      getSession.mockResolvedValue(sessionData);
 
       const servers: Server[] = [fromPartial({})];
       getUserServers.mockResolvedValue(servers);
 
       const request: Request = fromPartial({});
-      const data = await loader(fromPartial({ request }), serversService, sessionStorage);
+      const data = await loader(fromPartial({ request }), serversService, authHelper);
 
       expect(data.servers).toStrictEqual(servers);
-      expect(getSession).toHaveBeenCalledWith(request);
-      expect(getUserServers).toHaveBeenCalledWith(session.userId);
+      expect(getSession).toHaveBeenCalledWith(request, '/login');
+      expect(getUserServers).toHaveBeenCalledWith(sessionData.userId);
     });
 
     it.todo('redirects to login if session is not set');

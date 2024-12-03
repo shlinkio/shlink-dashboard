@@ -10,8 +10,8 @@ import { SettingsService } from '../settings/SettingsService.server';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
-  settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
+  settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
   const { userId } = await authHelper.getSession(request, '/login');
   return settingsService.userSettings(userId);
@@ -19,11 +19,10 @@ export async function loader(
 
 export async function action(
   { request }: ActionFunctionArgs,
-  settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
+  settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
   const [sessionData, newSettings] = await Promise.all([authHelper.getSession(request), request.json()]);
-
   if (sessionData) {
     await settingsService.saveUserSettings(sessionData.userId, newSettings);
   }

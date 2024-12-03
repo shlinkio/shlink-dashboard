@@ -29,6 +29,13 @@ export class AuthHelper {
     });
   }
 
+  async logout(request: Request): Promise<Response> {
+    const session = await this.sessionStorage.getSession(request.headers.get('cookie'));
+    return redirect('/login', {
+      headers: { 'Set-Cookie': await this.sessionStorage.destroySession(session) },
+    });
+  }
+
   async getSession(request: Request): Promise<SessionData | undefined>;
   async getSession(request: Request, redirectTo: string): Promise<SessionData>;
   async getSession(request: Request, redirectTo?: string): Promise<SessionData | undefined> {
@@ -42,10 +49,8 @@ export class AuthHelper {
     return sessionData;
   }
 
-  async logout(request: Request): Promise<Response> {
-    const session = await this.sessionStorage.getSession(request.headers.get('cookie'));
-    return redirect('/login', {
-      headers: { 'Set-Cookie': await this.sessionStorage.destroySession(session) },
-    });
+  async isAuthenticated(request: Request): Promise<boolean> {
+    const sessionData = await this.getSession(request);
+    return !!sessionData;
   }
 }

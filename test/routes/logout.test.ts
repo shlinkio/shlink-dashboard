@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { Authenticator } from 'remix-auth';
+import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import { loader as logoutLoader } from '../../app/routes/logout';
 
 describe('logout', () => {
   const logout = vi.fn();
-  const authenticator = fromPartial<Authenticator>({ logout });
-  const setUp = () => (args: LoaderFunctionArgs) => logoutLoader(args, authenticator);
+  const authHelper = fromPartial<AuthHelper>({ logout });
+  const setUp = () => (args: LoaderFunctionArgs) => logoutLoader(args, authHelper);
 
   it('logs out in authenticator', () => {
     const request = fromPartial<Request>({});
@@ -14,6 +14,6 @@ describe('logout', () => {
 
     action(fromPartial({ request }));
 
-    expect(logout).toHaveBeenCalledWith(request, { redirectTo: '/login' });
+    expect(logout).toHaveBeenCalledWith(request);
   });
 });

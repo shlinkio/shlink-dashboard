@@ -8,6 +8,8 @@ import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 
+const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
+
 export async function action(
   { request }: ActionFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
@@ -16,7 +18,7 @@ export async function action(
     return await authHelper.login(request);
   } catch (e: any) {
     // TODO Use a more robust way to detect errors
-    if (e.message.startsWith('Incorrect password') || e.message.startsWith('User not found')) {
+    if (INCORRECT_CREDENTIAL_ERROR_PREFIXES.some((prefix) => e.message.startsWith(prefix))) {
       return json({ error: true });
     }
 
@@ -28,13 +30,9 @@ export async function loader(
   { request }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  // If the user is already authenticated redirect to home
-  const sessionData = await authHelper.getSession(request);
-  if (sessionData) {
-    return redirect('/');
-  }
-
-  return {};
+  // If the user is already authenticated, redirect to home
+  const isAuthenticated = await authHelper.isAuthenticated(request);
+  return isAuthenticated ? redirect('/') : {};
 }
 
 export default function Login() {
@@ -55,9 +53,7 @@ export default function Login() {
             <Input id={passwordId} type="password" name="password" required />
           </div>
           <Button color="primary" type="submit">Login</Button>
-          {actionData?.error && (
-            <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>
-          )}
+          {actionData?.error && <div className="text-danger">Username or password are incorrect</div>}
         </form>
       </SimpleCard>
     </div>
