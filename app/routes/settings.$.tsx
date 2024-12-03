@@ -3,35 +3,30 @@ import { useFetcher, useLoaderData } from '@remix-run/react';
 import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/settings';
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
 import { useCallback } from 'react';
-import { Authenticator } from 'remix-auth';
-import type { SessionData } from '../auth/session-context';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
-  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  const { userId } = await authenticator.isAuthenticated(request, { failureRedirect: '/login' });
+  const { userId } = await authHelper.getSession(request, '/login');
   return settingsService.userSettings(userId);
 }
 
 export async function action(
   { request }: ActionFunctionArgs,
-  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  const [sessionData, newSettings] = await Promise.all([
-    authenticator.isAuthenticated(request),
-    request.json(),
-  ]);
-  if (!sessionData) {
-    return {};
+  const [sessionData, newSettings] = await Promise.all([authHelper.getSession(request), request.json()]);
+  if (sessionData) {
+    await settingsService.saveUserSettings(sessionData.userId, newSettings);
   }
 
-  await settingsService.saveUserSettings(sessionData.userId, newSettings);
   return {};
 }
 

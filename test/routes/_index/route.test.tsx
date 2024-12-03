@@ -2,7 +2,7 @@ import { json } from '@remix-run/node';
 import { createRemixStub } from '@remix-run/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { Authenticator } from 'remix-auth';
+import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
 import type { Server } from '../../../app/entities/Server';
 import Index, { loader } from '../../../app/routes/_index/route';
@@ -10,25 +10,27 @@ import type { ServersService } from '../../../app/servers/ServersService.server'
 
 describe('_index.route', () => {
   describe('loader', () => {
-    const isAuthenticated = vi.fn();
-    const authenticator: Authenticator<SessionData> = fromPartial({ isAuthenticated });
+    const getSession = vi.fn();
+    const authHelper: AuthHelper = fromPartial({ getSession });
     const getUserServers = vi.fn();
     const serversService: ServersService = fromPartial({ getUserServers });
 
     it('returns list of servers', async () => {
-      const session: SessionData = fromPartial({ userId: '1' });
-      isAuthenticated.mockResolvedValue(session);
+      const sessionData: SessionData = fromPartial({ userId: '1' });
+      getSession.mockResolvedValue(sessionData);
 
       const servers: Server[] = [fromPartial({})];
       getUserServers.mockResolvedValue(servers);
 
       const request: Request = fromPartial({});
-      const data = await loader(fromPartial({ request }), authenticator, serversService);
+      const data = await loader(fromPartial({ request }), serversService, authHelper);
 
       expect(data.servers).toStrictEqual(servers);
-      expect(isAuthenticated).toHaveBeenCalledWith(request, { failureRedirect: '/login' });
-      expect(getUserServers).toHaveBeenCalledWith(session.userId);
+      expect(getSession).toHaveBeenCalledWith(request, '/login');
+      expect(getUserServers).toHaveBeenCalledWith(sessionData.userId);
     });
+
+    it.todo('redirects to login if session is not set');
   });
 
   describe('<Index />', () => {

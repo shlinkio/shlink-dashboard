@@ -10,13 +10,13 @@ describe('auth', () => {
 
   describe('createAuthenticator', () => {
     it('creates the authenticator instance', () => {
-      const authenticator = createAuthenticator(usersService, fromPartial({}));
+      const authenticator = createAuthenticator(usersService);
       expect(authenticator).toBeInstanceOf(Authenticator);
     });
   });
 
   describe('authenticator', () => {
-    const authenticator = createAuthenticator(usersService, fromPartial({}));
+    const authenticator = createAuthenticator(usersService);
     const requestWithBody = (body: string = '') => {
       const headers = new Headers();
       headers.set('Content-Type', 'application/x-www-form-urlencoded');

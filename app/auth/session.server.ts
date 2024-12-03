@@ -2,7 +2,7 @@ import { createCookieSessionStorage } from '@remix-run/node';
 import { env, isProd } from '../utils/env.server';
 import type { SessionData } from './session-context';
 
-export const createSessionStorage = () => createCookieSessionStorage<SessionData>({
+export const createSessionStorage = () => createCookieSessionStorage<{ sessionData: SessionData }>({
   cookie: {
     name: 'shlink_dashboard_session',
     httpOnly: true,

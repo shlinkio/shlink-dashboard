@@ -2,9 +2,8 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk/api-contract';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { Authenticator } from 'remix-auth';
 import { expect } from 'vitest';
-import type { SessionData } from '../../app/auth/session-context';
+import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import { action } from '../../app/routes/server.$serverId.shlink-api.$method';
 import type { ServersService } from '../../app/servers/ServersService.server';
 
@@ -20,19 +19,19 @@ describe('server.$serverId.shlink-api.$method', () => {
   const editTag = (oldTag: string, newTag: string) => ({ oldTag, newTag });
   const apiClient = fromPartial<ShlinkApiClient>({ getShortUrl, editTag });
   const createApiClient = vi.fn().mockReturnValue(apiClient);
-  const isAuthenticated = vi.fn();
-  const authenticator = fromPartial<Authenticator<SessionData>>({ isAuthenticated });
+  const getSession = vi.fn();
+  const authHelper = fromPartial<AuthHelper>({ getSession });
 
   const setUp = () => (args: ActionFunctionArgs) => action(
     args,
     serversService,
     createApiClient,
-    authenticator,
+    authHelper,
     fromPartial({ error: vi.fn() }),
   );
 
   it('returns error when user is not authenticated', async () => {
-    isAuthenticated.mockResolvedValue(null);
+    getSession.mockResolvedValue(undefined);
     const action = setUp();
 
     const resp = await action(fromPartial({ request: {} }));
@@ -45,13 +44,13 @@ describe('server.$serverId.shlink-api.$method', () => {
       title: 'Access denied',
       detail: 'You need to log-in to fetch data from Shlink',
     });
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).not.toHaveBeenCalled();
     expect(createApiClient).not.toHaveBeenCalled();
   });
 
   it('returns error if server is not found', async () => {
-    isAuthenticated.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockRejectedValue(new Error('Server not found'));
     const action = setUp();
 
@@ -67,13 +66,13 @@ describe('server.$serverId.shlink-api.$method', () => {
       detail: `Server with ID ${serverId} not found`,
       serverId,
     });
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).toHaveBeenCalled();
     expect(createApiClient).not.toHaveBeenCalled();
   });
 
   it('returns error if requested method is invalid', async () => {
-    isAuthenticated.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -89,7 +88,7 @@ describe('server.$serverId.shlink-api.$method', () => {
       detail: `The ${method} action is not a valid Shlink SDK method`,
       method,
     });
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).toHaveBeenCalled();
     expect(createApiClient).toHaveBeenCalled();
   });
@@ -101,7 +100,7 @@ describe('server.$serverId.shlink-api.$method', () => {
     ['editTag', []],
     ['editTag', ['just_one_arg']],
   ])('returns error if provided args are invalid', async (method, args) => {
-    isAuthenticated.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -120,13 +119,13 @@ describe('server.$serverId.shlink-api.$method', () => {
       args,
       method,
     });
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).toHaveBeenCalled();
     expect(createApiClient).toHaveBeenCalled();
   });
 
   it('returns error if invoking SDK fails', async () => {
-    isAuthenticated.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -143,7 +142,7 @@ describe('server.$serverId.shlink-api.$method', () => {
       title: 'Unexpected error',
       detail: 'An unexpected error occurred while calling Shlink API',
     });
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).toHaveBeenCalled();
     expect(createApiClient).toHaveBeenCalled();
   });
@@ -152,7 +151,7 @@ describe('server.$serverId.shlink-api.$method', () => {
     ['getShortUrl', ['foo'], { shortCode: 'foo' }],
     ['editTag', ['foo', 'bar'], { oldTag: 'foo', newTag: 'bar' }],
   ])('returns result from calling corresponding SDK method', async (method, args, expectedResponse) => {
-    isAuthenticated.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ userId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -163,7 +162,7 @@ describe('server.$serverId.shlink-api.$method', () => {
     const respPayload = await resp.json();
 
     expect(respPayload).toEqual(expectedResponse);
-    expect(isAuthenticated).toHaveBeenCalled();
+    expect(getSession).toHaveBeenCalled();
     expect(getByPublicIdAndUser).toHaveBeenCalled();
     expect(createApiClient).toHaveBeenCalled();
   });

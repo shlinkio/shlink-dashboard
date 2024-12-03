@@ -4,14 +4,13 @@ import { createRemixStub } from '@remix-run/testing';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { Authenticator } from 'remix-auth';
-import type { SessionData } from '../../app/auth/session-context';
+import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import SettingsComp, { action as settingsAction, loader } from '../../app/routes/settings.$';
 import type { SettingsService } from '../../app/settings/SettingsService.server';
 
 describe('settings', () => {
-  const isAuthenticated = vi.fn();
-  const authenticator = fromPartial<Authenticator<SessionData>>({ isAuthenticated });
+  const getSession = vi.fn();
+  const authHelper = fromPartial<AuthHelper>({ getSession });
   const userSettings = vi.fn();
   const saveUserSettings = vi.fn();
   const settingsService = fromPartial<SettingsService>({ userSettings, saveUserSettings });
@@ -22,39 +21,39 @@ describe('settings', () => {
         ui: { theme: 'dark' },
       });
       userSettings.mockResolvedValue(settings);
-      isAuthenticated.mockResolvedValue({ userId: '1' });
+      getSession.mockResolvedValue({ userId: '1' });
 
-      const result = await loader(fromPartial({ request: {} }), authenticator, settingsService);
+      const result = await loader(fromPartial({ request: {} }), authHelper, settingsService);
 
       expect(result).toEqual(settings);
       expect(userSettings).toHaveBeenCalled();
-      expect(isAuthenticated).toHaveBeenCalled();
+      expect(getSession).toHaveBeenCalled();
     });
   });
 
   describe('action', () => {
-    const setUp = () => (args: ActionFunctionArgs) => settingsAction(args, authenticator, settingsService);
+    const setUp = () => (args: ActionFunctionArgs) => settingsAction(args, authHelper, settingsService);
     const request = fromPartial<Request>({ json: vi.fn().mockResolvedValue({}) });
 
     it('does not save settings when user is not logged in', async () => {
       const action = setUp();
 
-      isAuthenticated.mockResolvedValue(null);
+      getSession.mockResolvedValue(undefined);
 
       await action(fromPartial({ request }));
 
-      expect(isAuthenticated).toHaveBeenCalledWith(request);
+      expect(getSession).toHaveBeenCalledWith(request);
       expect(saveUserSettings).not.toHaveBeenCalled();
     });
 
     it('saves settings when user is logged in', async () => {
       const action = setUp();
 
-      isAuthenticated.mockResolvedValue({ userId: '1' });
+      getSession.mockResolvedValue({ userId: '1' });
 
       await action(fromPartial({ request }));
 
-      expect(isAuthenticated).toHaveBeenCalledWith(request);
+      expect(getSession).toHaveBeenCalledWith(request);
       expect(saveUserSettings).toHaveBeenCalledWith('1', {});
     });
   });

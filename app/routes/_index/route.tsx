@@ -1,7 +1,6 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { Authenticator } from 'remix-auth';
-import type { SessionData } from '../../auth/session-context';
+import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
@@ -9,11 +8,11 @@ import { WelcomeCard } from './WelcomeCard';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
-  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
   serversService: ServersService = serverContainer[ServersService.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const session = await authenticator.isAuthenticated(request, { failureRedirect: '/login' });
-  const servers = await serversService.getUserServers(session.userId);
+  const sessionData = await authHelper.getSession(request, '/login');
+  const servers = await serversService.getUserServers(sessionData.userId);
 
   return { servers };
 }

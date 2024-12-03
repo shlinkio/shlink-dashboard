@@ -1,10 +1,10 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import { Authenticator } from 'remix-auth';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 
-export function loader(
+export async function loader(
   { request }: ActionFunctionArgs,
-  authenticator: Authenticator = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  return authenticator.logout(request, { redirectTo: '/login' });
+  return authHelper.logout(request);
 }

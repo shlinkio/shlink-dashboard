@@ -1,15 +1,14 @@
-import type { Strategy } from 'remix-auth';
 import { Authenticator } from 'remix-auth';
+import type { Strategy } from 'remix-auth/strategy';
 import { FormStrategy } from 'remix-auth-form';
 import type { UsersService } from '../users/UsersService.server';
 import { credentialsSchema } from './credentials-schema.server';
-import type { SessionStorage } from './session.server';
 import type { SessionData } from './session-context';
 
 export const CREDENTIALS_STRATEGY = 'credentials';
 
-function getAuthStrategies(usersService: UsersService): Map<string, Strategy<any, any>> {
-  const strategies = new Map<string, Strategy<any, any>>();
+function getAuthStrategies(usersService: UsersService): Map<string, Strategy<SessionData, any>> {
+  const strategies = new Map<string, Strategy<SessionData, any>>();
 
   // Add strategy to login via credentials form
   strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }): Promise<SessionData> => {
@@ -27,8 +26,8 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<any
   return strategies;
 }
 
-export function createAuthenticator(usersService: UsersService, sessionStorage: SessionStorage): Authenticator {
-  const authenticator = new Authenticator(sessionStorage);
+export function createAuthenticator(usersService: UsersService): Authenticator<SessionData> {
+  const authenticator = new Authenticator<SessionData>();
   const strategies = getAuthStrategies(usersService);
   strategies.forEach((strategy, name) => authenticator.use(strategy, name));
 
