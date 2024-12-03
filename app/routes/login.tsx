@@ -1,49 +1,46 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useActionData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
 import { Button, Input } from 'reactstrap';
-import { Authenticator } from 'remix-auth';
-import { CREDENTIALS_STRATEGY } from '../auth/auth.server';
-import type { SessionStorage } from '../auth/session.server';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 
 export async function action(
   { request }: ActionFunctionArgs,
-  authenticator: Authenticator = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const { searchParams } = new URL(request.url);
-  const redirectTo = searchParams.get('redirect-to');
-  const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
+  try {
+    return await authHelper.login(request);
+  } catch (e: any) {
+    // TODO Use a more robust way to detect errors
+    if (e.message.startsWith('Incorrect password') || e.message.startsWith('User not found')) {
+      return json({ error: true });
+    }
 
-  return authenticator.authenticate(CREDENTIALS_STRATEGY, request, {
-    successRedirect,
-    failureRedirect: request.url,
-  });
+    throw e;
+  }
 }
 
 export async function loader(
   { request }: LoaderFunctionArgs,
-  authenticator: Authenticator = serverContainer[Authenticator.name],
-  { getSession, commitSession }: SessionStorage = serverContainer.sessionStorage,
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   // If the user is already authenticated redirect to home
-  await authenticator.isAuthenticated(request, { successRedirect: '/' });
+  const sessionData = await authHelper.getSession(request);
+  if (sessionData) {
+    return redirect('/');
+  }
 
-  const session = await getSession(request.headers.get('cookie'));
-  const error = session.get(authenticator.sessionErrorKey);
-  return json({ error }, {
-    headers: {
-      'Set-Cookie': await commitSession(session),
-    },
-  });
+  return {};
 }
 
 export default function Login() {
   const usernameId = useId();
   const passwordId = useId();
-  const { error } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
 
   return (
     <div className="tw-mt-8 tw-mx-8 lg:tw-mx-auto lg:tw-w-[50%]">
@@ -58,7 +55,9 @@ export default function Login() {
             <Input id={passwordId} type="password" name="password" required />
           </div>
           <Button color="primary" type="submit">Login</Button>
-          {!!error && <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>}
+          {actionData?.error && (
+            <div className="text-danger" data-testid="error-message">Username or password are incorrect</div>
+          )}
         </form>
       </SimpleCard>
     </div>

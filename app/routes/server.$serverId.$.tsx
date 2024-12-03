@@ -3,9 +3,8 @@ import { useLoaderData, useLocation, useParams } from '@remix-run/react';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Authenticator } from 'remix-auth';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
-import type { SessionData } from '../auth/session-context';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';
@@ -15,11 +14,10 @@ export async function loader(
   { request, params }: LoaderFunctionArgs,
   tagsService: TagsService = serverContainer[TagsService.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
-  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
   const { serverId: serverPublicId } = params;
-  const { userId } = await authenticator.isAuthenticated(request, { failureRedirect: '/login' });
-
+  const { userId } = await authHelper.getSession(request, '/login');
   const [tagColors, settings] = await Promise.all([
     tagsService.tagColors({ userId, serverPublicId }),
     settingsService.userSettings(userId),

@@ -2,9 +2,8 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
-import { Authenticator } from 'remix-auth';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
-import type { SessionData } from '../auth/session-context';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 import { ServersService } from '../servers/ServersService.server';
 import { problemDetails } from '../utils/response.server';
@@ -36,10 +35,10 @@ export async function action(
   { params, request }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
   createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
-  authenticator: Authenticator<SessionData> = serverContainer[Authenticator.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
   console_ = console,
 ) {
-  const sessionData = await authenticator.isAuthenticated(request);
+  const sessionData = await authHelper.getSession(request);
   if (!sessionData) {
     return problemDetails({
       status: 403,

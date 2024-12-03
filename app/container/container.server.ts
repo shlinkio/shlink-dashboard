@@ -3,6 +3,7 @@ import Bottle from 'bottlejs';
 import { Authenticator } from 'remix-auth';
 import { apiClientBuilder } from '../api/apiClientBuilder.server';
 import { createAuthenticator } from '../auth/auth.server';
+import { AuthHelper } from '../auth/auth-helper.server';
 import { createSessionStorage } from '../auth/session.server';
 import { createEntityManager, createEntityManagerForkingMiddleware, createMigrator, createORM } from '../db/db.server';
 import { createServersRepository } from '../servers/ServersRepository.server';
@@ -27,6 +28,7 @@ bottle.service(UsersService.name, UsersService, 'em');
 
 bottle.constant('apiClientBuilder', apiClientBuilder);
 bottle.serviceFactory('sessionStorage', createSessionStorage);
-bottle.serviceFactory(Authenticator.name, createAuthenticator, UsersService.name, 'sessionStorage');
+bottle.serviceFactory(Authenticator.name, createAuthenticator, UsersService.name);
+bottle.service(AuthHelper.name, AuthHelper, Authenticator.name, 'sessionStorage');
 
 export const { container: serverContainer } = bottle;
