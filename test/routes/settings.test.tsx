@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import { createRemixStub } from '@remix-run/testing';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -65,8 +64,8 @@ describe('settings', () => {
         {
           path: '/settings',
           Component: SettingsComp,
-          loader: () => json({}),
-          action: () => json({}),
+          loader: () => ({}),
+          action: () => ({}),
         },
       ]);
       return render(<RemixStub />);

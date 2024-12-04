@@ -1,4 +1,3 @@
-import { json } from '@remix-run/node';
 import { createRemixStub } from '@remix-run/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
@@ -27,7 +26,7 @@ describe('login', () => {
       const request = fromPartial<Request>({});
       const response = await action(fromPartial({ request }), authHelper);
 
-      expect(await response.json()).toEqual({ error: true });
+      expect(response).toEqual({ error: true });
     });
 
     it('re-throws unknown errors', async () => {
@@ -66,7 +65,7 @@ describe('login', () => {
         {
           path: '/',
           Component: Login,
-          action: () => (error ? json({ error }) : undefined),
+          action: () => (error ? { error } : undefined),
         },
       ]);
       return render(<RemixStub />);

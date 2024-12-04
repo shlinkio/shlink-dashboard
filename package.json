@@ -56,6 +56,8 @@
     "@mikro-orm/mssql": "^6.4.0",
     "@mikro-orm/mysql": "^6.4.0",
     "@remix-run/dev": "^2.15.0",
+    "@remix-run/fs-routes": "^2.15.0",
+    "@remix-run/route-config": "^2.15.0",
     "@remix-run/testing": "^2.15.0",
     "@shlinkio/eslint-config-js-coding-standard": "~3.2.1",
     "@stylistic/eslint-plugin": "^2.11.0",

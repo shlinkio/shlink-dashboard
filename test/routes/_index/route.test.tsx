@@ -1,4 +1,3 @@
-import { json } from '@remix-run/node';
 import { createRemixStub } from '@remix-run/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
@@ -39,7 +38,7 @@ describe('_index.route', () => {
         {
           path: '/',
           Component: Index,
-          loader: () => json({ servers }),
+          loader: () => ({ servers }),
         },
       ]);
       return render(<RemixStub />);

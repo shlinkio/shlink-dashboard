@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import { useActionData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
@@ -19,7 +18,7 @@ export async function action(
   } catch (e: any) {
     // TODO Use a more robust way to detect errors
     if (INCORRECT_CREDENTIAL_ERROR_PREFIXES.some((prefix) => e.message.startsWith(prefix))) {
-      return json({ error: true });
+      return { error: true };
     }
 
     throw e;
