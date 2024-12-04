@@ -4,6 +4,12 @@ import axe from 'axe-core';
 
 installGlobals();
 
+// This is not defined when running tests in JSDOM.
+// FIXME Server tests should be run in node though, instead of installing globals
+if (typeof Response.json === 'undefined') {
+  Response.json = (data: any, init: any) => new Response(JSON.stringify(data), init);
+}
+
 axe.configure({
   checks: [
     {
