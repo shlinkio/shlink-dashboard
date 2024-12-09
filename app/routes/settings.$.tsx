@@ -1,6 +1,6 @@
 import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/settings';
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
@@ -38,14 +38,21 @@ export default function Settings() {
     method: 'POST',
     encType: 'application/json',
   }), [fetcher]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <Layout>
-      <ShlinkWebSettings
-        settings={settings}
-        updateSettings={submitSettings}
-        defaultShortUrlsListOrdering={{}}
-      />
+      {isClient && (
+        <ShlinkWebSettings
+          settings={settings}
+          updateSettings={submitSettings}
+          defaultShortUrlsListOrdering={{}}
+        />
+      )}
     </Layout>
   );
 }
