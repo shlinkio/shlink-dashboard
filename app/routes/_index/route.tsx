@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import type { LoaderFunctionArgs } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';

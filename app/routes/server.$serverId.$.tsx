@@ -1,8 +1,8 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useLocation, useParams } from '@remix-run/react';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import type { LoaderFunctionArgs } from 'react-router';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';

@@ -1,6 +1,6 @@
-import type { ActionFunctionArgs } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
+import type { ActionFunctionArgs } from 'react-router';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';

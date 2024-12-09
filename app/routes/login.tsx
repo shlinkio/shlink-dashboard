@@ -1,8 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
 import { useActionData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { redirect } from 'react-router';
 import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
