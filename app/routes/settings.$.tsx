@@ -2,6 +2,7 @@ import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/set
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
 import { useCallback, useEffect, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { Route, Routes } from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
@@ -47,11 +48,18 @@ export default function Settings() {
   return (
     <Layout>
       {isClient && (
-        <ShlinkWebSettings
-          settings={settings}
-          updateSettings={submitSettings}
-          defaultShortUrlsListOrdering={{}}
-        />
+        <Routes>
+          <Route
+            path="*"
+            element={(
+              <ShlinkWebSettings
+                settings={settings}
+                updateSettings={submitSettings}
+                defaultShortUrlsListOrdering={{}}
+              />
+            )}
+          />
+        </Routes>
       )}
     </Layout>
   );
