@@ -1,5 +1,4 @@
 import { fromPartial } from '@total-typescript/shoehorn';
-import { ReadableStream } from 'node:stream/web';
 import { Authenticator } from 'remix-auth';
 import { createAuthenticator, CREDENTIALS_STRATEGY } from '../../app/auth/auth.server';
 import type { UsersService } from '../../app/users/UsersService.server';
@@ -20,9 +19,9 @@ describe('auth', () => {
     const requestWithBody = (body: string = '') => {
       const headers = new Headers();
       headers.set('Content-Type', 'application/x-www-form-urlencoded');
-      return fromPartial<Request>({
-        body: ReadableStream.from(body),
-        url: 'https://example.com',
+
+      return new Request('https://example.com', {
+        body,
         headers,
         method: 'POST',
       });
