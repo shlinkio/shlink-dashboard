@@ -1,8 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { installGlobals } from '@remix-run/node';
 import axe from 'axe-core';
-
-installGlobals();
 
 // This is not defined when running tests in JSDOM.
 // FIXME Server tests should be run in node though, instead of installing globals

@@ -1,5 +1,5 @@
-import type { SessionStorage } from '@remix-run/node';
 import { fromPartial } from '@total-typescript/shoehorn';
+import type { SessionStorage } from 'react-router';
 import type { Authenticator } from 'remix-auth';
 import { AuthHelper } from '../../app/auth/auth-helper.server';
 import type { SessionData } from '../../app/auth/session-context';

@@ -1,7 +1,7 @@
-import { useActionData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { useActionData } from 'react-router';
 import { redirect } from 'react-router';
 import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
@@ -52,7 +52,9 @@ export default function Login() {
             <Input id={passwordId} type="password" name="password" required />
           </div>
           <Button color="primary" type="submit">Login</Button>
-          {actionData?.error && <div className="text-danger">Username or password are incorrect</div>}
+          {actionData && 'error' in actionData && actionData.error && (
+            <div className="text-danger">Username or password are incorrect</div>
+          )}
         </form>
       </SimpleCard>
     </div>

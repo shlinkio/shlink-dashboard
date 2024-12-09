@@ -1,8 +1,8 @@
-import { useFetcher, useLoaderData } from '@remix-run/react';
 import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/settings';
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
 import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { useFetcher, useLoaderData } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';

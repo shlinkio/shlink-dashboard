@@ -1,4 +1,4 @@
-import { createRemixStub } from '@remix-run/testing';
+import { createRoutesStub } from 'react-router';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
@@ -34,7 +34,7 @@ describe('_index.route', () => {
 
   describe('<Index />', () => {
     const setUp = (servers: Server[] = []) => {
-      const RemixStub = createRemixStub([
+      const RemixStub = createRoutesStub([
         {
           path: '/',
           Component: Index,

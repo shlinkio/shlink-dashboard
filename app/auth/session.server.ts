@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from '@remix-run/node';
+import { createCookieSessionStorage } from 'react-router';
 import { env, isProd } from '../utils/env.server';
 import type { SessionData } from './session-context';
 

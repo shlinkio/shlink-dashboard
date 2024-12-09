@@ -1,6 +1,6 @@
-import { createRemixStub } from '@remix-run/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import Login, { action, loader } from '../../app/routes/login';
 
@@ -60,12 +60,12 @@ describe('login', () => {
   });
 
   describe('<Login />', () => {
-    const setUp = (error: unknown = undefined) => {
-      const RemixStub = createRemixStub([
+    const setUp = (error: boolean = false) => {
+      const RemixStub = createRoutesStub([
         {
           path: '/',
           Component: Login,
-          action: () => (error ? { error } : undefined),
+          action: () => ({ error }),
         },
       ]);
       return render(<RemixStub />);
@@ -79,9 +79,9 @@ describe('login', () => {
       expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
 
-    // TODOInviestigate why this doesn't pass
+    // TODO Investigate why this doesn't pass
     it.skip('renders error when present', async () => {
-      setUp('some error');
+      setUp(true);
       await waitFor(() => expect(screen.getByText('Username or password are incorrect')).toBeInTheDocument());
     });
   });

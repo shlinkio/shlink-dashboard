@@ -1,4 +1,4 @@
-import { createRemixStub } from '@remix-run/testing';
+import { createRoutesStub } from 'react-router';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
@@ -60,7 +60,7 @@ describe('settings', () => {
   // Skipping for now, as createRemixStub always results in a 404 page
   describe.skip('<Settings />', () => {
     const setUp = () => {
-      const RemixStub = createRemixStub([
+      const RemixStub = createRoutesStub([
         {
           path: '/settings',
           Component: SettingsComp,

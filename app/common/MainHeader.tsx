@@ -4,9 +4,9 @@ import {
   faCogs,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useLocation } from '@remix-run/react';
 import { useToggle } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
+import { Link, useLocation } from 'react-router';
 import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { useSession } from '../auth/session-context';
 import { ShlinkLogo } from './ShlinkLogo';

@@ -1,8 +1,8 @@
 import { faPlus, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from '@remix-run/react';
 import type { FC } from 'react';
 import { ExternalLink } from 'react-external-link';
+import { Link } from 'react-router';
 import { Button } from 'reactstrap';
 
 export const NoServers: FC = () => (
