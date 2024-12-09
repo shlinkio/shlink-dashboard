@@ -28,6 +28,10 @@
     font-weight: 500;
     line-height: 1.2;
   }
+
+  hr {
+    @apply my-3
+  }
 }
 
 @tailwind components;

@@ -9,7 +9,8 @@
   ],
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["@remix-run/node", "vite/client", "vitest/globals"],
+    "types": ["@react-router/node", "vite/client", "vitest/globals"],
+    "rootDirs": [".", "./.react-router/types"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",

@@ -1,9 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useActionData } from '@remix-run/react';
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { useActionData } from 'react-router';
+import { redirect } from 'react-router';
 import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
@@ -19,7 +18,7 @@ export async function action(
   } catch (e: any) {
     // TODO Use a more robust way to detect errors
     if (INCORRECT_CREDENTIAL_ERROR_PREFIXES.some((prefix) => e.message.startsWith(prefix))) {
-      return json({ error: true });
+      return { error: true };
     }
 
     throw e;
@@ -53,7 +52,9 @@ export default function Login() {
             <Input id={passwordId} type="password" name="password" required />
           </div>
           <Button color="primary" type="submit">Login</Button>
-          {actionData?.error && <div className="text-danger">Username or password are incorrect</div>}
+          {actionData && 'error' in actionData && actionData.error && (
+            <div className="text-danger">Username or password are incorrect</div>
+          )}
         </form>
       </SimpleCard>
     </div>

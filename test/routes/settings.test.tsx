@@ -1,9 +1,8 @@
-import type { ActionFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { createRemixStub } from '@remix-run/testing';
+import { createRoutesStub } from 'react-router';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import type { ActionFunctionArgs } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import SettingsComp, { action as settingsAction, loader } from '../../app/routes/settings.$';
 import type { SettingsService } from '../../app/settings/SettingsService.server';
@@ -61,12 +60,12 @@ describe('settings', () => {
   // Skipping for now, as createRemixStub always results in a 404 page
   describe.skip('<Settings />', () => {
     const setUp = () => {
-      const RemixStub = createRemixStub([
+      const RemixStub = createRoutesStub([
         {
           path: '/settings',
           Component: SettingsComp,
-          loader: () => json({}),
-          action: () => json({}),
+          loader: () => ({}),
+          action: () => ({}),
         },
       ]);
       return render(<RemixStub />);

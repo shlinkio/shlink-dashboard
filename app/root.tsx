@@ -1,8 +1,8 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import { Links, Meta, Outlet, Scripts, useLoaderData } from '@remix-run/react';
 import type { Theme } from '@shlinkio/shlink-frontend-kit';
 import { getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
 import { useEffect, useState } from 'react';
+import type { LoaderFunctionArgs } from 'react-router';
+import { Links, Meta, Outlet, Scripts, useLoaderData } from 'react-router';
 import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
@@ -23,7 +23,7 @@ export async function loader(
     : authHelper.getSession(request, `/login?redirect-to=${encodeURIComponent(pathname)}`)
   );
 
-  const settings = sessionData && await settingsService.userSettings(sessionData.userId);
+  const settings = sessionData && (await settingsService.userSettings(sessionData.userId));
 
   return { sessionData, settings };
 }

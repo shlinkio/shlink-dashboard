@@ -1,5 +1,5 @@
-import type { SessionStorage } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import type { SessionStorage } from 'react-router';
+import { redirect } from 'react-router';
 import type { Authenticator } from 'remix-auth';
 import { CREDENTIALS_STRATEGY } from './auth.server';
 import type { SessionData } from './session-context';

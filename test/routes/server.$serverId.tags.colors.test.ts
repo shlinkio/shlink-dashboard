@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from '@remix-run/node';
 import { fromPartial } from '@total-typescript/shoehorn';
+import type { ActionFunctionArgs } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import { action } from '../../app/routes/server.$serverId.tags.colors';
 import type { TagsService } from '../../app/tags/TagsService.server';

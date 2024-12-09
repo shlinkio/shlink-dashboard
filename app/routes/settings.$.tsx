@@ -1,8 +1,9 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { useFetcher, useLoaderData } from '@remix-run/react';
 import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/settings';
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { Route, Routes } from 'react-router';
+import { useFetcher, useLoaderData } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
@@ -38,14 +39,28 @@ export default function Settings() {
     method: 'POST',
     encType: 'application/json',
   }), [fetcher]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <Layout>
-      <ShlinkWebSettings
-        settings={settings}
-        updateSettings={submitSettings}
-        defaultShortUrlsListOrdering={{}}
-      />
+      {isClient && (
+        <Routes>
+          <Route
+            path="*"
+            element={(
+              <ShlinkWebSettings
+                settings={settings}
+                updateSettings={submitSettings}
+                defaultShortUrlsListOrdering={{}}
+              />
+            )}
+          />
+        </Routes>
+      )}
     </Layout>
   );
 }

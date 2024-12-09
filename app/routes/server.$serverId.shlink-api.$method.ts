@@ -1,7 +1,6 @@
-import type { ActionFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
+import type { ActionFunctionArgs } from 'react-router';
 import type { ApiClientBuilder } from '../api/apiClientBuilder.server';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
@@ -89,7 +88,7 @@ export async function action(
 
   try {
     const response = await apiMethod.bind(client)(...args as Parameters<typeof apiMethod>);
-    return json(response);
+    return Response.json(response);
   } catch (e) {
     console_.error(e);
     return problemDetails({
