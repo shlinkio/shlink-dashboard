@@ -30,7 +30,7 @@
     "@mikro-orm/core": "^6.4.1",
     "@mikro-orm/migrations": "^6.4.1",
     "@mikro-orm/postgresql": "^6.4.1",
-    "@react-router/express": "^7.0.2",
+    "@react-router/express": "^7.1.0",
     "@react-router/node": "^7.0.2",
     "@shlinkio/shlink-frontend-kit": "^0.7.0",
     "@shlinkio/shlink-js-sdk": "^1.3.0",
