@@ -55,7 +55,7 @@
     "@mikro-orm/mariadb": "^6.4.1",
     "@mikro-orm/mssql": "^6.4.1",
     "@mikro-orm/mysql": "^6.4.1",
-    "@react-router/dev": "^7.0.2",
+    "@react-router/dev": "^7.1.0",
     "@shlinkio/eslint-config-js-coding-standard": "~3.2.1",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@testing-library/jest-dom": "^6.6.3",
