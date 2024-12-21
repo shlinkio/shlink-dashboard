@@ -21,9 +21,10 @@ updates:
       shlink:
         patterns:
           - '@shlinkio/*'
-      remix:
+      react-router:
         patterns:
-          - '@remix-run/*'
+          - 'react-router'
+          - '@react-router/*'
       remix-auth:
         patterns:
           - 'remix-auth*'
