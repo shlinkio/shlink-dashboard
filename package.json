@@ -46,7 +46,7 @@
     "react-external-link": "^2.3.1",
     "react-router": "^7.0.2",
     "reactstrap": "^9.2.3",
-    "remix-auth": "^4.0.0",
+    "remix-auth": "^4.1.0",
     "remix-auth-form": "^3.0.0",
     "zod": "^3.24.1"
   },
