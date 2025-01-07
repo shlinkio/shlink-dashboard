@@ -2,13 +2,15 @@ import { fromPartial } from '@total-typescript/shoehorn';
 import type { SessionStorage } from 'react-router';
 import type { Authenticator } from 'remix-auth';
 import { AuthHelper } from '../../app/auth/auth-helper.server';
-import type { SessionData } from '../../app/auth/session-context';
+import type { SessionData, ShlinkSessionData } from '../../app/auth/session-context';
 
 describe('AuthHelper', () => {
   const authenticate = vi.fn();
   const authenticator: Authenticator<SessionData> = fromPartial({ authenticate });
 
-  const defaultSessionData = fromPartial<SessionData>({ displayName: 'foo' });
+  const defaultSessionData = fromPartial<ShlinkSessionData>({
+    sessionData: { displayName: 'foo' },
+  });
   const getSessionData = vi.fn().mockReturnValue(defaultSessionData);
   const getSession = vi.fn().mockResolvedValue({ get: getSessionData, set: vi.fn() });
   const commitSession = vi.fn();
@@ -96,6 +98,33 @@ describe('AuthHelper', () => {
       expect(destroySession).not.toHaveBeenCalled();
       expect(commitSession).not.toHaveBeenCalled();
       expect(authenticate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('refreshSessionExpiration', () => {
+    it('sets no cookie when there is no session', async () => {
+      const authHelper = setUp();
+      const request = buildRequest();
+
+      getSessionData.mockReturnValue(undefined);
+
+      const cookie = await authHelper.refreshSessionExpiration(request);
+
+      expect(cookie).toBeUndefined();
+      expect(commitSession).not.toHaveBeenCalled();
+    });
+
+    it('sets cookie and commits session when it is not expired', async () => {
+      const authHelper = setUp();
+      const request = buildRequest();
+
+      getSessionData.mockReturnValue(defaultSessionData);
+      commitSession.mockResolvedValue('the-cookie-value');
+
+      const cookie = await authHelper.refreshSessionExpiration(request);
+
+      expect(cookie).toEqual('the-cookie-value');
+      expect(commitSession).toHaveBeenCalled();
     });
   });
 });

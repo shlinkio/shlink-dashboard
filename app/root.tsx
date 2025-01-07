@@ -2,6 +2,7 @@ import type { Theme } from '@shlinkio/shlink-frontend-kit';
 import { getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
 import { useEffect, useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
+import { data } from 'react-router';
 import { Links, Meta, Outlet, Scripts, useLoaderData } from 'react-router';
 import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
@@ -24,8 +25,14 @@ export async function loader(
   );
 
   const settings = sessionData && (await settingsService.userSettings(sessionData.userId));
+  const sessionCookie = await authHelper.refreshSessionExpiration(request);
 
-  return { sessionData, settings };
+  return data(
+    { sessionData, settings },
+    sessionCookie ? {
+      headers: { 'Set-Cookie': sessionCookie },
+    } : undefined,
+  );
 }
 
 export default function App() {
