@@ -3,6 +3,10 @@ import { createContext, useContext } from 'react';
 export type SessionData = {
   userId: string;
   displayName: string | null;
+};
+
+export type ShlinkSessionData = {
+  sessionData: SessionData;
   [key: string]: unknown;
 };
 

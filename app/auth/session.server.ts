@@ -1,8 +1,8 @@
 import { createCookieSessionStorage } from 'react-router';
 import { env, isProd } from '../utils/env.server';
-import type { SessionData } from './session-context';
+import type { ShlinkSessionData } from './session-context';
 
-export const createSessionStorage = () => createCookieSessionStorage<{ sessionData: SessionData }>({
+export const createSessionStorage = () => createCookieSessionStorage<ShlinkSessionData>({
   cookie: {
     name: 'shlink_dashboard_session',
     httpOnly: true,
@@ -13,5 +13,3 @@ export const createSessionStorage = () => createCookieSessionStorage<{ sessionDa
     secure: isProd(),
   },
 });
-
-export type SessionStorage = ReturnType<typeof createSessionStorage>;
