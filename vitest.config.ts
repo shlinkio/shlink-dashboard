@@ -3,7 +3,6 @@ import { defineConfig } from 'vitest/config';
 
 // Using a separate vitest config, so that we don't load the remix vite plugin during tests
 export default defineConfig({
-  // @ts-expect-error Error caused by vitest using vite 5 and the root using vite 6. To be fixed in vitest 3.
   plugins: [react()],
 
   test: {
