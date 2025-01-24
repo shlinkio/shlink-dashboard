@@ -1,6 +1,5 @@
 import { createRequestHandler } from '@react-router/express';
 import express from 'express';
-import { serverContainer } from './app/container/container.server';
 
 const { NODE_ENV, SHLINK_DASHBOARD_PORT = '3005' } = process.env;
 const isProd = NODE_ENV === 'production';
@@ -27,6 +26,9 @@ const build = viteDevServer
   : await import('./server/index.js');
 
 // Fork entity manager on every request
+const { serverContainer } = isProd
+  ? build
+  : await import('./app/container/container.server');
 app.use(serverContainer.emForkMiddleware);
 app.all('*', createRequestHandler({ build }));
 

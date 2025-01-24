@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "react-router build && tsc --project tsconfig.build-server.json",
+    "build": "react-router build && node scripts/expose-server-container.js && tsc --project tsconfig.build-server.json",
     "test": "vitest run",
     "test:ci": "npm run test -- --coverage",
     "lint": "npm run lint:js",
