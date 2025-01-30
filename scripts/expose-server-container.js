@@ -4,12 +4,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const serverBundle = 'build/server/index.js';
-const [lastLine, prevToLastLine, ...allLines] = readFileSync(serverBundle).toString().split('\n').reverse();
+const serverBundleContent = readFileSync(serverBundle).toString();
 
-// Last two lines are the closing curly braces, and an empty line. We need to insert the export of the serverContainer
-// right before the curly brace
-
+// FIXME This logic is brittle. Would be better to use some kind of vite plugin
 writeFileSync(
   serverBundle,
-  Buffer.from([...allLines.reverse(), '  ,serverContainer,', prevToLastLine, lastLine].join('\n')),
+  serverBundleContent.replace(', routes };', ', routes, serverContainer };'),
 );

@@ -33,3 +33,23 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: shlink_dashboard
       PGDATA: /var/lib/postgresql/data/pgdata
+
+#  # Production docker image linked with the dev database
+#  shlink_dashboard_testing:
+#    build:
+#      context: .
+#    user: 1000:1000
+#    image: shlink_dashboard_testing
+#    ports:
+#      - "3006:3006"
+#    links:
+#      - shlink_dashboard_db_postgres
+#    environment:
+#      SHLINK_DASHBOARD_DB_DRIVER: postgres
+#      SHLINK_DASHBOARD_DB_HOST: shlink_dashboard_db_postgres
+#      SHLINK_DASHBOARD_DB_PORT: 5432
+#      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
+#      SHLINK_DASHBOARD_DB_USER: postgres
+#      SHLINK_DASHBOARD_DB_PASSWORD: root
+#      SHLINK_DASHBOARD_PORT: 3006
+#      NODE_ENV: production
