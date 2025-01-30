@@ -1,10 +1,5 @@
-import { BetterSqliteDriver } from '@mikro-orm/better-sqlite';
 import type { Options } from '@mikro-orm/core';
-import { MariaDbDriver } from '@mikro-orm/mariadb';
 import { Migrator } from '@mikro-orm/migrations';
-import { MsSqlDriver } from '@mikro-orm/mssql';
-import { MySqlDriver } from '@mikro-orm/mysql';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Server } from './app/entities/Server';
 import { Settings } from './app/entities/Settings';
 import { Tag } from './app/entities/Tag';
@@ -19,14 +14,14 @@ const DEFAULT_PORTS_MAP: Record<Exclude<DbEngine, 'sqlite'>, number> = {
   mssql: 1433,
 };
 
-const DRIVER_MAP: Record<Exclude<DbEngine, 'sqlite'>, Options['driver']> = {
-  mysql: MySqlDriver,
-  mariadb: MariaDbDriver,
-  postgres: PostgreSqlDriver,
-  mssql: MsSqlDriver,
+const DRIVER_MAP: Record<Exclude<DbEngine, 'sqlite'>, () => Promise<Options['driver']>> = {
+  mysql: () => import('@mikro-orm/mysql').then(({ MySqlDriver }) => MySqlDriver),
+  mariadb: () => import('@mikro-orm/mariadb').then(({ MariaDbDriver }) => MariaDbDriver),
+  postgres: () => import('@mikro-orm/postgresql').then(({ PostgreSqlDriver }) => PostgreSqlDriver),
+  mssql: () => import('@mikro-orm/mssql').then(({ MsSqlDriver }) => MsSqlDriver),
 };
 
-function resolveOptions(): Options {
+async function resolveOptions(): Promise<Options> {
   const commonOptions: Options = {
     entities: [User, Settings, Server, Tag],
     migrations: {
@@ -42,13 +37,13 @@ function resolveOptions(): Options {
   if (type === 'sqlite') {
     return {
       ...commonOptions,
-      driver: BetterSqliteDriver,
+      driver: await import('@mikro-orm/better-sqlite').then(({ BetterSqliteDriver }) => BetterSqliteDriver),
       dbName: 'data/database.sqlite',
     };
   }
 
   const port = env.SHLINK_DASHBOARD_DB_PORT ?? DEFAULT_PORTS_MAP[type];
-  const driver = DRIVER_MAP[type];
+  const driver = await DRIVER_MAP[type]();
   return {
     ...commonOptions,
     driver,
@@ -61,4 +56,4 @@ function resolveOptions(): Options {
 }
 
 // eslint-disable-next-line no-restricted-exports
-export default resolveOptions();
+export default await resolveOptions();
