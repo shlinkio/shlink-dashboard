@@ -1,0 +1,15 @@
+name: Build and publish docker image
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    uses: shlinkio/github-actions/.github/workflows/docker-publish-image.yml@main
+    secrets: inherit
+    with:
+      image-name: shlinkio/shlink-dashboard
+      version-arg-name: VERSION
+      platforms: 'linux/arm64/v8,linux/amd64'
