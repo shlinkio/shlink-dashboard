@@ -2,7 +2,6 @@
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 @import '../node_modules/@shlinkio/shlink-frontend-kit/dist/index'; // After bootstrap. Includes CSS overwrites
 @import '../node_modules/@shlinkio/shlink-web-component/dist/index';
-@import 'tailwind';
 
 .app {
   padding-top: $headerHeight;

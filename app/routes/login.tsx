@@ -40,9 +40,9 @@ export default function Login() {
   const actionData = useActionData<typeof action>();
 
   return (
-    <div className="tw-mt-8 tw-mx-8 lg:tw-mx-auto lg:tw-w-[50%]">
+    <div className="tw:mt-8 tw:mx-8 tw:lg:mx-auto tw:lg:w-[50%]">
       <SimpleCard>
-        <form method="post" className="tw-flex tw-flex-col tw-gap-4">
+        <form method="post" className="tw:flex tw:flex-col tw:gap-4">
           <div>
             <label htmlFor={usernameId}>Username:</label>
             <Input id={usernameId} name="username" required />

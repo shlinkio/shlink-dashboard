@@ -9,6 +9,7 @@ import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
 import { SettingsService } from './settings/SettingsService.server';
+import './tailwind.css';
 import './index.scss';
 
 export async function loader(
@@ -60,7 +61,7 @@ export default function App() {
       <body>
         <SessionProvider value={sessionData ?? null}>
           <MainHeader />
-          <div className="app tw-h-full">
+          <div className="app tw:h-full">
             <Outlet />
           </div>
           <Scripts />
