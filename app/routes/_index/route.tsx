@@ -22,8 +22,8 @@ export default function Index() {
 
   return (
     <Layout>
-      <div className="md:tw-flex md:tw-items-center md:tw-h-full md:tw-pb-0 tw-pb-3">
-        <div className="tw-mx-auto xl:tw-w-1/2 lg:tw-w-3/4 tw-w-full">
+      <div className="tw:md:flex tw:md:items-center tw:md:h-full tw:md:pb-0 tw:pb-3">
+        <div className="tw:mx-auto tw:xl:w-1/2 tw:lg:w-3/4 tw:w-full">
           <WelcomeCard servers={servers} />
         </div>
       </div>

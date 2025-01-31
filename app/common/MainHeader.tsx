@@ -19,7 +19,7 @@ export const MainHeader: FC = () => {
   return (
     <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
       <NavbarBrand tag={Link} to="/">
-        <ShlinkLogo className="tw-inline-block tw-mr-1 tw-w-[26px]" color="white" /> Shlink
+        <ShlinkLogo className="tw:inline-block tw:mr-1 tw:w-[26px]" color="white" /> Shlink
       </NavbarBrand>
 
       {session !== null && (
@@ -29,17 +29,17 @@ export const MainHeader: FC = () => {
           </NavbarToggler>
 
           <Collapse navbar isOpen={isOpen}>
-            <Nav navbar className="tw-ml-auto">
+            <Nav navbar className="tw:ml-auto">
               <NavItem>
                 <NavLink tag={Link} to="/settings" active={pathname.startsWith('/settings')}>
-                  <FontAwesomeIcon icon={faCogs} className="tw-w-[26px] tw-inline-block" /> Settings
+                  <FontAwesomeIcon icon={faCogs} className="tw:w-[26px] tw:inline-block" /> Settings
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} to="/logout">
-                  <FontAwesomeIcon icon={faLogout} className="tw-w-[26px] tw-inline-block" /> Logout
+                  <FontAwesomeIcon icon={faLogout} className="tw:w-[26px] tw:inline-block" /> Logout
                   {session.displayName && (
-                    <span className="tw-ml-2" data-testid="display-name">({session.displayName})</span>
+                    <span className="tw:ml-2" data-testid="display-name">({session.displayName})</span>
                   )}
                 </NavLink>
               </NavItem>
