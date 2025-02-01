@@ -58,7 +58,7 @@
     "@react-router/dev": "^7.1.4",
     "@shlinkio/eslint-config-js-coding-standard": "~3.2.1",
     "@stylistic/eslint-plugin": "^2.13.0",
-    "@tailwindcss/vite": "^4.0.1",
+    "@tailwindcss/vite": "^4.0.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
