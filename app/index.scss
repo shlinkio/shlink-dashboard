@@ -1,10 +1,12 @@
-@import '../node_modules/@shlinkio/shlink-frontend-kit/dist/base'; // Before bootstrap stylesheet. Includes SASS var overrides
-@import '../node_modules/bootstrap/scss/bootstrap.scss';
-@import '../node_modules/@shlinkio/shlink-frontend-kit/dist/index'; // After bootstrap. Includes CSS overwrites
-@import '../node_modules/@shlinkio/shlink-web-component/dist/index';
+@use '../node_modules/@shlinkio/shlink-frontend-kit/dist/base'; // Before bootstrap stylesheet. Includes SASS var overrides
+@use '../node_modules/bootstrap/scss/bootstrap.scss' with (
+  $primary: base.$mainColor
+);
+@use '../node_modules/@shlinkio/shlink-frontend-kit/dist/index' as fe-index; // After bootstrap. Includes CSS overwrites
+@use '../node_modules/@shlinkio/shlink-web-component/dist/index';
 
 .app {
-  padding-top: $headerHeight;
+  padding-top: base.$headerHeight;
 }
 
 .main-header.main-header {
