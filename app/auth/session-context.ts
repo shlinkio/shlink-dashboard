@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'react';
+import type { Role } from '../entities/User';
 
 export type SessionData = {
   userId: string;
   displayName: string | null;
+  role: Role;
 };
 
 export type ShlinkSessionData = {
