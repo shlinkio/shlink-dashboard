@@ -8,9 +8,22 @@ export default defineConfig({
   test: {
     globals: true,
     allowOnly: true,
-    environmentMatchGlobs: [
-      ['**/*.server.test.{ts|tsx}', 'node'],
-      ['**/*', 'jsdom'],
+    workspace: [
+      // Run tests for server-only files in node environment
+      {
+        extends: true,
+        test: {
+          environment: 'node',
+          include: ['**/*.server.test.{ts|tsx}'],
+        },
+      },
+      // Run rest of tests in JSDOM environment
+      {
+        extends: true,
+        test: {
+          environment: 'jsdom',
+        },
+      },
     ],
     setupFiles: './test/setup.ts',
     dir: 'test',
