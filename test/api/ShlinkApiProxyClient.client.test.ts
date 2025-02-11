@@ -1,7 +1,10 @@
 import type {
   ShlinkCreateShortUrlData,
-  ShlinkEditDomainRedirects, ShlinkEditShortUrlData,
+  ShlinkEditDomainRedirects,
+  ShlinkEditShortUrlData,
+  ShlinkRenaming,
   ShlinkSetRedirectRulesData,
+  ShlinkShortUrlIdentifier,
 } from '@shlinkio/shlink-js-sdk/api-contract';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { ShlinkApiProxyClient } from '../../app/api/ShlinkApiProxyClient.client';
@@ -17,27 +20,33 @@ describe('ShlinkApiProxyClient', () => {
   it.each([
     ['createShortUrl', [fromPartial<ShlinkCreateShortUrlData>({ longUrl: 'https://shlink.io' })]],
     ['deleteOrphanVisits', []],
-    ['deleteShortUrl', ['foo', null]],
-    ['deleteShortUrlVisits', ['foo', null]],
+    ['deleteShortUrl', [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' })]],
+    ['deleteShortUrlVisits', [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' })]],
     ['deleteTags', [['foo', 'bar']]],
     ['editDomainRedirects', [fromPartial<ShlinkEditDomainRedirects>({ domain: 'foo' })]],
-    ['editTag', ['foo', 'bar']],
+    ['editTag', [fromPartial<ShlinkRenaming>({ oldName: 'foo', newName: 'bar' })]],
     ['getDomainVisits', ['foo', {}]],
     ['getNonOrphanVisits', [{}]],
     ['getOrphanVisits', [{}]],
-    ['getShortUrl', ['foo', null]],
-    ['getShortUrlRedirectRules', ['foo', null]],
-    ['getShortUrlVisits', ['foo', {}]],
+    ['getShortUrl', [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' })]],
+    ['getShortUrlRedirectRules', [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' })]],
+    ['getShortUrlVisits', [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }), {}]],
     ['getTagVisits', ['foo', {}]],
     ['getVisitsOverview', []],
-    ['health', [null]],
+    ['health', [{}]],
     ['listDomains', []],
     ['listShortUrls', [{}]],
     ['listTags', []],
     ['mercureInfo', []],
-    ['setShortUrlRedirectRules', ['foo', null, fromPartial<ShlinkSetRedirectRulesData>({ redirectRules: [] })]],
+    ['setShortUrlRedirectRules', [
+      fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }),
+      fromPartial<ShlinkSetRedirectRulesData>({ redirectRules: [] }),
+    ]],
     ['tagsStats', []],
-    ['updateShortUrl', ['foo', null, fromPartial<ShlinkEditShortUrlData>({})]],
+    ['updateShortUrl', [
+      fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }),
+      fromPartial<ShlinkEditShortUrlData>({}),
+    ]],
   ])('passes function name and args to fetch via RPC call', async (method, args) => {
     // @ts-expect-error Hard to type in a generic way all args for every method
     await proxyClient[method](...args);
