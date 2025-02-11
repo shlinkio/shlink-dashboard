@@ -2,6 +2,7 @@ import {
   faArrowRightFromBracket as faLogout,
   faChevronDown as arrowIcon,
   faCogs,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useToggle } from '@shlinkio/shlink-frontend-kit';
@@ -18,8 +19,8 @@ export const MainHeader: FC = () => {
 
   return (
     <Navbar color="primary" dark fixed="top" className="main-header" expand="md">
-      <NavbarBrand tag={Link} to="/">
-        <ShlinkLogo className="tw:inline-block tw:mr-1 tw:w-[26px]" color="white" /> Shlink
+      <NavbarBrand tag={Link} to="/" className="tw:flex tw:gap-2">
+        <ShlinkLogo className="tw:w-[26px]" color="white" /> Shlink
       </NavbarBrand>
 
       {session !== null && (
@@ -32,12 +33,19 @@ export const MainHeader: FC = () => {
             <Nav navbar className="tw:ml-auto">
               <NavItem>
                 <NavLink tag={Link} to="/settings" active={pathname.startsWith('/settings')}>
-                  <FontAwesomeIcon icon={faCogs} className="tw:w-[26px] tw:inline-block" /> Settings
+                  <FontAwesomeIcon icon={faCogs} className="tw:mr-0.5" /> Settings
                 </NavLink>
               </NavItem>
+              {session.role === 'admin' && (
+                <NavItem>
+                  <NavLink tag={Link} to="/users/manage" active={pathname.startsWith('/users/manage')}>
+                    <FontAwesomeIcon icon={faUsers} className="tw:mr-0.5" /> Manage users
+                  </NavLink>
+                </NavItem>
+              )}
               <NavItem>
                 <NavLink tag={Link} to="/logout">
-                  <FontAwesomeIcon icon={faLogout} className="tw:w-[26px] tw:inline-block" /> Logout
+                  <FontAwesomeIcon icon={faLogout} className="tw:mr-0.5" /> Logout
                   {session.displayName && (
                     <span className="tw:ml-2" data-testid="display-name">({session.displayName})</span>
                   )}
