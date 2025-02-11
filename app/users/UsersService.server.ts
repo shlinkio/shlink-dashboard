@@ -3,6 +3,16 @@ import { verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
 import { User as UserEntity } from '../entities/User';
 
+type OrderableFields = keyof Omit<User, 'id' | 'password'>;
+
+export type ListUsersOptions = {
+  page?: number;
+  orderBy?: {
+    field: OrderableFields,
+    direction?: 'ASC' | 'DESC',
+  };
+};
+
 export class UsersService {
   constructor(private readonly em: EntityManager) {}
 
@@ -18,5 +28,22 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async listUsers({
+    page = 1,
+    orderBy = { field: 'username' },
+  }: ListUsersOptions): Promise<User[]> {
+    const positivePage = Math.max(1, page);
+    const limit = 20;
+    const offset = (positivePage - 1) * limit;
+
+    return this.em.findAll(UserEntity, {
+      limit,
+      offset,
+      orderBy: {
+        [orderBy.field]: orderBy.direction ?? 'ASC',
+      },
+    });
   }
 }
