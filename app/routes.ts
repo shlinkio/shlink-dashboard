@@ -16,7 +16,7 @@ export default [
   route('/server/:serverId/tags/colors', './routes/server.$serverId.tags.colors.ts'),
 
   // Users management
-  route('/users/manage', './routes/users/manage-users.tsx'),
+  route('/users/manage/:page', './routes/users/manage-users.tsx'),
 
   // TODO Servers management
 ] satisfies RouteConfig;

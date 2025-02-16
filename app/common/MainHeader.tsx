@@ -38,7 +38,7 @@ export const MainHeader: FC = () => {
               </NavItem>
               {session.role === 'admin' && (
                 <NavItem>
-                  <NavLink tag={Link} to="/users/manage" active={pathname.startsWith('/users/manage')}>
+                  <NavLink tag={Link} to="/users/manage/1" active={pathname.startsWith('/users/manage')}>
                     <FontAwesomeIcon icon={faUsers} className="tw:mr-0.5" /> Manage users
                   </NavLink>
                 </NavItem>

@@ -48,7 +48,7 @@ const Cell: FC<CellProps> = ({ children, className, sectionType }) => {
   const Tag = (sectionType ?? sectionContext?.section) === 'head' ? 'th' : 'td';
 
   return (
-    <Tag className={clsx('tw:p-2 tw:border-b-1', className)}>
+    <Tag className={clsx('tw:p-2 tw:!border-b-1 tw:!border-(--border-color)', className)}>
       {children}
     </Tag>
   );

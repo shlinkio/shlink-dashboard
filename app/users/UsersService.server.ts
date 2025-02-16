@@ -13,6 +13,12 @@ export type ListUsersOptions = {
   };
 };
 
+export type UsersList = {
+  users: User[];
+  totalUsers: number;
+  totalPages: number;
+};
+
 export class UsersService {
   constructor(private readonly em: EntityManager) {}
 
@@ -33,17 +39,23 @@ export class UsersService {
   async listUsers({
     page = 1,
     orderBy = { field: 'username' },
-  }: ListUsersOptions): Promise<User[]> {
+  }: ListUsersOptions): Promise<UsersList> {
     const positivePage = Math.max(1, page);
     const limit = 20;
     const offset = (positivePage - 1) * limit;
 
-    return this.em.findAll(UserEntity, {
+    const [users, totalUsers] = await this.em.findAndCount(UserEntity, {}, {
       limit,
       offset,
       orderBy: {
         [orderBy.field]: orderBy.direction ?? 'ASC',
       },
     });
+
+    return {
+      users,
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
+    };
   }
 }

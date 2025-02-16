@@ -1,15 +1,18 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
+import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
+import { useParams } from 'react-router';
 import { useLoaderData } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
-import { Table } from '../../common/Table';
 import { serverContainer } from '../../container/container.server';
+import { Paginator } from '../../fe-kit/Paginator';
+import { Table } from '../../fe-kit/Table';
 import { UsersService } from '../../users/UsersService.server';
 import { RoleBadge } from './RoleBadge';
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, params }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
@@ -18,15 +21,18 @@ export async function loader(
     throw new Response('Not found', { status: 404 });
   }
 
-  return usersService.listUsers({});
+  const { page } = params;
+  return usersService.listUsers({ page: Number(page) });
 }
 
 export default function Users() {
-  const users = useLoaderData<typeof loader>();
+  const { users, totalPages } = useLoaderData<typeof loader>();
+  const { page } = useParams();
+  const urlForPage = useCallback((page: number) => `/users/manage/${page}`, []);
 
   return (
     <Layout>
-      <SimpleCard>
+      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
         <Table
           header={
             <Table.Row>
@@ -44,24 +50,11 @@ export default function Users() {
             </Table.Row>
           ))}
         </Table>
-        <table className="table table-hover mb-0">
-          <thead>
-            <tr>
-              <th className="tw:p-1">Username</th>
-              <th className="tw:p-1">Display name</th>
-              <th className="tw:p-1">Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="">{user.username}</td>
-                <td className="">{user.displayName ?? '-'}</td>
-                <td className=""><RoleBadge role={user.role}/></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {totalPages >= 2 && (
+          <div className="tw:flex tw:justify-center">
+            <Paginator pagesCount={totalPages} currentPage={Number(page)} urlForPage={urlForPage}/>
+          </div>
+        )}
       </SimpleCard>
     </Layout>
   );
