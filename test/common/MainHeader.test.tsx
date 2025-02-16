@@ -49,4 +49,17 @@ describe('<MainHeader />', () => {
       expect(screen.queryByTestId('display-name')).not.toBeInTheDocument();
     }
   });
+
+  it.each([
+    { sessionData: fromPartial<SessionData>({ role: 'admin' }), shouldShowUsersMenu: true },
+    { sessionData: fromPartial<SessionData>({ role: 'user' }), shouldShowUsersMenu: false },
+  ])('shows user management option for admins', ({ sessionData, shouldShowUsersMenu }) => {
+    setUp(sessionData);
+
+    if (shouldShowUsersMenu) {
+      expect(screen.getByText('Manage users')).toBeInTheDocument();
+    } else {
+      expect(screen.queryByText('Manage users')).not.toBeInTheDocument();
+    }
+  });
 });

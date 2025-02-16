@@ -1,10 +1,14 @@
 import { EntitySchema } from '@mikro-orm/core';
 import { BaseEntity, idColumnSchema } from './Base';
 
+const roles = ['admin', 'user'] as const;
+
+export type Role = typeof roles[number];
+
 export class User extends BaseEntity {
   username!: string;
   password!: string;
-  role!: string;
+  role!: Role;
   displayName!: string | null;
 }
 
@@ -15,7 +19,11 @@ export const UserSchema = new EntitySchema({
     id: idColumnSchema,
     username: { type: 'string', unique: true },
     password: { type: 'string' },
-    role: { type: 'string' },
+    role: {
+      type: 'string',
+      enum: true,
+      items: [...roles],
+    },
     displayName: {
       name: 'display_name',
       type: 'string',

@@ -6,11 +6,12 @@ import { UsersService } from '../../app/users/UsersService.server';
 
 describe('UsersService', () => {
   const findOne = vi.fn();
+  const findAndCount = vi.fn();
   let em: EntityManager;
   let usersService: UsersService;
 
   beforeEach(() => {
-    em = fromPartial<EntityManager>({ findOne });
+    em = fromPartial<EntityManager>({ findOne, findAndCount });
     usersService = new UsersService(em);
   });
 
@@ -36,6 +37,60 @@ describe('UsersService', () => {
       const result = await usersService.getUserByCredentials('foo', 'bar');
 
       expect(result).toEqual(expectedUser);
+    });
+  });
+
+  describe('listUsers', () => {
+    it.each([
+      {
+        page: 1,
+        expectedOffset: 0,
+        totalUsers: 10,
+        expectedTotalPages: 1,
+      },
+      {
+        page: 2,
+        expectedOffset: 20,
+        totalUsers: 20,
+        expectedTotalPages: 1,
+      },
+      {
+        expectedOffset: 0,
+        totalUsers: 21,
+        expectedTotalPages: 2,
+      },
+      {
+        page: 10,
+        expectedOffset: 180,
+        totalUsers: 100,
+        expectedTotalPages: 5,
+      },
+      {
+        expectedOffset: 0,
+        totalUsers: 103,
+        expectedTotalPages: 6,
+      },
+      {
+        expectedOffset: 0,
+        totalUsers: 119,
+        expectedTotalPages: 6,
+      },
+    ])('returns users list and totals', async ({ totalUsers, page, expectedOffset, expectedTotalPages }) => {
+      const users: User[] = [
+        fromPartial({}),
+        fromPartial({}),
+        fromPartial({}),
+      ];
+      findAndCount.mockResolvedValue([users, totalUsers]);
+
+      const result = await usersService.listUsers({ page });
+
+      expect(findAndCount).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({
+        offset: expectedOffset,
+      }));
+      expect(result.users).toEqual(users);
+      expect(result.totalUsers).toEqual(totalUsers);
+      expect(result.totalPages).toEqual(expectedTotalPages);
     });
   });
 });
