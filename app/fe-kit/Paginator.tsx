@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import type { FC, HTMLProps, PropsWithChildren } from 'react';
 import { useMemo } from 'react';
-import type { NumberOrEllipsis } from '../utils/pagination';
-import { pageIsEllipsis } from '../utils/pagination';
-import { keyForPage, progressivePagination } from '../utils/pagination';
+import type { NumberOrEllipsis } from './pagination';
+import { pageIsEllipsis } from './pagination';
+import { keyForPage, progressivePagination } from './pagination';
 
 const buildPaginatorItemClasses = (active: boolean) => clsx(
   'tw:border-r tw:last:border-none',
