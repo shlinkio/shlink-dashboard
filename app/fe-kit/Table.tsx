@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { FC, PropsWithChildren, ReactNode } from 'react';
+import type { FC, HTMLProps, PropsWithChildren, ReactNode } from 'react';
 import { useContext } from 'react';
 import { createContext } from 'react';
 
@@ -23,7 +23,7 @@ const TableBody: FC<TableElementProps> = ({ children, className }) => (
   </TableSectionContext.Provider>
 );
 
-const Row: FC<TableElementProps> = ({ children, className }) => {
+const Row: FC<HTMLProps<HTMLTableRowElement>> = ({ children, className, ...rest }) => {
   const sectionContext = useContext(TableSectionContext);
   return (
     <tr
@@ -33,34 +33,31 @@ const Row: FC<TableElementProps> = ({ children, className }) => {
         },
         className,
       )}
+      {...rest}
     >
       {children}
     </tr>
   );
 };
 
-export type CellProps = TableElementProps & {
-  sectionType?: SectionType;
-};
-
-const Cell: FC<CellProps> = ({ children, className, sectionType }) => {
+const Cell: FC<HTMLProps<HTMLTableCellElement>> = ({ children, className, ...rest }) => {
   const sectionContext = useContext(TableSectionContext);
-  const Tag = (sectionType ?? sectionContext?.section) === 'head' ? 'th' : 'td';
+  const Tag = sectionContext?.section === 'head' ? 'th' : 'td';
 
   return (
-    <Tag className={clsx('tw:p-2 tw:!border-b-1 tw:!border-(--border-color)', className)}>
+    <Tag className={clsx('tw:p-2 tw:!border-b-1 tw:!border-(--border-color)', className)} {...rest}>
       {children}
     </Tag>
   );
 };
 
-export type TableProps = PropsWithChildren & {
+export type TableProps = HTMLProps<HTMLTableElement> & {
   header: ReactNode;
 };
 
-const BaseTable: FC<TableProps> = ({ header, children }) => {
+const BaseTable: FC<TableProps> = ({ header, children, ...rest }) => {
   return (
-    <table className="tw:w-full">
+    <table className="tw:w-full" {...rest}>
       <TableHead>
         {header}
       </TableHead>

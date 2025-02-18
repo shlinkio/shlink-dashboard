@@ -61,7 +61,10 @@ export const Paginator: FC<PaginatorProps> = ({ currentPage, pagesCount, ...rest
   };
 
   return (
-    <div className="tw:select-none tw:rounded tw:border tw:border-(--border-color) tw:flex tw:overflow-hidden">
+    <div
+      className="tw:select-none tw:rounded tw:border tw:border-(--border-color) tw:flex tw:overflow-hidden"
+      data-testid="paginator"
+    >
       {progressivePagination(currentPage, pagesCount).map((pageNumber, index) => (
         <PaginatorItem
           key={keyForPage(pageNumber, index)}

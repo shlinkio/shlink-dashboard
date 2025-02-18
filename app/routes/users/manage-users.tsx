@@ -25,7 +25,7 @@ export async function loader(
   return usersService.listUsers({ page: Number(page) });
 }
 
-export default function Users() {
+export default function ManageUsers() {
   const { users, totalPages } = useLoaderData<typeof loader>();
   const { page } = useParams();
   const urlForPage = useCallback((page: number) => `/users/manage/${page}`, []);
@@ -42,6 +42,11 @@ export default function Users() {
             </Table.Row>
           }
         >
+          {users.length === 0 && (
+            <Table.Row className="tw:text-center">
+              <Table.Cell colSpan={3} className="tw:italic">No users found</Table.Cell>
+            </Table.Row>
+          )}
           {users.map((user) => (
             <Table.Row key={user.id}>
               <Table.Cell>{user.username}</Table.Cell>
