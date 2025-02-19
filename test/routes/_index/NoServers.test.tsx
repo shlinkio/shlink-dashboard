@@ -7,7 +7,7 @@ describe('<NoServers />', () => {
   const setUp = () => render(
     <MemoryRouter>
       <NoServers />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   it('passes a11y checks', () => checkAccessibility(setUp()));

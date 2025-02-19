@@ -6,6 +6,7 @@ import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { User } from '../../../app/entities/User';
 import ManageUsers, { loader } from '../../../app/routes/users/manage-users';
 import type { UsersService } from '../../../app/users/UsersService.server';
+import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('manage-users', () => {
   const getSession = vi.fn();
@@ -48,6 +49,12 @@ describe('manage-users', () => {
       ]);
       return render(<Stub initialEntries={['/users/manage/1']} />);
     };
+
+    it.each([
+      {},
+      { users: [fromPartial<User>({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
+      { totalPages: 5 },
+    ])('passes a11y checks', ({ users, totalPages }) => checkAccessibility(setUp({ users, totalPages })));
 
     it('renders empty users list if no users are returned', async () => {
       setUp();
