@@ -1,37 +1,55 @@
 import clsx from 'clsx';
 import type { FC, HTMLProps, PropsWithChildren } from 'react';
+import { useCallback } from 'react';
 import { useMemo } from 'react';
 import type { NumberOrEllipsis } from './pagination';
-import { pageIsEllipsis } from './pagination';
-import { keyForPage, progressivePagination } from './pagination';
+import { ELLIPSIS, keyForPage, pageIsEllipsis, prettifyPageNumber, progressivePagination } from './pagination';
 
 const buildPaginatorItemClasses = (active: boolean) => clsx(
   'tw:border-r tw:last:border-none',
-  'tw:px-3 py-2 tw:cursor-pointer',
+  'tw:px-3 py-2 tw:cursor-pointer tw:!no-underline',
   {
     'tw:hover:bg-(--secondary-color) tw:text-shlink-brand tw:border-r-(--border-color)': !active,
-    'tw:bg-(--brand-color) tw:text-white tw:border-r-(--brand-color)': active,
+    'tw:bg-(--brand-color) tw:!text-white tw:border-r-(--brand-color)': active,
   },
 );
 
-type PaginatorItemProps<T extends HTMLElement> = PropsWithChildren<{
+type BasePaginatorItemProps = {
   active: boolean;
-} & Omit<HTMLProps<T>, 'className'>>;
+  isEllipsis: boolean;
+};
 
-function LinkPaginatorItem({ children, active, ...anchorProps }: PaginatorItemProps<HTMLAnchorElement>) {
+type PaginatorItemProps<T extends HTMLElement> =
+  PropsWithChildren<BasePaginatorItemProps & Omit<HTMLProps<T>, 'className'>>;
+
+function EllipsisPaginatorItem() {
+  return (
+    <span
+      aria-hidden
+      className="tw:border-r tw:last:border-none tw:px-3 py-2 tw:text-gray-400 tw:border-r-(--border-color)"
+    >
+      {ELLIPSIS}
+    </span>
+  );
+}
+
+function LinkPaginatorItem(
+  { children, active, isEllipsis, href, ...anchorProps }: PaginatorItemProps<HTMLAnchorElement>,
+) {
   const classes = useMemo(() => buildPaginatorItemClasses(active), [active]);
 
-  return (
-    <a className={classes} {...anchorProps}>
+  return isEllipsis ? <EllipsisPaginatorItem /> : (
+    <a className={classes} href={href} {...anchorProps}>
       {children}
     </a>
   );
 }
 
-function ButtonPaginatorItem({ active, children, ...buttonProps }: Omit<PaginatorItemProps<HTMLButtonElement>, 'type'>) {
+function ButtonPaginatorItem(
+  { children, active, isEllipsis, ...buttonProps }: Omit<PaginatorItemProps<HTMLButtonElement>, 'type'>,
+) {
   const classes = useMemo(() => buildPaginatorItemClasses(active), [active]);
-
-  return (
+  return isEllipsis ? <EllipsisPaginatorItem /> : (
     <button type="button" className={classes} {...buttonProps}>
       {children}
     </button>
@@ -48,17 +66,18 @@ export type PaginatorProps = {
 });
 
 export const Paginator: FC<PaginatorProps> = ({ currentPage, pagesCount, ...rest }) => {
+  const isLinksPaginator = 'urlForPage' in rest;
+  const PaginatorItem = isLinksPaginator ? LinkPaginatorItem : ButtonPaginatorItem;
+  const itemPropsForPageNumber = useCallback(
+    (pageNumber: NumberOrEllipsis) => isLinksPaginator
+      ? { href: pageIsEllipsis(pageNumber) ? undefined : rest.urlForPage(pageNumber) }
+      : { onClick: () => !pageIsEllipsis(pageNumber) && rest.onPageChange(pageNumber) },
+    [isLinksPaginator, rest],
+  );
+
   if (pagesCount < 2) {
     return null;
   }
-
-  const isLinksPaginator = 'urlForPage' in rest;
-  const PaginatorItem = isLinksPaginator ? LinkPaginatorItem : ButtonPaginatorItem;
-  const itemProps = (pageNumber: NumberOrEllipsis) => isLinksPaginator ? {
-    href: pageIsEllipsis(pageNumber) ? undefined : rest.urlForPage(pageNumber),
-  } : {
-    onClick: () => !pageIsEllipsis(pageNumber) && rest.onPageChange(pageNumber),
-  };
 
   return (
     <div
@@ -69,9 +88,10 @@ export const Paginator: FC<PaginatorProps> = ({ currentPage, pagesCount, ...rest
         <PaginatorItem
           key={keyForPage(pageNumber, index)}
           active={pageNumber === currentPage}
-          {...itemProps(pageNumber)}
+          isEllipsis={pageIsEllipsis(pageNumber)}
+          {...itemPropsForPageNumber(pageNumber)}
         >
-          {pageNumber}
+          {prettifyPageNumber(pageNumber)}
         </PaginatorItem>
       ))}
     </div>

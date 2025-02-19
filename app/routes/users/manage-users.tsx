@@ -51,13 +51,13 @@ export default function ManageUsers() {
             <Table.Row key={user.id}>
               <Table.Cell>{user.username}</Table.Cell>
               <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
-              <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
+              <Table.Cell><RoleBadge role={user.role}/></Table.Cell>
             </Table.Row>
           ))}
         </Table>
         {totalPages >= 2 && (
           <div className="tw:flex tw:justify-center">
-            <Paginator pagesCount={totalPages} currentPage={Number(page)} urlForPage={urlForPage}/>
+            <Paginator pagesCount={totalPages} currentPage={Number(page)} urlForPage={urlForPage} />
           </div>
         )}
       </SimpleCard>
