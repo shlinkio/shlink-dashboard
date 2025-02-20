@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
 import type { Server } from '../../../app/entities/Server';
-import { WelcomeCard } from '../../../app/routes/_index/WelcomeCard';
+import { WelcomeCard } from '../../../app/routes/index/WelcomeCard';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<WelcomeCard />', () => {

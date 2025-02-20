@@ -6,7 +6,7 @@ export default [
   {
     // Allow config files and route files to have a default export, as that's what the third parties consuming them
     // expect
-    files: ['**/app/routes/**', '**/app/root.tsx', '*.config.ts'],
+    files: ['**/app/routes/**', '**/app/routes.ts', '**/app/root.tsx', '*.config.ts'],
     rules: {
       'no-restricted-exports': 'off',
     },

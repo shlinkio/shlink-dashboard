@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { NoServers } from '../../../app/routes/_index/NoServers';
+import { NoServers } from '../../../app/routes/index/NoServers';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<NoServers />', () => {

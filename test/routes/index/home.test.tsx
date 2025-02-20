@@ -4,10 +4,10 @@ import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
 import type { Server } from '../../../app/entities/Server';
-import Index, { loader } from '../../../app/routes/_index/route';
+import Home, { loader } from '../../../app/routes/index/home';
 import type { ServersService } from '../../../app/servers/ServersService.server';
 
-describe('_index.route', () => {
+describe('home', () => {
   describe('loader', () => {
     const getSession = vi.fn();
     const authHelper: AuthHelper = fromPartial({ getSession });
@@ -37,7 +37,7 @@ describe('_index.route', () => {
       const RemixStub = createRoutesStub([
         {
           path: '/',
-          Component: Index,
+          Component: Home,
           loader: () => ({ servers }),
         },
       ]);
