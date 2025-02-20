@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
 import type { Server } from '../../../app/entities/Server';
-import { ServersList } from '../../../app/routes/_index/ServersList';
+import { ServersList } from '../../../app/routes/index/ServersList';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<ServersList />', () => {

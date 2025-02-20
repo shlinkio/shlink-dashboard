@@ -3,7 +3,7 @@ import { index, route } from '@react-router/dev/routes';
 
 // eslint-disable-next-line no-restricted-exports
 export default [
-  index('./routes/_index/route.tsx'),
+  index('./routes/index/home.tsx'),
   route('/login', './routes/login.tsx'),
   route('/logout', './routes/logout.ts'),
   route('/settings/*', './routes/settings.$.tsx'),

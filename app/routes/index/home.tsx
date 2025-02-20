@@ -17,7 +17,7 @@ export async function loader(
   return { servers };
 }
 
-export default function Index() {
+export default function Home() {
   const { servers } = useLoaderData<typeof loader>();
 
   return (
