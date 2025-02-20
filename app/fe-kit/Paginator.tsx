@@ -1,3 +1,5 @@
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import type { FC, HTMLProps, PropsWithChildren } from 'react';
 import { useCallback } from 'react';
@@ -5,7 +7,7 @@ import { useMemo } from 'react';
 import type { NumberOrEllipsis } from './pagination';
 import { ELLIPSIS, keyForPage, pageIsEllipsis, prettifyPageNumber, progressivePagination } from './pagination';
 
-const buildPaginatorItemClasses = (active: boolean) => clsx(
+const buildPaginatorItemClasses = (active = false) => clsx(
   'tw:border-r tw:last:border-none',
   'tw:px-3 py-2 tw:cursor-pointer tw:!no-underline',
   {
@@ -15,8 +17,8 @@ const buildPaginatorItemClasses = (active: boolean) => clsx(
 );
 
 type BasePaginatorItemProps = {
-  active: boolean;
-  isEllipsis: boolean;
+  active?: boolean;
+  isEllipsis?: boolean;
 };
 
 type PaginatorItemProps<T extends HTMLElement> =
@@ -84,6 +86,9 @@ export const Paginator: FC<PaginatorProps> = ({ currentPage, pagesCount, ...rest
       className="tw:select-none tw:rounded tw:border tw:border-(--border-color) tw:flex tw:overflow-hidden"
       data-testid="paginator"
     >
+      <PaginatorItem {...itemPropsForPageNumber(Math.max(1, currentPage - 1))} aria-label="Previous">
+        <FontAwesomeIcon size="xs" icon={faChevronLeft} />
+      </PaginatorItem>
       {progressivePagination(currentPage, pagesCount).map((pageNumber, index) => (
         <PaginatorItem
           key={keyForPage(pageNumber, index)}
@@ -94,6 +99,9 @@ export const Paginator: FC<PaginatorProps> = ({ currentPage, pagesCount, ...rest
           {prettifyPageNumber(pageNumber)}
         </PaginatorItem>
       ))}
+      <PaginatorItem {...itemPropsForPageNumber(Math.min(pagesCount, currentPage + 1))} aria-label="Next">
+        <FontAwesomeIcon size="xs" icon={faChevronRight} />
+      </PaginatorItem>
     </div>
   );
 };
