@@ -36,6 +36,7 @@ export default function ManageUsers() {
         <Table
           header={
             <Table.Row>
+              <Table.Cell>Created</Table.Cell>
               <Table.Cell>Username</Table.Cell>
               <Table.Cell>Display name</Table.Cell>
               <Table.Cell>Role</Table.Cell>
@@ -49,6 +50,7 @@ export default function ManageUsers() {
           )}
           {users.map((user) => (
             <Table.Row key={user.id}>
+              <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
               <Table.Cell>{user.username}</Table.Cell>
               <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
               <Table.Cell><RoleBadge role={user.role}/></Table.Cell>

@@ -10,6 +10,7 @@ export class Migration20240608073312 extends Migration {
       table.string('password').notNullable();
       table.string('role').notNullable();
       table.string('display_name');
+      table.dateTime('created_at');
     });
 
     await knex.schema.createTable('settings', (table) => {

@@ -10,6 +10,7 @@ export class User extends BaseEntity {
   password!: string;
   role!: Role;
   displayName!: string | null;
+  createdAt!: Date;
 }
 
 export const UserSchema = new EntitySchema({
@@ -28,6 +29,11 @@ export const UserSchema = new EntitySchema({
       name: 'display_name',
       type: 'string',
       nullable: true,
+    },
+    createdAt: {
+      name: 'created_at',
+      type: 'datetime',
+      onCreate: () => new Date(),
     },
   },
 });

@@ -38,7 +38,7 @@ export class UsersService {
 
   async listUsers({
     page = 1,
-    orderBy = { field: 'username' },
+    orderBy = { field: 'createdAt' },
   }: ListUsersOptions): Promise<UsersList> {
     const positivePage = Math.max(1, page);
     const limit = 20;
