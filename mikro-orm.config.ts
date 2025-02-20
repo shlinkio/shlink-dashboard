@@ -55,5 +55,4 @@ async function resolveOptions(): Promise<Options> {
   };
 }
 
-// eslint-disable-next-line no-restricted-exports
 export default await resolveOptions();

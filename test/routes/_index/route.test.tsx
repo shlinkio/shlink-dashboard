@@ -1,6 +1,6 @@
-import { createRoutesStub } from 'react-router';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
 import type { Server } from '../../../app/entities/Server';

@@ -9,7 +9,7 @@ describe('<WelcomeCard />', () => {
   const setUp = (servers: Server[]) => render(
     <MemoryRouter>
       <WelcomeCard servers={servers} />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   it('passes a11y checks', () => checkAccessibility(setUp([])));
