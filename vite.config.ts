@@ -43,6 +43,7 @@ export default defineConfig({
         'app/**/*.tsx',
         '!app/db/**/*.ts',
         '!app/entities/*.ts',
+        '!app/routes.ts',
       ],
       reporter: ['text', 'text-summary', 'clover', 'html'],
 
