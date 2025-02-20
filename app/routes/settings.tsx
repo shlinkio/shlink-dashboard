@@ -1,6 +1,6 @@
 import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/settings';
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { Route, Routes } from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
@@ -8,6 +8,7 @@ import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
+import { useIsClient } from '../utils/hooks';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -39,11 +40,7 @@ export default function Settings() {
     method: 'POST',
     encType: 'application/json',
   }), [fetcher]);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useIsClient();
 
   return (
     <Layout>
