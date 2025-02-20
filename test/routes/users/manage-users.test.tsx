@@ -13,6 +13,7 @@ describe('manage-users', () => {
   const authHelper: AuthHelper = fromPartial({ getSession });
   const listUsers = vi.fn();
   const usersService: UsersService = fromPartial({ listUsers });
+  const mockUser = (userData: Partial<User>): User => fromPartial({ ...userData, createdAt: new Date() });
 
   describe('loader', () => {
     const runLoader = (args: Partial<LoaderFunctionArgs> = {}) => loader(fromPartial(args), authHelper, usersService);
@@ -52,7 +53,7 @@ describe('manage-users', () => {
 
     it.each([
       {},
-      { users: [fromPartial<User>({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
+      { users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
       { totalPages: 5 },
     ])('passes a11y checks', ({ users, totalPages }) => checkAccessibility(setUp({ users, totalPages })));
 
@@ -66,7 +67,7 @@ describe('manage-users', () => {
 
     it('renders list with returned users', async () => {
       setUp({
-        users: [fromPartial({ username: 'foo', displayName: 'John Doe', role: 'admin' })],
+        users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })],
         totalPages: 5,
       });
 
