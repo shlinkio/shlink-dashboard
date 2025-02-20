@@ -6,7 +6,7 @@ export default [
   index('./routes/index/home.tsx'),
   route('/login', './routes/login.tsx'),
   route('/logout', './routes/logout.ts'),
-  route('/settings/*', './routes/settings.$.tsx'),
+  route('/settings/*', './routes/settings.tsx'),
 
   // RPC-style proxy for Shlink API
   route('/server/:serverId/shlink-api/:method', './routes/server.$serverId.shlink-api.$method.ts'),
