@@ -4,10 +4,10 @@ import { fromPartial } from '@total-typescript/shoehorn';
 import type { ActionFunctionArgs } from 'react-router';
 import { expect } from 'vitest';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
-import { action } from '../../app/routes/server.$serverId.shlink-api.$method';
+import { action } from '../../app/routes/shlink-api-rpc-proxy';
 import type { ServersService } from '../../app/servers/ServersService.server';
 
-describe('server.$serverId.shlink-api.$method', () => {
+describe('shlink-api-rpc-proxy', () => {
   const getByPublicIdAndUser = vi.fn();
   const serversService = fromPartial<ServersService>({ getByPublicIdAndUser });
   const getShortUrl = async (shortCode: string) => {

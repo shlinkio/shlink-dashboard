@@ -8,12 +8,10 @@ export default [
   route('/logout', './routes/logout.ts'),
   route('/settings/*', './routes/settings.tsx'),
 
-  // RPC-style proxy for Shlink API
-  route('/server/:serverId/shlink-api/:method', './routes/server.$serverId.shlink-api.$method.ts'),
-  // ShlinkWebComponent wrapper
+  // Server-specific routes
+  route('/server/:serverId/shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
   route('/server/:serverId/*', './routes/server.$serverId.$.tsx'),
-  // Saves tag colors
-  route('/server/:serverId/tags/colors', './routes/server.$serverId.tags.colors.ts'),
+  route('/server/:serverId/tags/colors', './routes/save-tags-colors.ts'),
 
   // Users management
   route('/users/manage/:page', './routes/users/manage-users.tsx'),

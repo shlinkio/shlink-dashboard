@@ -1,10 +1,10 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { ActionFunctionArgs } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
-import { action } from '../../app/routes/server.$serverId.tags.colors';
+import { action } from '../../app/routes/save-tags-colors';
 import type { TagsService } from '../../app/tags/TagsService.server';
 
-describe('server.$serverId.tags.colors', () => {
+describe('save-tags-colors', () => {
   const updateTagColors = vi.fn();
   const tagsService = fromPartial<TagsService>({ updateTagColors });
   const getSession = vi.fn().mockResolvedValue(null);
