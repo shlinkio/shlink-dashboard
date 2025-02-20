@@ -10,8 +10,8 @@ export default [
 
   // Server-specific routes
   route('/server/:serverId/shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
-  route('/server/:serverId/*', './routes/server.$serverId.$.tsx'),
   route('/server/:serverId/tags/colors', './routes/save-tags-colors.ts'),
+  route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
 
   // Users management
   route('/users/manage/:page', './routes/users/manage-users.tsx'),
