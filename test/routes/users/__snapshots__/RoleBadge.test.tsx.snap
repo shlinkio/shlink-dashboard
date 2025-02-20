@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<RoleBadge /> > renders expected markup 1`] = `
+<div>
+  <div
+    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:bg-green-600 tw:text-white"
+  >
+    admin
+  </div>
+</div>
+`;
+
+exports[`<RoleBadge /> > renders expected markup 2`] = `
+<div>
+  <div
+    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:bg-gray-500 tw:text-white"
+  >
+    user
+  </div>
+</div>
+`;

@@ -1,8 +1,8 @@
-import { createRoutesStub } from 'react-router';
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { ActionFunctionArgs } from 'react-router';
+import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import SettingsComp, { action as settingsAction, loader } from '../../app/routes/settings.$';
 import type { SettingsService } from '../../app/settings/SettingsService.server';
@@ -57,10 +57,10 @@ describe('settings', () => {
     });
   });
 
-  // Skipping for now, as createRemixStub always results in a 404 page
+  // FIXME Skipping for now, as react-router throws an error
   describe.skip('<Settings />', () => {
     const setUp = () => {
-      const RemixStub = createRoutesStub([
+      const Stub = createRoutesStub([
         {
           path: '/settings',
           Component: SettingsComp,
@@ -68,7 +68,7 @@ describe('settings', () => {
           action: () => ({}),
         },
       ]);
-      return render(<RemixStub />);
+      return render(<Stub initialEntries={['/settings']} />);
     };
 
     it('renders settings component', async () => {
