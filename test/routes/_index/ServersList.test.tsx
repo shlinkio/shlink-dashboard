@@ -9,7 +9,7 @@ describe('<ServersList />', () => {
   const setUp = (servers: Server[]) => render(
     <MemoryRouter>
       <ServersList servers={servers} />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   it('passes a11y checks', () => checkAccessibility(setUp([
