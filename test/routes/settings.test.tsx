@@ -57,18 +57,18 @@ describe('settings', () => {
     });
   });
 
-  // FIXME Skipping for now, as react-router throws an error
+  // FIXME Skipping for now, as the test always resolves a 404
   describe.skip('<Settings />', () => {
     const setUp = () => {
       const Stub = createRoutesStub([
         {
-          path: '/settings',
+          path: '/settings/general',
           Component: SettingsComp,
           loader: () => ({}),
           action: () => ({}),
         },
       ]);
-      return render(<Stub initialEntries={['/settings']} />);
+      return render(<Stub initialEntries={['/settings/general']} />);
     };
 
     it('renders settings component', async () => {
