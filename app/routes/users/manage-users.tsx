@@ -6,8 +6,7 @@ import { determineOrderDir, SimpleCard, stringToOrder } from '@shlinkio/shlink-f
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { useParams } from 'react-router';
-import { useLoaderData } from 'react-router';
+import { href, useLoaderData,useParams } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
@@ -71,7 +70,7 @@ export default function ManageUsers() {
     }
 
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
-    return `/users/manage/${page}${queryString}`;
+    return href(`/users/manage/:page${queryString}`, { page: `${page}` });
   }, [dir, field]);
 
   return (
