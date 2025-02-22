@@ -47,7 +47,7 @@ function determineOrder(
 function HeaderCell({ orderDir, href, children }: PropsWithChildren<{ orderDir: OrderDir; href: string }>) {
   return (
     <Table.Cell>
-      <a className="tw:!text-current" href={href}>
+      <a className="tw:text-current!" href={href}>
         {children}
       </a>
       {orderDir && (

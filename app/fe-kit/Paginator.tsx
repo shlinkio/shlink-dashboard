@@ -9,10 +9,10 @@ import { ELLIPSIS, keyForPage, pageIsEllipsis, prettifyPageNumber, progressivePa
 
 const buildPaginatorItemClasses = (active = false) => clsx(
   'tw:border-r tw:last:border-none',
-  'tw:px-3 py-2 tw:cursor-pointer tw:!no-underline',
+  'tw:px-3 py-2 tw:cursor-pointer tw:no-underline!',
   {
     'tw:hover:bg-(--secondary-color) tw:text-shlink-brand tw:border-r-(--border-color)': !active,
-    'tw:bg-(--brand-color) tw:!text-white tw:border-r-(--brand-color)': active,
+    'tw:bg-(--brand-color) tw:text-white! tw:border-r-(--brand-color)': active,
   },
 );
 

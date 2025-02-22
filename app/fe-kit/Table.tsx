@@ -27,7 +27,7 @@ const Row: FC<HTMLProps<HTMLTableRowElement>> = ({ children, className, ...rest 
   const sectionContext = useContext(TableSectionContext);
   return (
     <tr
-      className={clsx(
+      className={clsx('tw:group',
         {
           'tw:hover:bg-(--secondary-color)': sectionContext?.section === 'body',
         },
@@ -45,7 +45,18 @@ const Cell: FC<HTMLProps<HTMLTableCellElement>> = ({ children, className, ...res
   const Tag = sectionContext?.section === 'head' ? 'th' : 'td';
 
   return (
-    <Tag className={clsx('tw:p-2 tw:!border-b-1 tw:!border-(--border-color)', className)} {...rest}>
+    <Tag
+      className={clsx(
+        'tw:p-2 tw:border-(--border-color)!',
+        {
+          // For non-header cells, add a bottom border only when not part of the last row
+          'tw:group-[&:not(:last-child)]:border-b-1!': Tag === 'td',
+          'tw:border-b-1!': Tag === 'th',
+        },
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </Tag>
   );
