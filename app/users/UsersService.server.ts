@@ -1,16 +1,14 @@
 import type { EntityManager } from '@mikro-orm/core';
+import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
 import { User as UserEntity } from '../entities/User';
 
-type OrderableFields = keyof Omit<User, 'id' | 'password'>;
+export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
 
 export type ListUsersOptions = {
   page?: number;
-  orderBy?: {
-    field: OrderableFields,
-    direction?: 'ASC' | 'DESC',
-  };
+  orderBy?: Order<UserOrderableFields>;
 };
 
 export type UsersList = {
@@ -36,10 +34,7 @@ export class UsersService {
     return user;
   }
 
-  async listUsers({
-    page = 1,
-    orderBy = { field: 'createdAt' },
-  }: ListUsersOptions): Promise<UsersList> {
+  async listUsers({ page = 1, orderBy }: ListUsersOptions): Promise<UsersList> {
     const positivePage = Math.max(1, page);
     const limit = 20;
     const offset = (positivePage - 1) * limit;
@@ -48,7 +43,7 @@ export class UsersService {
       limit,
       offset,
       orderBy: {
-        [orderBy.field]: orderBy.direction ?? 'ASC',
+        [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'ASC',
       },
     });
 
