@@ -92,5 +92,28 @@ describe('UsersService', () => {
       expect(result.totalUsers).toEqual(totalUsers);
       expect(result.totalPages).toEqual(expectedTotalPages);
     });
+
+    it.each([
+      {
+        orderBy: undefined,
+        expectedOrderBy: { createdAt: 'ASC' },
+      },
+      {
+        orderBy: { field: 'createdAt' as const, dir: 'ASC' as const },
+        expectedOrderBy: { createdAt: 'ASC' },
+      },
+      {
+        orderBy: { field: 'username' as const, dir: 'DESC' as const },
+        expectedOrderBy: { username: 'DESC' },
+      },
+    ])('orders by expected field', async ({ orderBy, expectedOrderBy }) => {
+      findAndCount.mockResolvedValue([[], 0]);
+
+      await usersService.listUsers({ orderBy });
+
+      expect(findAndCount).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({
+        orderBy: expectedOrderBy,
+      }));
+    });
   });
 });
