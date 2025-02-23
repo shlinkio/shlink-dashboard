@@ -1,3 +1,4 @@
+import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { render, screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -5,7 +6,7 @@ import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { User } from '../../../app/entities/User';
 import ManageUsers, { loader } from '../../../app/routes/users/manage-users';
-import type { UsersService } from '../../../app/users/UsersService.server';
+import type { UserOrderableFields, UsersService } from '../../../app/users/UsersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('manage-users', () => {
@@ -13,7 +14,11 @@ describe('manage-users', () => {
   const authHelper: AuthHelper = fromPartial({ getSession });
   const listUsers = vi.fn();
   const usersService: UsersService = fromPartial({ listUsers });
-  const mockUser = (userData: Partial<User>): User => fromPartial({ ...userData, createdAt: new Date() });
+  const mockUser = (userData: Partial<Omit<User, 'id'>>): User => fromPartial({
+    createdAt: new Date(),
+    ...userData,
+    id: `${Date.now()}`,
+  });
 
   describe('loader', () => {
     const runLoader = (args: Partial<LoaderFunctionArgs> = {}) => loader(fromPartial(args), authHelper, usersService);
@@ -40,12 +45,18 @@ describe('manage-users', () => {
   });
 
   describe('<ManageUsers />', () => {
-    const setUp = ({ users = [], totalPages = 1 }: { users?: User[]; totalPages?: number; } = {}) => {
+    type SetUpOptions = {
+      users?: User[];
+      totalPages?: number;
+      orderBy?: Order<UserOrderableFields>;
+    };
+
+    const setUp = ({ users = [], totalPages = 1, orderBy = {} }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
           path: '/users/manage/1',
           Component: ManageUsers,
-          loader: () => ({ users, totalPages }),
+          loader: () => ({ users, totalPages, orderBy }),
         },
       ]);
       return render(<Stub initialEntries={['/users/manage/1']} />);
@@ -55,7 +66,12 @@ describe('manage-users', () => {
       {},
       { users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
       { totalPages: 5 },
-    ])('passes a11y checks', ({ users, totalPages }) => checkAccessibility(setUp({ users, totalPages })));
+    ])('passes a11y checks', async ({ users, totalPages }) => {
+      const { container } = setUp({ users, totalPages });
+
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument());
+      await checkAccessibility({ container });
+    });
 
     it('renders empty users list if no users are returned', async () => {
       setUp();
