@@ -65,6 +65,7 @@ describe('login', () => {
         {
           path: '/',
           Component: Login,
+          HydrateFallback: () => null,
           action: () => ({ error }),
         },
       ]);

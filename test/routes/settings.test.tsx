@@ -64,6 +64,7 @@ describe('settings', () => {
         {
           path: '/settings/general',
           Component: SettingsComp,
+          HydrateFallback: () => null,
           loader: () => ({}),
           action: () => ({}),
         },

@@ -6,7 +6,7 @@ import { determineOrderDir, SimpleCard, stringToOrder } from '@shlinkio/shlink-f
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { href, useLoaderData,useParams } from 'react-router';
+import { href, useLoaderData } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
@@ -27,12 +27,13 @@ export async function loader(
   }
 
   const { page } = params;
+  const currentPage = Number(page);
   const query = new URL(request.url).searchParams;
   const orderByParam = query.get('orderBy');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
-  const usersList = await usersService.listUsers({ page: Number(page), orderBy });
+  const usersList = await usersService.listUsers({ page: currentPage, orderBy });
 
-  return { ...usersList, orderBy };
+  return { ...usersList, orderBy, currentPage };
 }
 
 function determineOrder(
@@ -57,10 +58,8 @@ function HeaderCell({ orderDir, href, children }: PropsWithChildren<{ orderDir: 
 }
 
 export default function ManageUsers() {
-  const { users, totalPages, orderBy } = useLoaderData<typeof loader>();
+  const { users, totalPages, orderBy, currentPage } = useLoaderData<typeof loader>();
   const { field, dir } = orderBy;
-  const { page } = useParams();
-  const currentPage = Number(page);
   const urlForPage = useCallback((page: number, orderBy?: Order<UserOrderableFields>) => {
     const query = new URLSearchParams();
     if (orderBy) {
@@ -68,9 +67,10 @@ export default function ManageUsers() {
     } else if (field) {
       query.set('orderBy', orderToString({ field, dir: dir ?? 'ASC' }) ?? '');
     }
-
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
-    return href(`/users/manage/:page${queryString}`, { page: `${page}` });
+    const baseUrl = href('/users/manage/:page', { page: `${page}` });
+
+    return `${baseUrl}${queryString}`;
   }, [dir, field]);
 
   return (

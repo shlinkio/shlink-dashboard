@@ -38,6 +38,7 @@ describe('home', () => {
         {
           path: '/',
           Component: Home,
+          HydrateFallback: () => null,
           loader: () => ({ servers }),
         },
       ]);
