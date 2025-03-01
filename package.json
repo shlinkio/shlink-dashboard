@@ -65,7 +65,7 @@
     "@total-typescript/shoehorn": "^0.1.2",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.13.5",
+    "@types/node": "^22.13.8",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
