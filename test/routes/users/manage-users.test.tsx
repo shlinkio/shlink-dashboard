@@ -55,13 +55,13 @@ describe('manage-users', () => {
     const setUp = async ({ users = [], totalPages = 1, orderBy = {} }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
-          path: '/users/manage/1',
+          path: '/manage-users/1',
           Component: ManageUsers,
           HydrateFallback: () => null,
           loader: () => ({ users, totalPages, orderBy, currentPage: 1 }),
         },
       ]);
-      const renderResult = render(<Stub initialEntries={['/users/manage/1']} />);
+      const renderResult = render(<Stub initialEntries={['/manage-users/1']} />);
 
       // Wait for the table to be rendered
       await screen.findByRole('table');
@@ -156,7 +156,7 @@ describe('manage-users', () => {
       await setUp({ totalPages: 10, orderBy });
 
       Object.entries(expectedUrls).forEach(([linkText, expectedUrl]) => {
-        expect(screen.getByRole('link', { name: linkText })).toHaveAttribute('href', `/users/manage/1?${expectedUrl}`);
+        expect(screen.getByRole('link', { name: linkText })).toHaveAttribute('href', `/manage-users/1?${expectedUrl}`);
       });
     });
   });

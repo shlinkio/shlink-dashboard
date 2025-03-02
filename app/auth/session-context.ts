@@ -4,6 +4,7 @@ import type { Role } from '../entities/User';
 export type SessionData = {
   userId: string;
   displayName: string | null;
+  username: string;
   role: Role;
 };
 

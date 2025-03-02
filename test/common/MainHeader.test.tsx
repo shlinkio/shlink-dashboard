@@ -7,8 +7,8 @@ import { MainHeader } from '../../app/common/MainHeader';
 import { checkAccessibility } from '../__helpers__/accessibility';
 
 describe('<MainHeader />', () => {
-  const setUp = (session?: SessionData) => render(
-    <SessionProvider value={session ?? null}>
+  const setUp = (session: SessionData | null = null) => render(
+    <SessionProvider value={session}>
       <MemoryRouter>
         <MainHeader />
       </MemoryRouter>
@@ -16,38 +16,29 @@ describe('<MainHeader />', () => {
   );
 
   it.each([
-    [undefined],
-    [fromPartial<SessionData>({})],
+    [fromPartial<SessionData>({ displayName: 'Jane' })],
+    [fromPartial<SessionData>({ username: 'jane' })],
   ])('passes a11y checks', (session) => checkAccessibility(setUp(session)));
 
   it.each([
     [undefined],
-    [fromPartial<SessionData>({})],
-  ])('shows logout and menu toggle only if session is set', (session) => {
+    [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
+  ])('shows user menu toggle only if session is set', (session) => {
     setUp(session);
 
     if (session) {
-      expect(screen.getByRole('button')).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Logout' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Jane Doe' })).toBeInTheDocument();
     } else {
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
-      expect(screen.queryByRole('link', { name: 'Logout' })).not.toBeInTheDocument();
-      expect(screen.queryByRole('link', { name: 'Settings' })).not.toBeInTheDocument();
     }
   });
 
   it.each([
-    [fromPartial<SessionData>({})],
+    [fromPartial<SessionData>({ username: 'jane_doe' })],
     [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
   ])('shows display name only if not null', (session) => {
     setUp(session);
-
-    if (session.displayName) {
-      expect(screen.getByTestId('display-name')).toHaveTextContent(`(${session.displayName})`);
-    } else {
-      expect(screen.queryByTestId('display-name')).not.toBeInTheDocument();
-    }
+    expect(screen.getByTestId('display-name')).toHaveTextContent(session.displayName ?? session.username);
   });
 
   it.each([

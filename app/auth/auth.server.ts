@@ -12,13 +12,13 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<Ses
 
   // Add strategy to login via credentials form
   strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }): Promise<SessionData> => {
-    const { username, password } = credentialsSchema.parse({
+    const { username: providedUsername, password } = credentialsSchema.parse({
       username: form.get('username'),
       password: form.get('password'),
     });
 
-    const { id, displayName, role } = await usersService.getUserByCredentials(username, password);
-    return { userId: id.toString(), displayName, role };
+    const { id, displayName, role, username } = await usersService.getUserByCredentials(providedUsername, password);
+    return { userId: id.toString(), displayName, role, username };
   }));
 
   // TODO Add other strategies, like oAuth for SSO
