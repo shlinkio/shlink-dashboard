@@ -68,7 +68,7 @@ export default function ManageUsers() {
       query.set('orderBy', orderToString({ field, dir: dir ?? 'ASC' }) ?? '');
     }
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
-    const baseUrl = href('/users/manage/:page', { page: `${page}` });
+    const baseUrl = href('/manage-users/:page', { page: `${page}` });
 
     return `${baseUrl}${queryString}`;
   }, [dir, field]);
