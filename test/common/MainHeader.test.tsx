@@ -43,7 +43,8 @@ describe('<MainHeader />', () => {
 
   it.each([
     { sessionData: fromPartial<SessionData>({ role: 'admin' }), shouldShowUsersMenu: true },
-    { sessionData: fromPartial<SessionData>({ role: 'user' }), shouldShowUsersMenu: false },
+    { sessionData: fromPartial<SessionData>({ role: 'advanced-user' }), shouldShowUsersMenu: false },
+    { sessionData: fromPartial<SessionData>({ role: 'managed-user' }), shouldShowUsersMenu: false },
   ])('shows user management option for admins', ({ sessionData, shouldShowUsersMenu }) => {
     setUp(sessionData);
 

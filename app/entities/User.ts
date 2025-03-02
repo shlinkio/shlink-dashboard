@@ -1,7 +1,7 @@
 import { EntitySchema } from '@mikro-orm/core';
 import { BaseEntity, idColumnSchema } from './Base';
 
-const roles = ['admin', 'user'] as const;
+const roles = ['admin', 'advanced-user', 'managed-user'] as const;
 
 export type Role = typeof roles[number];
 

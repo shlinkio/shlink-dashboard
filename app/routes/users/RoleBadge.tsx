@@ -11,10 +11,10 @@ export const RoleBadge: FC<RoleBadgeProps> = ({ role }) => {
     <div
       className={clsx('tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold', {
         'tw:bg-green-600 tw:text-white': role === 'admin',
-        'tw:bg-gray-500 tw:text-white': role === 'user',
+        'tw:bg-gray-500 tw:text-white': role !== 'admin',
       })}
     >
-      {role}
+      {role.replaceAll('-', ' ')}
     </div>
   );
 };
