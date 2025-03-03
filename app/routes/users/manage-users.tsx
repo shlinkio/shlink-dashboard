@@ -6,11 +6,13 @@ import { determineOrderDir, SimpleCard, stringToOrder } from '@shlinkio/shlink-f
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { href, useLoaderData } from 'react-router';
+import { useNavigation } from 'react-router';
+import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { Paginator } from '../../fe-kit/Paginator';
+import { SearchInput } from '../../fe-kit/SearchInput';
 import { Table } from '../../fe-kit/Table';
 import type { UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
@@ -31,7 +33,8 @@ export async function loader(
   const query = new URL(request.url).searchParams;
   const orderByParam = query.get('orderBy');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
-  const usersList = await usersService.listUsers({ page: currentPage, orderBy });
+  const searchTerm = query.get('searchTerm') ?? undefined;
+  const usersList = await usersService.listUsers({ page: currentPage, orderBy, searchTerm });
 
   return { ...usersList, orderBy, currentPage };
 }
@@ -58,15 +61,22 @@ function HeaderCell({ orderDir, href, children }: PropsWithChildren<{ orderDir: 
 }
 
 export default function ManageUsers() {
+  const navigation = useNavigation();
   const { users, totalPages, orderBy, currentPage } = useLoaderData<typeof loader>();
   const { field, dir } = orderBy;
-  const urlForPage = useCallback((page: number, orderBy?: Order<UserOrderableFields>) => {
+  const navigate = useNavigate();
+  const urlForPage = useCallback((page: number, orderBy?: Order<UserOrderableFields>, searchTerm?: string) => {
     const query = new URLSearchParams();
     if (orderBy) {
       query.set('orderBy', orderToString(orderBy) ?? '');
     } else if (field) {
       query.set('orderBy', orderToString({ field, dir: dir ?? 'ASC' }) ?? '');
     }
+
+    if (searchTerm) {
+      query.set('searchTerm', searchTerm);
+    }
+
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
     const baseUrl = href('/manage-users/:page', { page: `${page}` });
 
@@ -74,7 +84,10 @@ export default function ManageUsers() {
   }, [dir, field]);
 
   return (
-    <Layout>
+    <Layout className="tw:flex tw:flex-col tw:gap-y-3">
+      <SearchInput
+        onChange={(searchTerm) => navigate(urlForPage(currentPage, undefined, searchTerm), { replace: true })}
+      />
       <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
         <Table
           header={
@@ -106,19 +119,27 @@ export default function ManageUsers() {
             </Table.Row>
           }
         >
-          {users.length === 0 && (
+          {navigation.state === 'loading' ? (
             <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={3} className="tw:italic">No users found</Table.Cell>
+              <Table.Cell colSpan={4} className="tw:italic">Loading...</Table.Cell>
             </Table.Row>
+          ) : (
+            <>
+              {users.length === 0 && (
+                <Table.Row className="tw:text-center">
+                  <Table.Cell colSpan={4} className="tw:italic">No users found</Table.Cell>
+                </Table.Row>
+              )}
+              {users.map((user) => (
+                <Table.Row key={user.id}>
+                  <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
+                  <Table.Cell>{user.username}</Table.Cell>
+                  <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
+                  <Table.Cell><RoleBadge role={user.role}/></Table.Cell>
+                </Table.Row>
+              ))}
+            </>
           )}
-          {users.map((user) => (
-            <Table.Row key={user.id}>
-              <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
-              <Table.Cell>{user.username}</Table.Cell>
-              <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
-              <Table.Cell><RoleBadge role={user.role}/></Table.Cell>
-            </Table.Row>
-          ))}
         </Table>
         {totalPages >= 2 && (
           <div className="tw:flex tw:justify-center">
