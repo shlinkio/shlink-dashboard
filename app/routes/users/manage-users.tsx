@@ -1,11 +1,13 @@
 import { faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { Order, OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
 import { determineOrderDir, SimpleCard, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
+import { Link } from 'react-router';
 import { useNavigation } from 'react-router';
 import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
@@ -14,7 +16,7 @@ import { serverContainer } from '../../container/container.server';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
 import { Table } from '../../fe-kit/Table';
-import type { UserOrderableFields } from '../../users/UsersService.server';
+import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
 import { RoleBadge } from './RoleBadge';
 
@@ -28,15 +30,17 @@ export async function loader(
     throw new Response('Not found', { status: 404 });
   }
 
-  const { page } = params;
-  const currentPage = Number(page);
   const query = new URL(request.url).searchParams;
   const orderByParam = query.get('orderBy');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
-  const searchTerm = query.get('searchTerm') ?? undefined;
-  const usersList = await usersService.listUsers({ page: currentPage, orderBy, searchTerm });
+  const currentParams = {
+    page: Number(params.page),
+    orderBy,
+    searchTerm: query.get('searchTerm') ?? undefined,
+  } satisfies ListUsersOptions;
+  const usersList = await usersService.listUsers(currentParams);
 
-  return { ...usersList, orderBy, currentPage };
+  return { ...usersList, currentParams };
 }
 
 function determineOrder(
@@ -47,12 +51,12 @@ function determineOrder(
   return { field: newField, dir: determineOrderDir(currentField, newField, currentOrderDir) };
 }
 
-function HeaderCell({ orderDir, href, children }: PropsWithChildren<{ orderDir: OrderDir; href: string }>) {
+function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
     <Table.Cell>
-      <a className="tw:text-current!" href={href}>
+      <Link className="tw:text-current!" to={to}>
         {children}
-      </a>
+      </Link>
       {orderDir && (
         <FontAwesomeIcon className="tw:ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />
       )}
@@ -62,56 +66,58 @@ function HeaderCell({ orderDir, href, children }: PropsWithChildren<{ orderDir: 
 
 export default function ManageUsers() {
   const navigation = useNavigation();
-  const { users, totalPages, orderBy, currentPage } = useLoaderData<typeof loader>();
-  const { field, dir } = orderBy;
   const navigate = useNavigate();
-  const urlForPage = useCallback((page: number, orderBy?: Order<UserOrderableFields>, searchTerm?: string) => {
-    const query = new URLSearchParams();
-    if (orderBy) {
-      query.set('orderBy', orderToString(orderBy) ?? '');
-    } else if (field) {
-      query.set('orderBy', orderToString({ field, dir: dir ?? 'ASC' }) ?? '');
-    }
+  const { users, totalPages, currentParams } = useLoaderData<typeof loader>();
+  const { field, dir } = currentParams.orderBy;
 
-    if (searchTerm) {
-      query.set('searchTerm', searchTerm);
+  const urlForParams = useCallback((newParams: ListUsersOptions) => {
+    const query = new URLSearchParams();
+    const mergedParams = mergeDeepRight(currentParams, newParams);
+    const stringifiedOrderBy = orderToString(mergedParams.orderBy ?? {});
+
+    if (stringifiedOrderBy) {
+      query.set('orderBy', stringifiedOrderBy);
+    }
+    if (mergedParams.searchTerm) {
+      query.set('searchTerm', mergedParams.searchTerm);
     }
 
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
-    const baseUrl = href('/manage-users/:page', { page: `${page}` });
+    const baseUrl = href('/manage-users/:page', { page: `${mergedParams.page}` });
 
     return `${baseUrl}${queryString}`;
-  }, [dir, field]);
+  }, [currentParams]);
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-3">
       <SearchInput
-        onChange={(searchTerm) => navigate(urlForPage(currentPage, undefined, searchTerm), { replace: true })}
+        defaultValue={currentParams.searchTerm}
+        onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
       <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
         <Table
           header={
             <Table.Row>
               <HeaderCell
-                href={urlForPage(currentPage, determineOrder(field, 'createdAt', dir ?? 'ASC'))}
+                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'createdAt', dir ?? 'ASC') })}
                 orderDir={(!field || field === 'createdAt') ? (dir ?? 'ASC') : undefined}
               >
                 Created
               </HeaderCell>
               <HeaderCell
-                href={urlForPage(currentPage, determineOrder(field, 'username', dir))}
+                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'username', dir) })}
                 orderDir={field === 'username' ? dir : undefined}
               >
                 Username
               </HeaderCell>
               <HeaderCell
-                href={urlForPage(currentPage, determineOrder(field, 'displayName', dir))}
+                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'displayName', dir) })}
                 orderDir={field === 'displayName' ? dir : undefined}
               >
                 Display name
               </HeaderCell>
               <HeaderCell
-                href={urlForPage(currentPage, determineOrder(field, 'role', dir))}
+                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'role', dir) })}
                 orderDir={field === 'role' ? dir : undefined}
               >
                 Role
@@ -143,7 +149,11 @@ export default function ManageUsers() {
         </Table>
         {totalPages >= 2 && (
           <div className="tw:flex tw:justify-center">
-            <Paginator pagesCount={totalPages} currentPage={currentPage} urlForPage={urlForPage} />
+            <Paginator
+              pagesCount={totalPages}
+              currentPage={currentParams.page}
+              urlForPage={(page) => urlForParams({ page })}
+            />
           </div>
         )}
       </SimpleCard>
