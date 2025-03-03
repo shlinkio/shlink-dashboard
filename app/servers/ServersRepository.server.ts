@@ -1,24 +1,21 @@
 import type { EntityManager } from '@mikro-orm/core';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/core';
 import { Server } from '../entities/Server';
 
 export class ServersRepository extends EntityRepository<Server> {
   findByPublicIdAndUserId(publicId: string, userId: string): Promise<Server | null> {
-    const qb = this.em.qb(Server, 'server');
-    qb.innerJoin('server.users', 'user')
-      .where({ publicId, 'user.id': userId })
-      .limit(1);
-
-    return qb.getSingleResult();
+    return this.em.findOne(Server, {
+      publicId,
+      users: { id: userId },
+    });
   }
 
   findByUserId(userId: string): Promise<Server[]> {
-    const qb = this.em.qb(Server, 'server');
-    qb.innerJoin('server.users', 'user')
-      .where({ 'user.id': userId })
-      .orderBy({ name: 'ASC' });
-
-    return qb.getResult();
+    return this.em.find(Server, {
+      users: { id: userId },
+    }, {
+      orderBy: { name: 'ASC' },
+    });
   }
 }
 
