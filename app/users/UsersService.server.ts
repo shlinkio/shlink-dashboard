@@ -1,4 +1,4 @@
-import type { EntityManager, FilterQuery, OrderDefinition } from '@mikro-orm/core';
+import type { EntityManager, FilterQuery } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
