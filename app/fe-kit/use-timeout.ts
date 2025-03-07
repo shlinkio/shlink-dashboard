@@ -31,7 +31,10 @@ export function useTimeout(
 
   const setTimeout = useCallback((callback: Callback, delay?: number) => {
     clearCurrentTimeout();
-    timeoutRef.current = setTimeout_(callback, delay ?? defaultDelay);
+    timeoutRef.current = setTimeout_(() => {
+      callback();
+      timeoutRef.current = null;
+    }, delay ?? defaultDelay);
   }, [clearCurrentTimeout, defaultDelay, setTimeout_]);
 
   // When unmounted, clear the last timeout, if any
