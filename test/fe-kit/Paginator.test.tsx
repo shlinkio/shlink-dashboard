@@ -38,14 +38,12 @@ describe('<Paginator />', () => {
     { currentPage: 10, expectedPrevPage: 9, expectedNextPage: 10 },
     { currentPage: 5, expectedPrevPage: 4, expectedNextPage: 6 },
   ])('next and prev pages point to the right page', ({ currentPage, expectedPrevPage, expectedNextPage }) => {
-    setUp({
-      pagesCount: 10,
-      currentPage,
-      urlForPage: vi.fn().mockImplementation((page) => page),
-    });
+    const urlForPage = (page: number) => `/${page}`;
 
-    expect(screen.getByLabelText('Previous')).toHaveAttribute('href', `${expectedPrevPage}`);
-    expect(screen.getByLabelText('Next')).toHaveAttribute('href', `${expectedNextPage}`);
+    setUp({ pagesCount: 10, currentPage, urlForPage });
+
+    expect(screen.getByLabelText('Previous')).toHaveAttribute('href', urlForPage(expectedPrevPage));
+    expect(screen.getByLabelText('Next')).toHaveAttribute('href', urlForPage(expectedNextPage));
   });
 
   it.each([
