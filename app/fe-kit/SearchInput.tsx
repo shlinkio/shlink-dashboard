@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 import { useTimeout } from './use-timeout';
 
 export type SearchInputProps = {
-  onChange?: (searchTerm: string) => void;
+  onChange: (searchTerm: string) => void;
   borderless?: boolean;
   defaultValue?: string;
   containerClassName?: string;
@@ -22,10 +22,6 @@ export const SearchInput: FC<SearchInputProps> = ({
 }) => {
   const { setTimeout, clearCurrentTimeout } = useTimeout(500);
   const searchTermChanged = useCallback((newSearchTerm: string) => {
-    if (!onChange) {
-      return;
-    }
-
     if (!newSearchTerm) {
       // When setting an empty value, do it immediately
       clearCurrentTimeout();
