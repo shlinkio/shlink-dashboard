@@ -1,9 +1,9 @@
 import { faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
-import type { Order, OrderDir } from '@shlinkio/shlink-frontend-kit';
+import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
-import { determineOrderDir, SimpleCard, stringToOrder } from '@shlinkio/shlink-frontend-kit';
+import { determineOrder, SimpleCard, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -43,14 +43,6 @@ export async function loader(
   return { ...usersList, currentParams };
 }
 
-function determineOrder(
-  currentField: UserOrderableFields = 'createdAt',
-  newField?: UserOrderableFields,
-  currentOrderDir?: OrderDir,
-): Order<UserOrderableFields> {
-  return { field: newField, dir: determineOrderDir(currentField, newField, currentOrderDir) };
-}
-
 function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
     <Table.Cell>
@@ -87,6 +79,10 @@ export default function ManageUsers() {
 
     return `${baseUrl}${queryString}`;
   }, [currentParams]);
+  const headerUrl = useCallback((newField: UserOrderableFields, dirFallback?: OrderDir) => urlForParams({
+    page: 1,
+    orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
+  }), [dir, field, urlForParams]);
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-3">
@@ -99,25 +95,25 @@ export default function ManageUsers() {
           header={
             <Table.Row>
               <HeaderCell
-                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'createdAt', dir ?? 'ASC') })}
+                to={headerUrl('createdAt', 'ASC')}
                 orderDir={(!field || field === 'createdAt') ? (dir ?? 'ASC') : undefined}
               >
                 Created
               </HeaderCell>
               <HeaderCell
-                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'username', dir) })}
+                to={headerUrl('username')}
                 orderDir={field === 'username' ? dir : undefined}
               >
                 Username
               </HeaderCell>
               <HeaderCell
-                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'displayName', dir) })}
+                to={headerUrl('displayName')}
                 orderDir={field === 'displayName' ? dir : undefined}
               >
                 Display name
               </HeaderCell>
               <HeaderCell
-                to={urlForParams({ page: 1, orderBy: determineOrder(field, 'role', dir) })}
+                to={headerUrl('role')}
                 orderDir={field === 'role' ? dir : undefined}
               >
                 Role
