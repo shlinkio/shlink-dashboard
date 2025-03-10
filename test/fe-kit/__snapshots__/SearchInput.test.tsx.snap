@@ -1,0 +1,121 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<SearchInput /> > applies visual changes for some props 1`] = `
+<div>
+  <div
+    class="tw:relative tw:focus-within:z-10"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      data-icon="magnifying-glass"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+        fill="currentColor"
+      />
+    </svg>
+    <input
+      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75"
+      placeholder="Search..."
+      type="search"
+      value=""
+    />
+  </div>
+</div>
+`;
+
+exports[`<SearchInput /> > applies visual changes for some props 2`] = `
+<div>
+  <div
+    class="tw:relative tw:focus-within:z-10"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      data-icon="magnifying-glass"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+        fill="currentColor"
+      />
+    </svg>
+    <input
+      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color)"
+      placeholder="Search..."
+      type="search"
+      value="something"
+    />
+  </div>
+</div>
+`;
+
+exports[`<SearchInput /> > applies visual changes for some props 3`] = `
+<div>
+  <div
+    class="tw:relative tw:focus-within:z-10 something"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      data-icon="magnifying-glass"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+        fill="currentColor"
+      />
+    </svg>
+    <input
+      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color)"
+      placeholder="Search..."
+      type="search"
+      value=""
+    />
+  </div>
+</div>
+`;
+
+exports[`<SearchInput /> > applies visual changes for some props 4`] = `
+<div>
+  <div
+    class="tw:relative tw:focus-within:z-10"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      data-icon="magnifying-glass"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+        fill="currentColor"
+      />
+    </svg>
+    <input
+      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color) something"
+      placeholder="Search..."
+      type="search"
+      value=""
+    />
+  </div>
+</div>
+`;
