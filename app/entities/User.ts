@@ -1,4 +1,5 @@
 import { EntitySchema } from '@mikro-orm/core';
+import { UsersRepository } from '../users/UsersRepository.server';
 import { BaseEntity, idColumnSchema } from './Base';
 
 const roles = ['admin', 'advanced-user', 'managed-user'] as const;
@@ -16,6 +17,7 @@ export class User extends BaseEntity {
 export const UserSchema = new EntitySchema({
   class: User,
   tableName: 'users',
+  repository: () => UsersRepository,
   properties: {
     id: idColumnSchema,
     username: { type: 'string', unique: true },

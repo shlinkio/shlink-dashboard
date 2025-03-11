@@ -1,5 +1,5 @@
 import type { Order } from '@shlinkio/shlink-frontend-kit';
-import { render, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
@@ -8,6 +8,17 @@ import type { User } from '../../../app/entities/User';
 import ManageUsers, { loader } from '../../../app/routes/users/manage-users';
 import type { UserOrderableFields, UsersService } from '../../../app/users/UsersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import { renderWithEvents } from '../../__helpers__/set-up-test';
+
+// Mock the useNavigate hook so that we can test programmatic navigations
+const navigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
+  return {
+    ...actual,
+    useNavigate: vi.fn(() => navigate),
+  };
+});
 
 describe('manage-users', () => {
   const getSession = vi.fn();
@@ -50,18 +61,27 @@ describe('manage-users', () => {
       users?: User[];
       totalPages?: number;
       orderBy?: Order<UserOrderableFields>;
+      searchTerm?: string;
     };
 
-    const setUp = async ({ users = [], totalPages = 1, orderBy = {} }: SetUpOptions = {}) => {
+    const setUp = async ({ users = [], totalPages = 1, orderBy = {}, searchTerm }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
           Component: ManageUsers,
           HydrateFallback: () => null,
-          loader: () => ({ users, totalPages, orderBy, currentPage: 1 }),
+          loader: () => ({
+            users,
+            totalPages,
+            currentParams: {
+              page: 1,
+              orderBy,
+              searchTerm,
+            },
+          }),
         },
       ]);
-      const renderResult = render(<Stub initialEntries={['/manage-users/1']} />);
+      const renderResult = renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
 
       // Wait for the table to be rendered
       await screen.findByRole('table');
@@ -72,6 +92,7 @@ describe('manage-users', () => {
     it.each([
       {},
       { users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
+      { users: [mockUser({ username: 'foo', role: 'admin' })] },
       { totalPages: 5 },
     ])('passes a11y checks', async ({ users, totalPages }) => checkAccessibility(setUp({ users, totalPages })));
 
@@ -158,6 +179,22 @@ describe('manage-users', () => {
       Object.entries(expectedUrls).forEach(([linkText, expectedUrl]) => {
         expect(screen.getByRole('link', { name: linkText })).toHaveAttribute('href', `/manage-users/1?${expectedUrl}`);
       });
+    });
+
+    it('sets current search term in search input', async () => {
+      await setUp({ searchTerm: 'Hello' });
+      expect(screen.getByRole('searchbox')).toHaveValue('Hello');
+    });
+
+    it('navigates to search term when typing in search box', async () => {
+      const { user } = await setUp();
+
+      await user.type(screen.getByRole('searchbox'), 'hello');
+
+      // It should eventually navigate to the URL with the search term
+      await waitFor(
+        () => expect(navigate).toHaveBeenCalledWith(expect.stringContaining('searchTerm=hello'), { replace: true }),
+      );
     });
   });
 });

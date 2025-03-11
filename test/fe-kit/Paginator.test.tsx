@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { ELLIPSIS } from '../../app/fe-kit/pagination';
 import type { PaginatorProps } from '../../app/fe-kit/Paginator';
 import { Paginator } from '../../app/fe-kit/Paginator';
@@ -6,7 +7,11 @@ import { checkAccessibility } from '../__helpers__/accessibility';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('<Paginator />', () => {
-  const setUp = (props: PaginatorProps) => renderWithEvents(<Paginator {...props} />);
+  const setUp = (props: PaginatorProps) => renderWithEvents(
+    <MemoryRouter>
+      <Paginator {...props} />
+    </MemoryRouter>,
+  );
 
   it.each([
     { onPageChange: vi.fn() },
@@ -33,14 +38,12 @@ describe('<Paginator />', () => {
     { currentPage: 10, expectedPrevPage: 9, expectedNextPage: 10 },
     { currentPage: 5, expectedPrevPage: 4, expectedNextPage: 6 },
   ])('next and prev pages point to the right page', ({ currentPage, expectedPrevPage, expectedNextPage }) => {
-    setUp({
-      pagesCount: 10,
-      currentPage,
-      urlForPage: vi.fn().mockImplementation((page) => page),
-    });
+    const urlForPage = (page: number) => `/${page}`;
 
-    expect(screen.getByLabelText('Previous')).toHaveAttribute('href', `${expectedPrevPage}`);
-    expect(screen.getByLabelText('Next')).toHaveAttribute('href', `${expectedNextPage}`);
+    setUp({ pagesCount: 10, currentPage, urlForPage });
+
+    expect(screen.getByLabelText('Previous')).toHaveAttribute('href', urlForPage(expectedPrevPage));
+    expect(screen.getByLabelText('Next')).toHaveAttribute('href', urlForPage(expectedNextPage));
   });
 
   it.each([
