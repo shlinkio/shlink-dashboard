@@ -1,23 +1,16 @@
 import clsx from 'clsx';
-import type { FC, PropsWithChildren } from 'react';
+import type { FC, HTMLProps, PropsWithChildren } from 'react';
 import type { LinkProps } from 'react-router';
 import { Link } from 'react-router';
+
+type RegularButtonProps = HTMLProps<HTMLButtonElement>;
+type LinkButtonProps = LinkProps;
 
 export type ButtonProps = PropsWithChildren<{
   disabled?: boolean;
   className?: string;
   variant?: 'primary' | 'secondary';
-} & ({
-  /**
-   * Action to be performed when this button is clicked. It will cause a `button` element to be used.
-   */
-  onClick?: () => void;
-} | {
-  /**
-   * Location to go to when this button is clicked. It will cause a Link component to be used
-   */
-  to: LinkProps['to'];
-})>;
+} & (RegularButtonProps | LinkButtonProps)>;
 
 export const Button: FC<ButtonProps> = ({ children, className, disabled, variant = 'primary', ...rest }) => {
   const Tag = 'to' in rest ? Link : 'button';

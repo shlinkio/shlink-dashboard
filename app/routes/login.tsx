@@ -3,9 +3,10 @@ import { useId } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { redirect } from 'react-router';
-import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
+import { Button } from '../fe-kit/Button';
+import { Input } from '../fe-kit/Input';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
 
@@ -54,7 +55,7 @@ export default function Login() {
             <label htmlFor={passwordId}>Password:</label>
             <Input id={passwordId} type="password" name="password" required />
           </div>
-          <Button color="primary" type="submit" disabled={isSaving}>
+          <Button type="submit" disabled={isSaving}>
             {isSaving ? 'Logging in...' : 'Login'}
           </Button>
           {fetcher.data && 'error' in fetcher.data && fetcher.data.error && (
