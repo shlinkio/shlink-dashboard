@@ -46,7 +46,7 @@ export const Button: FC<ButtonProps> = ({
         },
         {
           'tw:border-shlink-brand tw:text-shlink-brand': variant === 'primary',
-          'tw:border-zinc-400 tw:text-zinc-400': variant === 'secondary',
+          'tw:border-zinc-400 tw:text-zinc-400!': variant === 'secondary',
         },
         solid && {
           'tw:text-white! tw:bg-shlink-brand': variant === 'primary',

@@ -10,7 +10,6 @@ export type LabelledInputProps = Omit<InputProps, 'className' | 'id'> & {
 
 export const LabelledInput: FC<LabelledInputProps> = ({ label, inputClassName, ...rest }) => {
   const id = useId();
-
   return (
     <div className="tw:flex tw:flex-col tw:gap-1">
       <label htmlFor={id}>{label.endsWith(':') ? label : `${label}:`}</label>
