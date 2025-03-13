@@ -92,7 +92,7 @@ export default function ManageUsers() {
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
-      <div className="tw:flex tw:flex-row-reverse">
+      <div className="tw:flex tw:gap-3 tw:flex-col tw:md:flex-row-reverse">
         <Button to="/manage-users/create">
           <FontAwesomeIcon icon={faPlus} />
           New user
