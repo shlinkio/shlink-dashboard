@@ -24,7 +24,7 @@ export class UsersRepository extends EntityRepository<User> {
         limit,
         offset,
         orderBy: {
-          [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'ASC',
+          [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'DESC',
         },
       },
     );

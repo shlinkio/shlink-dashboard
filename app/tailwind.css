@@ -57,3 +57,7 @@
     @apply tw:my-3
   }
 }
+
+@utility focus-ring {
+  @apply tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75;
+}

@@ -1,4 +1,4 @@
-import { faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
@@ -13,6 +13,7 @@ import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
+import { Button } from '../../fe-kit/Button';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
 import { Table } from '../../fe-kit/Table';
@@ -90,6 +91,12 @@ export default function ManageUsers() {
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
+      <div className="tw:flex tw:flex-row-reverse">
+        <Button to="/manage-users/create">
+          <FontAwesomeIcon icon={faPlus} />
+          New user
+        </Button>
+      </div>
       <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
         <Table
           header={
