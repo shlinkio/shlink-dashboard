@@ -37,8 +37,7 @@ export const SearchInput: FC<SearchInputProps> = ({
       <input
         type="search"
         className={clsx(
-          'tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2',
-          'tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75',
+          'tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:focus-ring',
           {
             'tw:rounded-md tw:border tw:border-(--input-border-color)': !borderless,
           },
