@@ -21,10 +21,9 @@ exports[`<SearchInput /> > applies visual changes for some props 1`] = `
       />
     </svg>
     <input
-      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75"
+      class="tw:w-full tw:focus-ring tw:px-4 tw:py-2 tw:text-xl! tw:bg-(--input-color) tw:pl-9"
       placeholder="Search..."
       type="search"
-      value=""
     />
   </div>
 </div>
@@ -51,7 +50,7 @@ exports[`<SearchInput /> > applies visual changes for some props 2`] = `
       />
     </svg>
     <input
-      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color)"
+      class="tw:w-full tw:focus-ring tw:px-4 tw:py-2 tw:text-xl! tw:bg-(--input-color) tw:rounded-md tw:border tw:border-(--input-border-color) tw:pl-9"
       placeholder="Search..."
       type="search"
       value="something"
@@ -81,10 +80,9 @@ exports[`<SearchInput /> > applies visual changes for some props 3`] = `
       />
     </svg>
     <input
-      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color)"
+      class="tw:w-full tw:focus-ring tw:px-4 tw:py-2 tw:text-xl! tw:bg-(--input-color) tw:rounded-md tw:border tw:border-(--input-border-color) tw:pl-9"
       placeholder="Search..."
       type="search"
-      value=""
     />
   </div>
 </div>
@@ -111,10 +109,9 @@ exports[`<SearchInput /> > applies visual changes for some props 4`] = `
       />
     </svg>
     <input
-      class="tw:w-full tw:bg-(--primary-color) tw:pl-9 tw:pr-3 tw:py-2 tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/75 tw:rounded-md tw:border tw:border-(--input-border-color) something"
+      class="tw:w-full tw:focus-ring tw:px-4 tw:py-2 tw:text-xl! tw:bg-(--input-color) tw:rounded-md tw:border tw:border-(--input-border-color) tw:pl-9 something"
       placeholder="Search..."
       type="search"
-      value=""
     />
   </div>
 </div>
