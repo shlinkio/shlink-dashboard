@@ -86,19 +86,19 @@ export default function ManageUsers() {
   }), [dir, field, urlForParams]);
 
   return (
-    <Layout className="tw:flex tw:flex-col tw:gap-y-3">
+    <Layout className="tw:flex tw:flex-col tw:gap-y-4">
       <SearchInput
         variant="primary"
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
-      <div className="tw:flex tw:gap-3 tw:flex-col tw:md:flex-row-reverse">
+      <div className="tw:flex tw:gap-4 tw:flex-col tw:md:flex-row-reverse">
         <Button to="/manage-users/create">
           <FontAwesomeIcon icon={faPlus} />
           New user
         </Button>
       </div>
-      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
+      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
         <Table
           header={
             <Table.Row>
