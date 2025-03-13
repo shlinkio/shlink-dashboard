@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import type { FC, InputHTMLAttributes } from 'react';
+import type { Size } from './types';
 
 type BaseInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export type InputProps = BaseInputProps & {
   borderless?: boolean;
   variant?: 'input' | 'primary';
-  size?: 'sm' | 'md' | 'lg';
+  size?: Size;
 };
 
 export const Input: FC<InputProps> = ({

@@ -2,8 +2,7 @@ import { faPlus, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { FC } from 'react';
 import { ExternalLink } from 'react-external-link';
-import { Link } from 'react-router';
-import { Button } from 'reactstrap';
+import { Button } from '../../fe-kit/Button';
 
 export const NoServers: FC = () => (
   <div className="tw:p-6 tw:text-center tw:flex tw:flex-col tw:gap-8">
@@ -11,8 +10,8 @@ export const NoServers: FC = () => (
       This application will help you manage your Shlink servers.
     </p>
     <p>
-      <Button color="primary" outline size="lg" tag={Link} to="/servers/create">
-        <FontAwesomeIcon icon={faPlus} className="tw:mr-2"/>
+      <Button inline size="lg" to="/servers/create">
+        <FontAwesomeIcon icon={faPlus} />
         Add a server
       </Button>
     </p>
