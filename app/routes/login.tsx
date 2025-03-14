@@ -1,13 +1,22 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import { useId } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { useActionData } from 'react-router';
+import { useFetcher } from 'react-router';
 import { redirect } from 'react-router';
 import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
+
+export async function loader(
+  { request }: LoaderFunctionArgs,
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
+) {
+  // If the user is already authenticated, redirect to home
+  const isAuthenticated = await authHelper.isAuthenticated(request);
+  return isAuthenticated ? redirect('/') : {};
+}
 
 export async function action(
   { request }: ActionFunctionArgs,
@@ -25,24 +34,18 @@ export async function action(
   }
 }
 
-export async function loader(
-  { request }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
-) {
-  // If the user is already authenticated, redirect to home
-  const isAuthenticated = await authHelper.isAuthenticated(request);
-  return isAuthenticated ? redirect('/') : {};
-}
+type ActionResult = Awaited<ReturnType<typeof action>>;
 
 export default function Login() {
   const usernameId = useId();
   const passwordId = useId();
-  const actionData = useActionData<typeof action>();
+  const fetcher = useFetcher<ActionResult>();
+  const isSaving = fetcher.state === 'submitting';
 
   return (
     <div className="tw:mt-8 tw:mx-8 tw:lg:mx-auto tw:lg:w-[50%]">
       <SimpleCard>
-        <form method="post" className="tw:flex tw:flex-col tw:gap-4">
+        <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-4">
           <div>
             <label htmlFor={usernameId}>Username:</label>
             <Input id={usernameId} name="username" required />
@@ -51,11 +54,13 @@ export default function Login() {
             <label htmlFor={passwordId}>Password:</label>
             <Input id={passwordId} type="password" name="password" required />
           </div>
-          <Button color="primary" type="submit">Login</Button>
-          {actionData && 'error' in actionData && actionData.error && (
+          <Button color="primary" type="submit" disabled={isSaving}>
+            {isSaving ? 'Logging-in...' : 'Login'}
+          </Button>
+          {fetcher.data && 'error' in fetcher.data && fetcher.data.error && (
             <div className="text-danger">Username or password are incorrect</div>
           )}
-        </form>
+        </fetcher.Form>
       </SimpleCard>
     </div>
   );

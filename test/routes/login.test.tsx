@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import Login, { action, loader } from '../../app/routes/login';
+import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('login', () => {
   const login = vi.fn().mockResolvedValue(fromPartial({}));
@@ -61,7 +62,7 @@ describe('login', () => {
 
   describe('<Login />', () => {
     const setUp = (error: boolean = false) => {
-      const RemixStub = createRoutesStub([
+      const Stub = createRoutesStub([
         {
           path: '/',
           Component: Login,
@@ -69,7 +70,7 @@ describe('login', () => {
           action: () => ({ error }),
         },
       ]);
-      return render(<RemixStub />);
+      return renderWithEvents(<Stub />);
     };
 
     it('renders expected form controls', async () => {
@@ -80,9 +81,16 @@ describe('login', () => {
       expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
 
-    // TODO Investigate why this doesn't pass
-    it.skip('renders error when present', async () => {
-      setUp(true);
+    it('renders error when present', async () => {
+      const { user } = setUp(true);
+
+      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+
+      // Submit form with data
+      await user.type(screen.getByLabelText('Username:'), 'incorrect');
+      await user.type(screen.getByLabelText('Password:'), 'incorrect');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
       await waitFor(() => expect(screen.getByText('Username or password are incorrect')).toBeInTheDocument());
     });
   });
