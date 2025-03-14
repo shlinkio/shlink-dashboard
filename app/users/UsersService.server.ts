@@ -1,7 +1,6 @@
-import { z } from 'zod';
-import { hashPassword, verifyPassword } from '../auth/passwords.server';
+import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
-import { roles } from '../entities/User';
+import { USER_CREATION_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -56,18 +55,13 @@ export class UsersService {
   }
 
   async createUser(data: FormData): Promise<[User, string]> {
-    const userData = z.object({
-      username: z.string().regex(/^(?![._])[a-zA-Z0-9._]+(?<![._])$/),
-      displayName: z.string().optional(),
-      role: z.enum(roles),
-    }).parse({
+    const userData = USER_CREATION_SCHEMA.parse({
       username: data.get('username'),
       displayName: data.get('displayName'),
       role: data.get('role'),
     });
 
-    // TODO Generate password
-    const plainTextTempPassword = '1234';
+    const plainTextTempPassword = generatePassword();
     const password = await hashPassword(plainTextTempPassword);
 
     const user = await this.#usersRepository.createUser({ ...userData, password });
