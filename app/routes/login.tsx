@@ -46,7 +46,7 @@ export default function Login() {
         <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-4">
           <LabelledInput label="Username:" name="username" required />
           <LabelledInput label="Password:" type="password" name="password" required />
-          <Button type="submit" disabled={isSaving}>
+          <Button solid type="submit" disabled={isSaving}>
             {isSaving ? 'Logging in...' : 'Login'}
           </Button>
           {fetcher.data && 'error' in fetcher.data && fetcher.data.error && (
