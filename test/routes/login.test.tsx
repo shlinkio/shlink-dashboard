@@ -81,6 +81,21 @@ describe('login', () => {
       expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
 
+    it('shows loading state while logging in', async () => {
+      const { user } = setUp(true);
+
+      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+
+      // Submit form with data
+      await user.type(screen.getByLabelText('Username:'), 'incorrect');
+      await user.type(screen.getByLabelText('Password:'), 'incorrect');
+      // Do not wait for submit to finish, as the loading state will be reset afterward
+      const loginPromise = user.click(screen.getByRole('button', { name: 'Login' }));
+
+      await waitFor(() => expect(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument());
+      await loginPromise;
+    });
+
     it('renders error when present', async () => {
       const { user } = setUp(true);
 

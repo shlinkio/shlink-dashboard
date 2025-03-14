@@ -55,7 +55,7 @@ export default function Login() {
             <Input id={passwordId} type="password" name="password" required />
           </div>
           <Button color="primary" type="submit" disabled={isSaving}>
-            {isSaving ? 'Logging-in...' : 'Login'}
+            {isSaving ? 'Logging in...' : 'Login'}
           </Button>
           {fetcher.data && 'error' in fetcher.data && fetcher.data.error && (
             <div className="text-danger">Username or password are incorrect</div>
