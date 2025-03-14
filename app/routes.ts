@@ -13,6 +13,7 @@ export default [
   route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
 
   // Users management
+  route('/manage-users/create', './routes/users/create-user.tsx'),
   route('/manage-users/:page', './routes/users/manage-users.tsx'),
 
   // TODO Servers management

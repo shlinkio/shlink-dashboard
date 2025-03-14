@@ -4,6 +4,7 @@
   --color-shlink-brand: #4696e5;
   /* --color-shlink-brand: #2078CF; // Properly accessible */
   --color-shlink-brand-dark: #1f69c0;
+  --color-danger: #dc3545;
 }
 
 /*
@@ -56,4 +57,8 @@
   hr {
     @apply tw:my-3
   }
+}
+
+@utility focus-ring {
+  @apply tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-shlink-brand/50 tw:transition-[box-shadow];
 }

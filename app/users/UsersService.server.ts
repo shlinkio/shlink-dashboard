@@ -1,5 +1,6 @@
-import { verifyPassword } from '../auth/passwords.server';
+import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
+import { USER_CREATION_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -51,5 +52,19 @@ export class UsersService {
       totalUsers,
       totalPages: Math.ceil(totalUsers / limit),
     };
+  }
+
+  async createUser(data: FormData): Promise<[User, string]> {
+    const userData = USER_CREATION_SCHEMA.parse({
+      username: data.get('username'),
+      displayName: data.get('displayName'),
+      role: data.get('role'),
+    });
+
+    const plainTextTempPassword = generatePassword();
+    const password = await hashPassword(plainTextTempPassword);
+
+    const user = await this.#usersRepository.createUser({ ...userData, password });
+    return [user, plainTextTempPassword];
   }
 }
