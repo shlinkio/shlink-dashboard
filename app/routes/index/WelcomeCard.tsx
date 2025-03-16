@@ -1,8 +1,8 @@
-import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { ShlinkLogo } from '../../common/ShlinkLogo';
 import type { Server } from '../../entities/Server';
+import { SimpleCard } from '../../fe-kit/SimpleCard';
 import { NoServers } from './NoServers';
 import { ServersList } from './ServersList';
 

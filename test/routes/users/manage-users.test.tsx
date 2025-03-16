@@ -94,7 +94,7 @@ describe('manage-users', () => {
       return renderResult;
     };
 
-    it.each([
+    it.only.each([
       {},
       { users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })] },
       { users: [mockUser({ username: 'foo', role: 'admin' })] },

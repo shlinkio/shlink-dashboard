@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
-import { determineOrder, SimpleCard, stringToOrder } from '@shlinkio/shlink-frontend-kit';
+import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -17,6 +17,7 @@ import { serverContainer } from '../../container/container.server';
 import { Button } from '../../fe-kit/Button';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
+import { SimpleCard } from '../../fe-kit/SimpleCard';
 import { Table } from '../../fe-kit/Table';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
@@ -126,7 +127,7 @@ export default function ManageUsers() {
               >
                 Role
               </HeaderCell>
-              <Table.Cell />
+              <Table.Cell aria-hidden />
             </Table.Row>
           }
         >
