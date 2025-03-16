@@ -1,8 +1,10 @@
+import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { hashPassword, verifyPassword } from '../../app/auth/passwords.server';
 import type { User } from '../../app/entities/User';
 import type { UsersRepository } from '../../app/users/UsersRepository.server';
 import { UsersService } from '../../app/users/UsersService.server';
+import { DuplicatedEntryError } from '../../app/validation/DuplicatedEntryError.server';
 
 describe('UsersService', () => {
   const findOneByUsername = vi.fn();
@@ -140,6 +142,17 @@ describe('UsersService', () => {
         invalidFields: expectedFields,
       }));
       expect(createUser).not.toHaveBeenCalled();
+    });
+
+    it('throws error if username is duplicated', async () => {
+      createUser.mockRejectedValue(new UniqueConstraintViolationException(new Error('')));
+
+      const formData = createFormData({
+        username: 'username',
+        role: 'managed-user',
+      });
+
+      await expect(usersService.createUser(formData)).rejects.toThrowError(new DuplicatedEntryError('username'));
     });
 
     it('creates a user with a randomly generated password', async () => {

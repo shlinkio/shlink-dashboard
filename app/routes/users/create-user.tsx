@@ -6,12 +6,13 @@ import { useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
-import type { User } from '../../entities/User';
 import { Button } from '../../fe-kit/Button';
 import { LabelledInput } from '../../fe-kit/LabelledInput';
 import { LabelledSelect } from '../../fe-kit/LabelledSelect';
 import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
+import { ValidationError } from '../../validation/ValidationError.server';
+import { ensureAdmin } from './utils';
 
 const roles = ['managed-user', 'advanced-user', 'admin'];
 
@@ -19,47 +20,40 @@ export async function loader(
   { request }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const { role } = await authHelper.getSession(request, '/login');
-  if (role !== 'admin') {
-    throw new Response('Not found', { status: 404 });
-  }
+  await ensureAdmin(request, authHelper);
 }
-
-type ActionResult = {
-  status: 'success';
-  user: User;
-  plainTextPassword: string;
-} | {
-  status: 'error';
-  messages: Record<string, string>;
-};
 
 export async function action(
   { request }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
-): Promise<ActionResult> {
+) {
   const formData = await request.formData();
   try {
     const [user, plainTextPassword] = await usersService.createUser(formData);
-    return { status: 'success', user, plainTextPassword };
+    return { status: 'success', user, plainTextPassword } as const;
   } catch (e) {
     const messages: Record<string, string> = {};
+
     if (e instanceof DuplicatedEntryError) {
-      messages.username = 'Username already exists';
+      messages.username = 'Username is already in use.';
+    } else if (e instanceof ValidationError && e.invalidFields.username) {
+      messages.username = 'Username can only contain letters and numbers. Underscore (_) and dot (.) can also be used anywhere except at the beginning or end.';
     }
 
-    return { status: 'error', messages };
+    return { status: 'error', messages } as const;
   }
 }
 
+export type ActionResult = Awaited<ReturnType<typeof action>>;
+
 export default function CreateUser() {
-  const fetcher = useFetcher<ActionResult>();
+  const { Form, ...fetcher } = useFetcher<ActionResult>();
   const isSubmitting = fetcher.state === 'submitting';
 
   return (
     <Layout>
       {fetcher.data?.status === 'success' && (
-        <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+        <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4" data-testid="success-message">
           <p className="tw:m-0!">User <b>{fetcher.data.user.username}</b> properly created.</p>
           <p className="tw:m-0!">
             Their temporary password is <b>{fetcher.data.plainTextPassword}</b>. The user will have to change it the
@@ -71,7 +65,7 @@ export default function CreateUser() {
         </SimpleCard>
       )}
       {fetcher.data?.status !== 'success' && (
-        <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-y-4">
+        <Form method="post" className="tw:flex tw:flex-col tw:gap-y-4">
           <SimpleCard title="Add new user" bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
             <LabelledInput
               label="Username"
@@ -91,7 +85,7 @@ export default function CreateUser() {
             </Button>
             <Button variant="secondary" to="/manage-users/1">Cancel</Button>
           </div>
-        </fetcher.Form>
+        </Form>
       )}
     </Layout>
   );

@@ -20,16 +20,14 @@ import { Table } from '../../fe-kit/Table';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
 import { RoleBadge } from './RoleBadge';
+import { ensureAdmin } from './utils';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { role } = await authHelper.getSession(request, '/login');
-  if (role !== 'admin') {
-    throw new Response('Not found', { status: 404 });
-  }
+  await ensureAdmin(request, authHelper);
 
   const query = new URL(request.url).searchParams;
   const orderByParam = query.get('orderBy');
