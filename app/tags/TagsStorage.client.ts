@@ -13,28 +13,35 @@ function diffObjects(obj1: Record<string, string>, obj2: Record<string, string>)
 }
 
 export class TagsStorage implements TagColorsStorage {
+  #colors: Record<string, string>;
+  readonly #saveEndpoint: string;
+  readonly #fetch: typeof globalThis.fetch;
+
   constructor(
-    private colors: Record<string, string>,
-    private readonly saveEndpoint: string,
-    private readonly fetch = window.fetch.bind(window),
+    colors: Record<string, string>,
+    saveEndpoint: string,
+    fetch = globalThis.fetch.bind(globalThis),
   ) {
+    this.#colors = colors;
+    this.#saveEndpoint = saveEndpoint;
+    this.#fetch = fetch;
   }
 
   getTagColors(): Record<string, string> {
     // Return a copy, as ShlinkWebComponent mutates provided reference
-    return { ...this.colors };
+    return { ...this.#colors };
   }
 
   storeTagColors(colors: Record<string, string>): void {
-    const changedColors = diffObjects(this.colors, colors);
-    this.colors = { ...colors };
+    const changedColors = diffObjects(this.#colors, colors);
+    this.#colors = { ...colors };
 
     // Do not call server if there are no changed colors
     if (Object.keys(changedColors).length === 0) {
       return;
     }
 
-    this.fetch(this.saveEndpoint, {
+    this.#fetch(this.#saveEndpoint, {
       method: 'POST',
       body: JSON.stringify(changedColors),
       headers: { 'Content-Type': 'application/json' },

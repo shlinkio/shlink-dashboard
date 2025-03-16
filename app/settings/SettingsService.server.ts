@@ -4,24 +4,28 @@ import { Settings as SettingsEntity } from '../entities/Settings';
 import { User } from '../entities/User';
 
 export class SettingsService {
-  constructor(private readonly em: EntityManager) {}
+  readonly #em: EntityManager;
+
+  constructor(em: EntityManager) {
+    this.#em = em;
+  }
 
   async userSettings(userId: string): Promise<Settings> {
-    const user = await this.em.findOne(User, { id: userId });
+    const user = await this.#em.findOne(User, { id: userId });
     if (!user) {
       return {};
     }
 
-    const s = await this.em.findOne(SettingsEntity, { user });
+    const s = await this.#em.findOne(SettingsEntity, { user });
     return s?.settings ?? {};
   }
 
   async saveUserSettings(userId: string, newSettings: Settings): Promise<void> {
-    const user = await this.em.findOne(User, { id: userId });
+    const user = await this.#em.findOne(User, { id: userId });
     if (!user) {
       return;
     }
 
-    await this.em.upsert(SettingsEntity, { user, settings: newSettings });
+    await this.#em.upsert(SettingsEntity, { user, settings: newSettings });
   }
 }

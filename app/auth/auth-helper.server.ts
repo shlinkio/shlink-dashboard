@@ -9,14 +9,17 @@ import type { SessionData, ShlinkSessionData } from './session-context';
  * operations
  */
 export class AuthHelper {
-  constructor(
-    private readonly authenticator: Authenticator<SessionData>,
-    private readonly sessionStorage: SessionStorage<ShlinkSessionData>,
-  ) {}
+  readonly #authenticator: Authenticator<SessionData>;
+  readonly #sessionStorage: SessionStorage<ShlinkSessionData>;
+
+  constructor(authenticator: Authenticator<SessionData>, sessionStorage: SessionStorage<ShlinkSessionData>) {
+    this.#authenticator = authenticator;
+    this.#sessionStorage = sessionStorage;
+  }
 
   async login(request: Request): Promise<Response> {
     const [sessionData, session] = await Promise.all([
-      this.authenticator.authenticate(CREDENTIALS_STRATEGY, request),
+      this.#authenticator.authenticate(CREDENTIALS_STRATEGY, request),
       this.sessionFromRequest(request),
     ]);
     session.set('sessionData', sessionData);
@@ -25,14 +28,14 @@ export class AuthHelper {
     const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
 
     return redirect(successRedirect, {
-      headers: { 'Set-Cookie': await this.sessionStorage.commitSession(session) },
+      headers: { 'Set-Cookie': await this.#sessionStorage.commitSession(session) },
     });
   }
 
   async logout(request: Request): Promise<Response> {
     const session = await this.sessionFromRequest(request);
     return redirect('/login', {
-      headers: { 'Set-Cookie': await this.sessionStorage.destroySession(session) },
+      headers: { 'Set-Cookie': await this.#sessionStorage.destroySession(session) },
     });
   }
 
@@ -53,14 +56,14 @@ export class AuthHelper {
   async refreshSessionExpiration(request: Request): Promise<string | undefined> {
     const [sessionData, session] = await this.sessionAndData(request);
     if (sessionData) {
-      return await this.sessionStorage.commitSession(session);
+      return await this.#sessionStorage.commitSession(session);
     }
 
     return undefined;
   }
 
   private sessionFromRequest(request: Request): Promise<Session<ShlinkSessionData>> {
-    return this.sessionStorage.getSession(request.headers.get('cookie'));
+    return this.#sessionStorage.getSession(request.headers.get('cookie'));
   }
 
   private async sessionAndData(request: Request): Promise<[SessionData | undefined, Session<ShlinkSessionData>]> {
