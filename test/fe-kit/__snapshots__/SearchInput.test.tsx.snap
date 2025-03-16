@@ -3,11 +3,11 @@
 exports[`<SearchInput /> > applies visual changes for some props 1`] = `
 <div>
   <div
-    class="tw:relative tw:focus-within:z-10"
+    class="tw:group tw:relative tw:focus-within:z-10"
   >
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3 tw:text-placeholder tw:group-focus-within:text-white tw:transition-colors"
       data-icon="magnifying-glass"
       data-prefix="fas"
       focusable="false"
@@ -32,11 +32,11 @@ exports[`<SearchInput /> > applies visual changes for some props 1`] = `
 exports[`<SearchInput /> > applies visual changes for some props 2`] = `
 <div>
   <div
-    class="tw:relative tw:focus-within:z-10"
+    class="tw:group tw:relative tw:focus-within:z-10"
   >
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3 tw:text-placeholder tw:group-focus-within:text-white tw:transition-colors"
       data-icon="magnifying-glass"
       data-prefix="fas"
       focusable="false"
@@ -62,11 +62,11 @@ exports[`<SearchInput /> > applies visual changes for some props 2`] = `
 exports[`<SearchInput /> > applies visual changes for some props 3`] = `
 <div>
   <div
-    class="tw:relative tw:focus-within:z-10 something"
+    class="tw:group tw:relative tw:focus-within:z-10 something"
   >
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3 tw:text-placeholder tw:group-focus-within:text-white tw:transition-colors"
       data-icon="magnifying-glass"
       data-prefix="fas"
       focusable="false"
@@ -91,11 +91,11 @@ exports[`<SearchInput /> > applies visual changes for some props 3`] = `
 exports[`<SearchInput /> > applies visual changes for some props 4`] = `
 <div>
   <div
-    class="tw:relative tw:focus-within:z-10"
+    class="tw:group tw:relative tw:focus-within:z-10"
   >
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3"
+      class="svg-inline--fa fa-magnifying-glass tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3 tw:text-placeholder tw:group-focus-within:text-white tw:transition-colors"
       data-icon="magnifying-glass"
       data-prefix="fas"
       focusable="false"
