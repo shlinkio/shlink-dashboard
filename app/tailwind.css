@@ -5,7 +5,8 @@
   /* --color-brand: #2078CF; // Properly accessible */
   --color-brand-dark: #1f69c0;
   --color-danger: #dc3545;
-  --color-warning: #FFC107;
+  --color-warning: #ffc107;
+  --color-placeholder: #6c757d;
 }
 
 @layer base {

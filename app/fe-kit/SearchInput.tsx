@@ -33,8 +33,14 @@ export const SearchInput: FC<SearchInputProps> = ({
   }, [clearCurrentTimeout, onChange, setTimeout]);
 
   return (
-    <div className={clsx('tw:relative tw:focus-within:z-10', containerClassName)}>
-      <FontAwesomeIcon icon={searchIcon} className="tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3" />
+    <div className={clsx('tw:group tw:relative tw:focus-within:z-10', containerClassName)}>
+      <FontAwesomeIcon
+        icon={searchIcon}
+        className={clsx(
+          'tw:absolute tw:top-[50%] tw:translate-y-[-50%] tw:left-3',
+          'tw:text-placeholder tw:group-focus-within:text-white tw:transition-colors',
+        )}
+      />
       <Input
         type="search"
         className={clsx('tw:pl-9', inputClassName)}

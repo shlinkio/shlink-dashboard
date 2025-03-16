@@ -6,4 +6,7 @@ export const hashPassword = async (plainTextPassword: string) => argon2.hash(pla
 export const verifyPassword = async (plainTextPassword: string, hashedPassword: string) =>
   argon2.verify(hashedPassword, plainTextPassword);
 
-export const generatePassword = (length = 12) => randomBytes(length).toString('base64').slice(0, length);
+export const generatePassword = (length = 12) => {
+  const normalizedLength = Math.max(1, length);
+  return randomBytes(normalizedLength).toString('base64').slice(0, normalizedLength);
+};

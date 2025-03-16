@@ -80,6 +80,11 @@ describe('manage-users', () => {
             },
           }),
         },
+        {
+          path: '/manage-users/create',
+          Component: () => <>Create user</>,
+          HydrateFallback: () => null,
+        },
       ]);
       const renderResult = renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
 
@@ -195,6 +200,13 @@ describe('manage-users', () => {
       await waitFor(
         () => expect(navigate).toHaveBeenCalledWith(expect.stringContaining('searchTerm=hello'), { replace: true }),
       );
+    });
+
+    it('redirects to create user form', async () => {
+      const { user } = await setUp();
+
+      await user.click(screen.getByRole('link', { name: /New user$/ }));
+      await waitFor(() => expect(screen.getByText('Create user')).toBeInTheDocument());
     });
   });
 });
