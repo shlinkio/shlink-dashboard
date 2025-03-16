@@ -43,6 +43,14 @@
   }
 }
 
+@utility focus-ring-base {
+  @apply tw:outline-none tw:focus-visible:ring-3 tw:transition-[box-shadow];
+}
+
 @utility focus-ring {
-  @apply tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-brand/50 tw:transition-[box-shadow];
+  @apply tw:focus-ring-base tw:focus-visible:ring-brand/50;
+}
+
+@utility focus-ring-danger {
+  @apply tw:focus-ring-base tw:focus-visible:ring-danger/50;
 }

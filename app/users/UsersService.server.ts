@@ -1,5 +1,7 @@
+import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
+import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
 import { USER_CREATION_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
@@ -60,7 +62,15 @@ export class UsersService {
     const plainTextTempPassword = generatePassword();
     const password = await hashPassword(plainTextTempPassword);
 
-    const user = await this.#usersRepository.createUser({ ...userData, password });
-    return [user, plainTextTempPassword];
+    try {
+      const user = await this.#usersRepository.createUser({ ...userData, password });
+      return [user, plainTextTempPassword];
+    } catch (e) {
+      if (e instanceof UniqueConstraintViolationException) {
+        throw new DuplicatedEntryError('username');
+      }
+
+      throw e;
+    }
   }
 }

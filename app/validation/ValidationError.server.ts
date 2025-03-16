@@ -6,7 +6,6 @@ export class ValidationError extends Error {
   constructor(invalidFields: Record<string, string>) {
     super('Provided data is invalid');
 
-    // TODO Should we set the correct prototype here?
     this.name = 'ValidationError';
     this.invalidFields = invalidFields;
   }

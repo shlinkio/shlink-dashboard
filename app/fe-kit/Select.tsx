@@ -1,13 +1,10 @@
 import clsx from 'clsx';
 import type { FC, HTMLProps, PropsWithChildren } from 'react';
-import type { Size } from './types';
+import type { BaseInputProps } from './Input';
 
 type SelectElementProps = Omit<HTMLProps<HTMLSelectElement>, 'size'>;
 
-export type SelectProps = PropsWithChildren<SelectElementProps & {
-  variant?: 'input' | 'primary';
-  size?: Size;
-}>;
+export type SelectProps = PropsWithChildren<SelectElementProps & BaseInputProps>;
 
 const chevronImageUrl = String.raw`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>`;
 
@@ -15,15 +12,23 @@ export const Select: FC<SelectProps> = ({
   className,
   size = 'md',
   variant = 'input',
+  feedback,
   style = {},
   disabled,
   ...rest
 }) => (
   <select
     className={clsx(
-      'tw:w-full tw:focus-ring tw:appearance-none',
-      'tw:rounded-md tw:border tw:border-(--input-border-color)',
-      'tw:pr-9 tw:bg-no-repeat',
+      'tw:w-full tw:appearance-none tw:pr-9 tw:bg-no-repeat',
+      {
+        'tw:focus-ring': !feedback,
+        'tw:focus-ring-danger': feedback === 'error',
+      },
+      'tw:rounded-md tw:border',
+      {
+        'tw:border-(--input-border-color)': !feedback,
+        'tw:border-danger': feedback === 'error',
+      },
       {
         'tw:pl-2 tw:py-1 tw:text-sm!': size === 'sm',
         'tw:pl-3 tw:py-1.5': size === 'md',
