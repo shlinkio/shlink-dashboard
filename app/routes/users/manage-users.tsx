@@ -1,4 +1,4 @@
-import { faPlus, faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSortAlphaAsc, faSortAlphaDesc, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
@@ -11,6 +11,7 @@ import { Link } from 'react-router';
 import { useNavigation } from 'react-router';
 import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
+import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { Button } from '../../fe-kit/Button';
@@ -82,6 +83,7 @@ export default function ManageUsers() {
     page: 1,
     orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
   }), [dir, field, urlForParams]);
+  const session = useSession();
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
@@ -124,12 +126,13 @@ export default function ManageUsers() {
               >
                 Role
               </HeaderCell>
+              <Table.Cell />
             </Table.Row>
           }
         >
           {navigation.state === 'loading' ? (
             <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={4} className="tw:italic">Loading...</Table.Cell>
+              <Table.Cell colSpan={5} className="tw:italic">Loading...</Table.Cell>
             </Table.Row>
           ) : (
             <>
@@ -143,7 +146,14 @@ export default function ManageUsers() {
                   <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
                   <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
-                  <Table.Cell><RoleBadge role={user.role}/></Table.Cell>
+                  <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
+                  <Table.Cell className="tw:text-right">
+                    {session?.username !== user.username && (
+                      <Button inline size="sm" variant="danger" aria-label="Delete user">
+                        <FontAwesomeIcon icon={faTrashCan} />
+                      </Button>
+                    )}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </>

@@ -10,7 +10,7 @@ type LinkButtonProps = LinkProps;
 export type ButtonProps = PropsWithChildren<{
   disabled?: boolean;
   className?: string;
-  variant?: 'primary' | 'secondary'; /* 'danger' */
+  variant?: 'primary' | 'secondary' | 'danger';
   size?: Size;
   inline?: boolean;
   solid?: boolean;
@@ -40,7 +40,7 @@ export const Button: FC<ButtonProps> = ({
         'tw:border tw:rounded-md! tw:no-underline!',
         'tw:transition-colors tw:focus-ring',
         {
-          'tw:px-2 tw:py-1 tw:text-sm': size === 'sm',
+          'tw:px-1.5 tw:py-1 tw:text-sm': size === 'sm',
           'tw:px-3 tw:py-1.5': size === 'md',
           'tw:px-4 tw:py-2 tw:text-lg': size === 'lg',
         },
@@ -48,6 +48,8 @@ export const Button: FC<ButtonProps> = ({
           'tw:border-brand tw:text-brand': variant === 'primary',
           'tw:border-zinc-500': variant === 'secondary',
           'tw:text-zinc-500!': variant === 'secondary' && !solid,
+          'tw:border-danger': variant === 'danger',
+          'tw:text-danger!': variant === 'danger' && !solid,
         },
         solid && {
           'tw:text-white!': true,
@@ -57,11 +59,15 @@ export const Button: FC<ButtonProps> = ({
 
           'tw:bg-zinc-500': variant === 'secondary',
           'tw:hover:bg-zinc-600 tw:hover:border-zinc-600 tw:focus:bg-zinc-600 tw:focus:border-zinc-600': variant === 'secondary',
+
+          'tw:bg-danger': variant === 'danger',
+          'tw:hover:bg-danger-dark tw:hover:border-danger-dark tw:focus:bg-danger-dark tw:focus:border-danger-dark': variant === 'danger',
         },
         !disabled && {
           'tw:hover:text-white! tw:focus:text-white!': !solid,
           'tw:hover:bg-brand tw:focus:bg-brand': variant === 'primary',
           'tw:hover:bg-zinc-500 tw:focus:bg-zinc-500': variant === 'secondary',
+          'tw:hover:bg-danger tw:focus:bg-danger': variant === 'danger',
         },
         {
           'tw:pointer-events-none tw:opacity-65': disabled,

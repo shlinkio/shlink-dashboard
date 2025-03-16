@@ -4,8 +4,13 @@
   --color-brand: #4696e5;
   /* --color-brand: #2078CF; // Properly accessible */
   --color-brand-dark: #1f69c0;
+
   --color-danger: #dc3545;
+  --color-danger-dark: #dc3545; // TODO
+
   --color-warning: #ffc107;
+  --color-warning-dark: #ffc107; // TODO
+
   --color-placeholder: #6c757d;
 }
 
