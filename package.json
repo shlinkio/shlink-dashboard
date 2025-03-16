@@ -19,7 +19,8 @@
     "preview": "NODE_ENV=production tsx ./server.ts",
     "migration:create": "tsx ./scripts/migration-create.ts",
     "migration:run": "tsx ./scripts/migration-up.ts",
-    "migration:down": "tsx ./scripts/migration-down.ts"
+    "migration:down": "tsx ./scripts/migration-down.ts",
+    "password:hash": "tsx ./scripts/hash-password.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

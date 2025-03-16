@@ -20,7 +20,13 @@ type ServerAndUserResult = {
 };
 
 export class TagsService {
-  constructor(private readonly em: EntityManager, private readonly serversService: ServersService) {}
+  readonly #em: EntityManager;
+  readonly #serversService: ServersService;
+
+  constructor(em: EntityManager, serversService: ServersService) {
+    this.#em = em;
+    this.#serversService = serversService;
+  }
 
   async tagColors(param: FindTagsParam): Promise<Record<string, string>> {
     const { server, user } = await this.resolveServerAndUser(param);
@@ -28,7 +34,7 @@ export class TagsService {
       return {};
     }
 
-    const tags = await this.em.find(TagEntity, { user, server });
+    const tags = await this.#em.find(TagEntity, { user, server });
 
     return tags.reduce<Record<string, string>>((acc, tag) => {
       acc[tag.tag] = tag.color;
@@ -43,12 +49,12 @@ export class TagsService {
     }
 
     // FIXME em.upsertMany seems to ignore the options object somehow. Using em.upsert instead
-    // await this.em.transactional((em) => em.upsertMany(
+    // await this.#em.transactional((em) => em.upsertMany(
     //   TagEntity,
     //   Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
     //   { onConflictFields: ['tag', 'user', 'server'] },
     // ));
-    await this.em.transactional((em) => Promise.all(Object.entries(colors).map(([tag, color]) => {
+    await this.#em.transactional((em) => Promise.all(Object.entries(colors).map(([tag, color]) => {
       const tagObj: Partial<TagEntity> = { tag, color, user, server };
       return em.upsert(TagEntity, tagObj, {
         onConflictFields: ['tag', 'user', 'server'],
@@ -58,8 +64,8 @@ export class TagsService {
 
   private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
-      serverPublicId ? this.serversService.getByPublicIdAndUser(serverPublicId, userId) : null,
-      this.em.findOne(UserEntity, { id: userId }),
+      serverPublicId ? this.#serversService.getByPublicIdAndUser(serverPublicId, userId) : null,
+      this.#em.findOne(UserEntity, { id: userId }),
     ]);
 
     return { server, user };

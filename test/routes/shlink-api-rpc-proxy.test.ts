@@ -2,7 +2,6 @@ import type { ShlinkApiClient } from '@shlinkio/shlink-js-sdk/api-contract';
 import { ErrorType } from '@shlinkio/shlink-js-sdk/api-contract';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { ActionFunctionArgs } from 'react-router';
-import { expect } from 'vitest';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import { action } from '../../app/routes/shlink-api-rpc-proxy';
 import type { ServersService } from '../../app/servers/ServersService.server';

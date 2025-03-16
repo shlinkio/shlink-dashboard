@@ -2,10 +2,14 @@ import type { Server } from '../entities/Server';
 import type { ServersRepository } from './ServersRepository.server';
 
 export class ServersService {
-  constructor(private readonly serversRepository: ServersRepository) {}
+  readonly #serversRepository: ServersRepository;
+
+  constructor(serversRepository: ServersRepository) {
+    this.#serversRepository = serversRepository;
+  }
 
   public async getByPublicIdAndUser(publicId: string, userId: string): Promise<Server> {
-    const server = await this.serversRepository.findByPublicIdAndUserId(publicId, userId);
+    const server = await this.#serversRepository.findByPublicIdAndUserId(publicId, userId);
     if (!server) {
       throw new Error(`Server with public ID ${publicId} not found`);
     }
@@ -14,6 +18,6 @@ export class ServersService {
   }
 
   public async getUserServers(userId: string): Promise<Server[]> {
-    return this.serversRepository.findByUserId(userId);
+    return this.#serversRepository.findByUserId(userId);
   }
 }

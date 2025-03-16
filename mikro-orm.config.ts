@@ -25,8 +25,7 @@ async function resolveOptions(): Promise<Options> {
   const commonOptions: Options = {
     entities: [User, Settings, Server, Tag],
     migrations: {
-      path: 'build/db/migrations', // TODO
-      pathTs: 'app/db/migrations',
+      path: 'app/db/migrations',
       snapshot: false,
     },
     extensions: [Migrator],

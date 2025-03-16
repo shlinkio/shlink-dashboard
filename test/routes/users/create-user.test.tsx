@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { types } from 'sass';
 import type { ActionResult } from '../../../app/routes/users/create-user';
 import { action } from '../../../app/routes/users/create-user';
 import CreateUser from '../../../app/routes/users/create-user';
@@ -11,8 +10,6 @@ import { DuplicatedEntryError } from '../../../app/validation/DuplicatedEntryErr
 import { ValidationError } from '../../../app/validation/ValidationError.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
-import Error = types.Error;
-import { expect } from 'vitest';
 
 describe('create-user', () => {
   describe('action', () => {
