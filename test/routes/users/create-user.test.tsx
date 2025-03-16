@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { expect } from 'vitest';
 import type { ActionResult } from '../../../app/routes/users/create-user';
 import { action } from '../../../app/routes/users/create-user';
 import CreateUser from '../../../app/routes/users/create-user';
