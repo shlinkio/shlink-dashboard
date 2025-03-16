@@ -1,17 +1,20 @@
+import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { fromPartial } from '@total-typescript/shoehorn';
-import { hashPassword } from '../../app/auth/passwords.server';
+import { hashPassword, verifyPassword } from '../../app/auth/passwords.server';
 import type { User } from '../../app/entities/User';
 import type { UsersRepository } from '../../app/users/UsersRepository.server';
 import { UsersService } from '../../app/users/UsersService.server';
+import { DuplicatedEntryError } from '../../app/validation/DuplicatedEntryError.server';
 
 describe('UsersService', () => {
   const findOneByUsername = vi.fn();
   const findAndCountUsers = vi.fn();
+  const createUser = vi.fn();
   let usersRepo: UsersRepository;
   let usersService: UsersService;
 
   beforeEach(() => {
-    usersRepo = fromPartial<UsersRepository>({ findOneByUsername, findAndCountUsers });
+    usersRepo = fromPartial<UsersRepository>({ findOneByUsername, findAndCountUsers, createUser });
     usersService = new UsersService(usersRepo);
   });
 
@@ -91,6 +94,81 @@ describe('UsersService', () => {
       expect(result.users).toEqual(users);
       expect(result.totalUsers).toEqual(totalUsers);
       expect(result.totalPages).toEqual(expectedTotalPages);
+    });
+  });
+
+  describe('createUser', () => {
+    const createFormData = (data: Record<string, string | undefined>) => {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+
+      return formData;
+    };
+
+    it.each([
+      {
+        data: {},
+        expectedFields: {
+          username: 'Required',
+          role: 'Required',
+        },
+      },
+      {
+        data: {
+          username: 'foobar',
+          role: 'invalid',
+        },
+        expectedFields: {
+          role: 'Invalid enum value. Expected \'admin\' | \'advanced-user\' | \'managed-user\', received \'invalid\'',
+        },
+      },
+      {
+        data: {
+          role: 'admin',
+        },
+        expectedFields: {
+          'username': 'Required',
+        },
+      },
+    ])('throws error if provided data is invalid', async ({ data, expectedFields }) => {
+      const formData = createFormData(data);
+
+      await expect(usersService.createUser(formData)).rejects.toThrowError(expect.objectContaining({
+        message: 'Provided data is invalid',
+        invalidFields: expectedFields,
+      }));
+      expect(createUser).not.toHaveBeenCalled();
+    });
+
+    it('throws error if username is duplicated', async () => {
+      createUser.mockRejectedValue(new UniqueConstraintViolationException(new Error('')));
+
+      const formData = createFormData({
+        username: 'username',
+        role: 'managed-user',
+      });
+
+      await expect(usersService.createUser(formData)).rejects.toThrowError(new DuplicatedEntryError('username'));
+    });
+
+    it('creates a user with a randomly generated password', async () => {
+      createUser.mockImplementation(async (firstArg) => firstArg);
+
+      const data = {
+        username: 'username',
+        displayName: 'Display Name',
+        role: 'admin',
+      };
+      const formData = createFormData(data);
+
+      const [user, plainTextPassword] = await usersService.createUser(formData);
+
+      expect(createUser).toHaveBeenCalledWith(expect.objectContaining(data));
+      expect(await verifyPassword(plainTextPassword, user.password)).toEqual(true);
     });
   });
 });

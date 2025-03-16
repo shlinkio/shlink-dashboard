@@ -1,5 +1,9 @@
-import { verifyPassword } from '../auth/passwords.server';
+import { UniqueConstraintViolationException } from '@mikro-orm/core';
+import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
+import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
+import { validateFormDataSchema } from '../validation/validator.server';
+import { USER_CREATION_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -51,5 +55,22 @@ export class UsersService {
       totalUsers,
       totalPages: Math.ceil(totalUsers / limit),
     };
+  }
+
+  async createUser(data: FormData): Promise<[User, string]> {
+    const userData = validateFormDataSchema(USER_CREATION_SCHEMA, data);
+    const plainTextTempPassword = generatePassword();
+    const password = await hashPassword(plainTextTempPassword);
+
+    try {
+      const user = await this.#usersRepository.createUser({ ...userData, password });
+      return [user, plainTextTempPassword];
+    } catch (e) {
+      if (e instanceof UniqueConstraintViolationException) {
+        throw new DuplicatedEntryError('username');
+      }
+
+      throw e;
+    }
   }
 }

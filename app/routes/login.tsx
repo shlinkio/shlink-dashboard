@@ -1,11 +1,11 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
-import { useId } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { redirect } from 'react-router';
-import { Button, Input } from 'reactstrap';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
+import { Button } from '../fe-kit/Button';
+import { LabelledInput } from '../fe-kit/LabelledInput';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
 
@@ -37,8 +37,6 @@ export async function action(
 type ActionResult = Awaited<ReturnType<typeof action>>;
 
 export default function Login() {
-  const usernameId = useId();
-  const passwordId = useId();
   const fetcher = useFetcher<ActionResult>();
   const isSaving = fetcher.state === 'submitting';
 
@@ -46,15 +44,9 @@ export default function Login() {
     <div className="tw:mt-8 tw:mx-8 tw:lg:mx-auto tw:lg:w-[50%]">
       <SimpleCard>
         <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-4">
-          <div>
-            <label htmlFor={usernameId}>Username:</label>
-            <Input id={usernameId} name="username" required />
-          </div>
-          <div>
-            <label htmlFor={passwordId}>Password:</label>
-            <Input id={passwordId} type="password" name="password" required />
-          </div>
-          <Button color="primary" type="submit" disabled={isSaving}>
+          <LabelledInput label="Username:" name="username" hiddenRequired />
+          <LabelledInput label="Password:" type="password" name="password" hiddenRequired />
+          <Button solid type="submit" disabled={isSaving}>
             {isSaving ? 'Logging in...' : 'Login'}
           </Button>
           {fetcher.data && 'error' in fetcher.data && fetcher.data.error && (

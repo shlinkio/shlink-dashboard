@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword } from '../../app/auth/passwords.server';
+import { generatePassword, hashPassword, verifyPassword } from '../../app/auth/passwords.server';
 
 describe('passwords', () => {
   it('can hash and then verify a password', async () => {
@@ -29,5 +29,17 @@ describe('passwords', () => {
 
     expect(validChecks.every((isValid) => isValid)).toEqual(true);
     expect(invalidChecks.every((isValid) => !isValid)).toEqual(true);
+  });
+
+  describe('generatePassword', () => {
+    it.each([
+      { providedLength: 10, expectedLength: 10 },
+      { providedLength: 1, expectedLength: 1 },
+      { providedLength: 30, expectedLength: 30 },
+      { providedLength: -5, expectedLength: 1 },
+      { providedLength: undefined, expectedLength: 12 },
+    ])('generates a password with provided length', ({ providedLength, expectedLength }) => {
+      expect(generatePassword(providedLength)).toHaveLength(expectedLength);
+    });
   });
 });

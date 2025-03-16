@@ -1,4 +1,4 @@
-import type { EntityManager, FilterQuery } from '@mikro-orm/core';
+import type { EntityManager, FilterQuery, RequiredEntityData } from '@mikro-orm/core';
 import { EntityRepository } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { User } from '../entities/User';
@@ -24,7 +24,7 @@ export class UsersRepository extends EntityRepository<User> {
         limit,
         offset,
         orderBy: {
-          [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'ASC',
+          [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'DESC',
         },
       },
     );
@@ -52,6 +52,13 @@ export class UsersRepository extends EntityRepository<User> {
         },
       ]),
     };
+  }
+
+  async createUser(userData: Omit<RequiredEntityData<User>, 'createdAt'>): Promise<User> {
+    const user = this.em.create(User, { ...userData, createdAt: new Date() });
+    await this.em.persist(user).flush();
+
+    return user;
   }
 }
 

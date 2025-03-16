@@ -1,4 +1,4 @@
-import { faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
@@ -13,22 +13,21 @@ import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
+import { Button } from '../../fe-kit/Button';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
 import { Table } from '../../fe-kit/Table';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
 import { RoleBadge } from './RoleBadge';
+import { ensureAdmin } from './utils';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { role } = await authHelper.getSession(request, '/login');
-  if (role !== 'admin') {
-    throw new Response('Not found', { status: 404 });
-  }
+  await ensureAdmin(request, authHelper);
 
   const query = new URL(request.url).searchParams;
   const orderByParam = query.get('orderBy');
@@ -85,12 +84,19 @@ export default function ManageUsers() {
   }), [dir, field, urlForParams]);
 
   return (
-    <Layout className="tw:flex tw:flex-col tw:gap-y-3">
+    <Layout className="tw:flex tw:flex-col tw:gap-y-4">
       <SearchInput
+        variant="primary"
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
-      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-3">
+      <div className="tw:flex tw:gap-4 tw:flex-col tw:md:flex-row-reverse">
+        <Button to="/manage-users/create">
+          <FontAwesomeIcon icon={faPlus} />
+          New user
+        </Button>
+      </div>
+      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
         <Table
           header={
             <Table.Row>
