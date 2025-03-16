@@ -45,20 +45,20 @@ export const Button: FC<ButtonProps> = ({
           'tw:px-4 tw:py-2 tw:text-lg': size === 'lg',
         },
         {
-          'tw:border-shlink-brand tw:text-shlink-brand': variant === 'primary',
+          'tw:border-brand tw:text-brand': variant === 'primary',
           'tw:border-zinc-400 tw:text-zinc-400!': variant === 'secondary',
         },
         solid && {
-          'tw:text-white! tw:bg-shlink-brand': variant === 'primary',
-          'tw:hover:bg-shlink-brand-dark tw:hover:border-shlink-brand-dark': variant === 'primary',
-          'tw:focus:bg-shlink-brand-dark tw:focus:border-shlink-brand-dark': variant === 'primary',
+          'tw:text-white! tw:bg-brand': variant === 'primary',
+          'tw:hover:bg-brand-dark tw:hover:border-brand-dark': variant === 'primary',
+          'tw:focus:bg-brand-dark tw:focus:border-brand-dark': variant === 'primary',
 
           'tw:text-black! tw:bg-zinc-400': variant === 'secondary',
           'tw:hover:bg-zinc-500 tw:hover:border-zinc-500 tw:focus:bg-zinc-500 tw:focus:border-zinc-500': variant === 'secondary',
         },
         !disabled && {
           'tw:hover:text-white! tw:focus:text-white!': !solid,
-          'tw:hover:bg-shlink-brand tw:focus:bg-shlink-brand': variant === 'primary',
+          'tw:hover:bg-brand tw:focus:bg-brand': variant === 'primary',
           'tw:hover:bg-zinc-400 tw:focus:bg-zinc-400': variant === 'secondary',
         },
         {
