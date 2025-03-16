@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { useId } from 'react';
+import { Label } from './Label';
 import type { SelectProps } from './Select';
 import { Select } from './Select';
 
@@ -15,10 +16,7 @@ export const LabelledSelect: FC<LabelledSelectProps> = ({ selectClassName, label
   const id = useId();
   return (
     <div className="tw:flex tw:flex-col tw:gap-1">
-      <label htmlFor={id}>
-        {label}
-        {required && <span className="tw:text-danger tw:ml-1">*</span>}
-      </label>
+      <Label htmlFor={id} required={required}>{label}</Label>
       <Select id={id} className={selectClassName} required={required} {...rest} />
     </div>
   );

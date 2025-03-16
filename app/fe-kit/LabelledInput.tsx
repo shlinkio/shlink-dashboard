@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useId } from 'react';
 import type { InputProps } from './Input';
 import { Input } from './Input';
+import { Label } from './Label';
 
 export type LabelledInputProps = Omit<InputProps, 'className' | 'id'> & {
   label: string;
@@ -12,10 +13,7 @@ export const LabelledInput: FC<LabelledInputProps> = ({ label, inputClassName, r
   const id = useId();
   return (
     <div className="tw:flex tw:flex-col tw:gap-1">
-      <label htmlFor={id}>
-        {label}
-        {required && <span className="tw:text-danger tw:ml-1">*</span>}
-      </label>
+      <Label htmlFor={id} required={required}>{label}</Label>
       <Input id={id} className={inputClassName} required={required} {...rest} />
     </div>
   );
