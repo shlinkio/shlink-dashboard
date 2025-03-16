@@ -44,8 +44,8 @@ export default function Login() {
     <div className="tw:mt-8 tw:mx-8 tw:lg:mx-auto tw:lg:w-[50%]">
       <SimpleCard>
         <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-4">
-          <LabelledInput label="Username:" name="username" required />
-          <LabelledInput label="Password:" type="password" name="password" required />
+          <LabelledInput label="Username:" name="username" hiddenRequired />
+          <LabelledInput label="Password:" type="password" name="password" hiddenRequired />
           <Button solid type="submit" disabled={isSaving}>
             {isSaving ? 'Logging in...' : 'Login'}
           </Button>
