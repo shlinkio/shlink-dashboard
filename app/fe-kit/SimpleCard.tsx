@@ -11,7 +11,7 @@ export const SimpleCard: FC<SimpleCardProps> = ({ title, bodyClassName, children
   <Card {...rest}>
     {title && (
       <Card.Header>
-        <h5 className="tw:m-0!">{title}</h5>
+        <h5>{title}</h5>
       </Card.Header>
     )}
     <Card.Body className={bodyClassName}>

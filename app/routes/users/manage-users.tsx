@@ -5,8 +5,10 @@ import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
 import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
+import { useState } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
+import { useFetcher } from 'react-router';
 import { Link } from 'react-router';
 import { useNavigation } from 'react-router';
 import { href, useLoaderData, useNavigate } from 'react-router';
@@ -15,6 +17,7 @@ import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { Button } from '../../fe-kit/Button';
+import { ModalDialog } from '../../fe-kit/ModalDialog';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
 import { SimpleCard } from '../../fe-kit/SimpleCard';
@@ -58,6 +61,7 @@ function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: Or
 }
 
 export default function ManageUsers() {
+  const session = useSession();
   const navigation = useNavigation();
   const navigate = useNavigate();
   const { users, totalPages, currentParams } = useLoaderData<typeof loader>();
@@ -84,7 +88,18 @@ export default function ManageUsers() {
     page: 1,
     orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
   }), [dir, field, urlForParams]);
-  const session = useSession();
+
+  const [userToDelete, setUserToDelete] = useState<typeof users[number] | null>(null);
+  const closeDialog = useCallback(() => setUserToDelete(null), []);
+  const deleteUserFetcher = useFetcher();
+  const deleteUser = useCallback(async () => {
+    const userId = userToDelete?.id;
+    await deleteUserFetcher.submit({}, {
+      method: 'POST',
+      action: href('/manage-users/delete/:userId', { userId }),
+    });
+    closeDialog();
+  }, [closeDialog, deleteUserFetcher, userToDelete?.id]);
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
@@ -150,7 +165,7 @@ export default function ManageUsers() {
                   <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell className="tw:text-right">
                     {session?.username !== user.username && (
-                      <Button inline size="sm" variant="danger" aria-label="Delete user">
+                      <Button inline size="sm" variant="danger" aria-label="Delete user" onClick={() => setUserToDelete(user)}>
                         <FontAwesomeIcon icon={faTrashCan} />
                       </Button>
                     )}
@@ -170,6 +185,18 @@ export default function ManageUsers() {
           </div>
         )}
       </SimpleCard>
+
+      <ModalDialog
+        title="Delete user"
+        variant="danger"
+        size="sm"
+        open={userToDelete !== null}
+        onClose={closeDialog}
+        onConfirm={deleteUser}
+        confirmText={deleteUserFetcher.state === 'submitting' ? 'Deleting...' : 'Delete user'}
+      >
+        Are you sure you want to delete user {userToDelete?.username}?
+      </ModalDialog>
     </Layout>
   );
 }
