@@ -18,7 +18,7 @@ const Footer: FC<CardProps> = ({ className, ...rest }) => (
 const BaseCard: FC<CardProps> = ({ className, ...props }) => (
   <div
     className={clsx(
-      'tw:group/card tw:rounded-md',
+      'tw:group/card tw:rounded-md tw:shadow-md',
       'tw:border tw:border-(--border-color) tw:bg-(--primary-color)',
       className,
     )}
