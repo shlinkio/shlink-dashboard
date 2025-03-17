@@ -11,8 +11,7 @@ export const LinkButton: FC<LinkButtonProps> = ({ className, disabled, size = 'm
   <button
     className={clsx(
       'tw:inline-flex tw:rounded-md tw:focus-ring',
-      'tw:text-brand tw:hover:text-brand-dark tw:focus:text-brand-dark',
-      'tw:hover:underline tw:focus:underline',
+      'tw:text-brand tw:highlight:text-brand-dark tw:highlight:underline',
       {
         'tw:px-1.5 tw:py-1 tw:text-sm': size === 'sm',
         'tw:px-3 tw:py-1.5': size === 'md',

@@ -54,20 +54,19 @@ export const Button: FC<ButtonProps> = ({
         solid && {
           'tw:text-white!': true,
           'tw:bg-brand': variant === 'primary',
-          'tw:hover:bg-brand-dark tw:hover:border-brand-dark': variant === 'primary',
-          'tw:focus:bg-brand-dark tw:focus:border-brand-dark': variant === 'primary',
+          'tw:highlight:bg-brand-dark tw:highlight:border-brand-dark': variant === 'primary',
 
           'tw:bg-zinc-500': variant === 'secondary',
-          'tw:hover:bg-zinc-600 tw:hover:border-zinc-600 tw:focus:bg-zinc-600 tw:focus:border-zinc-600': variant === 'secondary',
+          'tw:highlight:bg-zinc-600 tw:highlight:border-zinc-600': variant === 'secondary',
 
           'tw:bg-danger': variant === 'danger',
-          'tw:hover:bg-danger-dark tw:hover:border-danger-dark tw:focus:bg-danger-dark tw:focus:border-danger-dark': variant === 'danger',
+          'tw:highlight:bg-danger-dark tw:highlight:border-danger-dark': variant === 'danger',
         },
         !disabled && {
-          'tw:hover:text-white! tw:focus:text-white!': !solid,
-          'tw:hover:bg-brand tw:focus:bg-brand': variant === 'primary',
-          'tw:hover:bg-zinc-500 tw:focus:bg-zinc-500': variant === 'secondary',
-          'tw:hover:bg-danger tw:focus:bg-danger': variant === 'danger',
+          'tw:highlight:text-white!': !solid,
+          'tw:highlight:bg-brand': variant === 'primary',
+          'tw:highlight:bg-zinc-500': variant === 'secondary',
+          'tw:highlight:bg-danger': variant === 'danger',
         },
         {
           'tw:pointer-events-none tw:opacity-65': disabled,

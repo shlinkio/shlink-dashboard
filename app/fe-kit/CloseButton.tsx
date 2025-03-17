@@ -11,7 +11,7 @@ export const CloseButton: FC<CloseButtonProps> = ({ onClick }) => (
   <button
     onClick={onClick}
     className={clsx(
-      'tw:opacity-50 tw:focus:opacity-80 tw:hover:opacity-80 tw:transition-opacity',
+      'tw:opacity-50 tw:highlight:opacity-80 tw:transition-opacity',
       'tw:rounded-md tw:focus-ring',
     )}
   >

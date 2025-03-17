@@ -60,3 +60,10 @@
 @utility focus-ring-danger {
   @apply tw:focus-ring-base tw:focus-visible:ring-danger/50;
 }
+
+@custom-variant highlight {
+  &:hover,
+  &:focus {
+    @slot;
+  }
+}
