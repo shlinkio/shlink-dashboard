@@ -110,7 +110,6 @@ export default function ManageUsers() {
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
       <SearchInput
-        variant="primary"
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
