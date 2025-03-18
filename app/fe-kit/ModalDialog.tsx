@@ -59,16 +59,17 @@ export const ModalDialog: FC<ModalDialogProps> = ({
     <dialog
       ref={dialogRef}
       className={clsx(
-        'tw:m-auto tw:bg-transparent tw:backdrop:bg-black/50',
+        'tw:m-auto tw:bg-transparent tw:backdrop:bg-black/50 tw:w-full',
         {
-          'tw:w-[300px]': size === 'sm',
-          'tw:w-[500px]': size === 'md',
-          'tw:w-[800px]': size === 'lg',
-          'tw:w-[1140px]': size === 'xl',
+          'tw:md:w-sm': size === 'sm',
+          'tw:md:w-lg': size === 'md',
+          'tw:md:w-4xl': size === 'lg',
+          'tw:md:w-6xl': size === 'xl',
           'tw:w-full': size === 'full',
         },
         className,
       )}
+      onClose={onClose}
       {...rest}
     >
       {open && (

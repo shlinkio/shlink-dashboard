@@ -5,7 +5,6 @@ import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
 import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
-import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
