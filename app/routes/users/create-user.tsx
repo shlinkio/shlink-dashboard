@@ -26,7 +26,10 @@ export async function loader(
 export async function action(
   { request }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
+  await ensureAdmin(request, authHelper);
+
   const formData = await request.formData();
   try {
     const [user, plainTextPassword] = await usersService.createUser(formData);

@@ -5,6 +5,7 @@ import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
 import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -93,10 +94,15 @@ export default function ManageUsers() {
   const closeDialog = useCallback(() => setUserToDelete(null), []);
   const deleteUserFetcher = useFetcher();
   const deleteUser = useCallback(async () => {
-    const userId = userToDelete?.id;
-    await deleteUserFetcher.submit({}, {
+    const userId = userToDelete?.id.toString();
+    if (!userId) {
+      return;
+    }
+
+    await deleteUserFetcher.submit({ userId }, {
       method: 'POST',
-      action: href('/manage-users/delete/:userId', { userId }),
+      action: '/manage-users/delete',
+      encType: 'application/json',
     });
     closeDialog();
   }, [closeDialog, deleteUserFetcher, userToDelete?.id]);
