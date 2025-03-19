@@ -10,7 +10,7 @@ export const LinkButton: FC<LinkButtonProps> = ({ className, disabled, size = 'm
   // @ts-expect-error `type` is inferred as `string` instead of the union of actually supported values
   <button
     className={clsx(
-      'tw:inline-flex tw:rounded-md tw:focus-ring',
+      'tw:inline-flex tw:rounded-md! tw:focus-ring',
       'tw:text-brand tw:highlight:text-brand-dark tw:highlight:underline',
       {
         'tw:px-1.5 tw:py-1 tw:text-sm': size === 'sm',

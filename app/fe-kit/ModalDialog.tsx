@@ -9,42 +9,56 @@ import { CloseButton } from './CloseButton';
 import { LinkButton } from './LinkButton';
 import type { Size } from './types';
 
-export type ModalDialogProps = Omit<HTMLProps<HTMLDialogElement>, 'title' | 'size'> & {
+type CommonModalDialogProps = {
   open: boolean;
-  variant?: 'default' | 'danger' | 'cover';
   size?: Size | 'xl' | 'full';
 
   /** Modal header title */
   title: string;
-  /** Value to display in confirm button. Defaults to  */
-  confirmText?: string;
-
   /** Invoked when the modal is closed for any reason */
   onClose?: () => void;
+};
+
+type CoverModalDialogProps = CommonModalDialogProps & {
+  /**
+   * Cover dialogs have a body that span the whole dialog, and no buttons.
+   * The header overlaps the body with semi-transparent background.
+   */
+  variant: 'cover';
+};
+
+type RegularModalDialogProps = CommonModalDialogProps & {
+  /** Danger dialogs use danger variants in title and confirm button */
+  variant?: 'default' | 'danger'
+  /** Value to display in confirm button. Defaults to 'Confirm' */
+  confirmText?: string;
   /** Invoked when the modal is closed via confirm button */
   onConfirm?: () => void;
 };
+
+export type ModalDialogProps = Omit<HTMLProps<HTMLDialogElement>, 'title' | 'size'> & (
+  CoverModalDialogProps | RegularModalDialogProps
+);
 
 export const ModalDialog: FC<ModalDialogProps> = ({
   open,
   variant = 'default',
   size = 'md',
   title,
-  confirmText = 'Confirm',
   children,
-  onClose,
-  onConfirm,
   className,
   ...rest
 }) => {
+  const { onConfirm, confirmText = 'Confirm', ...restDialogProps } = 'onConfirm' in rest ? rest : {
+    ...rest,
+    onConfirm: undefined,
+    confirmText: undefined,
+  };
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const closeDialog = useCallback(() => {
-    dialogRef.current?.close();
-    onClose?.();
-  }, [onClose]);
+  const closeDialog = useCallback(() => dialogRef.current?.close(), []);
   const confirmAndClose = useCallback(() => {
-    closeDialog();
     onConfirm?.();
+    closeDialog();
   }, [closeDialog, onConfirm]);
 
   useEffect(() => {
@@ -53,7 +67,7 @@ export const ModalDialog: FC<ModalDialogProps> = ({
     } else {
       closeDialog();
     }
-  }, [closeDialog, onClose, open]);
+  }, [closeDialog, open]);
 
   return (
     <dialog
@@ -69,8 +83,7 @@ export const ModalDialog: FC<ModalDialogProps> = ({
         },
         className,
       )}
-      onClose={onClose}
-      {...rest}
+      {...restDialogProps}
     >
       {open && (
         <Card>
