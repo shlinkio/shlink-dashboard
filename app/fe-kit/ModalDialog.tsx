@@ -88,26 +88,31 @@ export const ModalDialog: FC<ModalDialogProps> = ({
     <dialog
       ref={dialogRef}
       className={clsx(
-        'tw:m-auto tw:bg-transparent tw:backdrop:bg-black/50 tw:w-full',
+        'tw:bg-transparent tw:backdrop:bg-black/50',
         {
-          'tw:md:w-sm': size === 'sm',
-          'tw:md:w-lg': size === 'md',
-          'tw:md:w-4xl': size === 'lg',
-          'tw:md:w-6xl': size === 'xl',
-          'tw:w-full': size === 'full',
+          'tw:flex tw:w-screen tw:h-screen tw:max-w-screen tw:max-h-screen tw:px-4': open,
         },
         className,
       )}
       {...restDialogProps}
     >
       {open && (
-        <Card>
-          <Card.Header className="tw:flex tw:items-center tw:justify-between">
+        <Card className={clsx(
+          'tw:m-auto tw:w-full',
+          {
+            'tw:md:w-sm': size === 'sm',
+            'tw:md:w-lg': size === 'md',
+            'tw:md:w-4xl': size === 'lg',
+            'tw:md:w-6xl': size === 'xl',
+            'tw:w-full': size === 'full',
+          },
+        )}>
+          <Card.Header className="tw:flex tw:items-center tw:justify-between tw:sticky tw:top-0">
             <h5 className={clsx({ 'tw:text-danger': variant === 'danger' })}>{title}</h5>
             <CloseButton onClick={closeDialog} />
           </Card.Header>
           <Card.Body>{children}</Card.Body>
-          <Card.Footer className="tw:flex tw:flex-row-reverse tw:gap-x-2 tw:items-center tw:py-4">
+          <Card.Footer className="tw:flex tw:flex-row-reverse tw:gap-x-2 tw:items-center tw:py-4 tw:sticky tw:bottom-0">
             {onConfirm && (
               <Button variant={variant === 'danger' ? 'danger' : 'primary'} onClick={confirmAndClose}>
                 {confirmText}
