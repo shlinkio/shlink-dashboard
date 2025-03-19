@@ -128,22 +128,13 @@ export default function ManageUsers() {
               >
                 Created
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('username')}
-                orderDir={field === 'username' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('username')} orderDir={field === 'username' ? dir : undefined}>
                 Username
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('displayName')}
-                orderDir={field === 'displayName' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('displayName')} orderDir={field === 'displayName' ? dir : undefined}>
                 Display name
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('role')}
-                orderDir={field === 'role' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('role')} orderDir={field === 'role' ? dir : undefined}>
                 Role
               </HeaderCell>
               <Table.Cell aria-hidden />
