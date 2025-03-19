@@ -62,11 +62,26 @@ export const ModalDialog: FC<ModalDialogProps> = ({
   }, [closeDialog, onConfirm]);
 
   useEffect(() => {
+    const body = document.querySelector('body')!;
+    const originalOverflow = body.style.overflow;
+    const originalPadding = body.style.paddingRight;
+
     if (open) {
+      // When opened, hide body scroll and compensate for the scrollbar if present
+      body.style.overflow = 'hidden';
+      if (body.scrollHeight > body.clientHeight) {
+        body.style.paddingRight = '15px';
+      }
       dialogRef.current?.showModal();
     } else {
       closeDialog();
     }
+
+    return () => {
+      // Restore original body overflow and padding on cleanup
+      body.style.overflow = originalOverflow;
+      body.style.paddingRight = originalPadding;
+    };
   }, [closeDialog, open]);
 
   return (

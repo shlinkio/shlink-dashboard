@@ -190,7 +190,7 @@ export default function ManageUsers() {
         onConfirm={deleteUser}
         confirmText={deleteUserFetcher.state === 'submitting' ? 'Deleting...' : 'Delete user'}
       >
-        Are you sure you want to delete user {userToDelete?.username}?
+        Are you sure you want to delete user <b>{userToDelete?.username}</b>?
       </ModalDialog>
     </Layout>
   );
