@@ -73,4 +73,8 @@ export class UsersService {
       throw e;
     }
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    await this.#usersRepository.deleteUser(userId);
+  }
 }

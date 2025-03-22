@@ -4,14 +4,19 @@
   --color-brand: #4696e5;
   /* --color-brand: #2078CF; // Properly accessible */
   --color-brand-dark: #1f69c0;
+
   --color-danger: #dc3545;
+  --color-danger-dark: #bb2d3b;
+
   --color-warning: #ffc107;
+  --color-warning-dark: #ffca2c;
+
   --color-placeholder: #6c757d;
 }
 
 @layer base {
   a {
-    @apply tw:text-brand;
+    @apply tw:text-brand tw:focus-visible:outline-3 tw:focus-visible:outline-brand/50 tw:focus-visible:outline-offset-3 tw:rounded-xs tw:focus-visible:z-1;
   }
 
   h1 {
@@ -36,6 +41,7 @@
   h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
     line-height: 1.2;
+    @apply tw:m-0!;
   }
 
   hr {
@@ -44,7 +50,7 @@
 }
 
 @utility focus-ring-base {
-  @apply tw:outline-none tw:focus-visible:ring-3 tw:transition-[box-shadow];
+  @apply tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:z-1 tw:transition-[box-shadow];
 }
 
 @utility focus-ring {
@@ -53,4 +59,11 @@
 
 @utility focus-ring-danger {
   @apply tw:focus-ring-base tw:focus-visible:ring-danger/50;
+}
+
+@custom-variant highlight {
+  &:hover,
+  &:focus {
+    @slot;
+  }
 }

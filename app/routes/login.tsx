@@ -1,4 +1,3 @@
-import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { redirect } from 'react-router';
@@ -6,6 +5,7 @@ import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 import { Button } from '../fe-kit/Button';
 import { LabelledInput } from '../fe-kit/LabelledInput';
+import { SimpleCard } from '../fe-kit/SimpleCard';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
 

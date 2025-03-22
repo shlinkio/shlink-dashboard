@@ -5,15 +5,6 @@
 @use '../node_modules/@shlinkio/shlink-frontend-kit/dist/index' as fe-index; // After bootstrap. Includes CSS overwrites
 @use '../node_modules/@shlinkio/shlink-web-component/dist/index';
 
-.app {
-  padding-top: base.$headerHeight;
-}
-
-.main-header.main-header {
-  color: white;
-  background-color: var(--brand-color) !important;
-
-  .navbar-brand {
-    color: inherit !important;
-  }
+:root {
+  --header-height: #{base.$headerHeight};
 }

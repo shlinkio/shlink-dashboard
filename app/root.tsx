@@ -61,7 +61,7 @@ export default function App() {
       <body>
         <SessionProvider value={sessionData ?? null}>
           <MainHeader />
-          <div className="app tw:h-full">
+          <div className="tw:pt-(--header-height)">
             <Outlet />
           </div>
           <Scripts />

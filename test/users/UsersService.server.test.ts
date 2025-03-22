@@ -10,11 +10,12 @@ describe('UsersService', () => {
   const findOneByUsername = vi.fn();
   const findAndCountUsers = vi.fn();
   const createUser = vi.fn();
+  const deleteUser = vi.fn();
   let usersRepo: UsersRepository;
   let usersService: UsersService;
 
   beforeEach(() => {
-    usersRepo = fromPartial<UsersRepository>({ findOneByUsername, findAndCountUsers, createUser });
+    usersRepo = fromPartial<UsersRepository>({ findOneByUsername, findAndCountUsers, createUser, deleteUser });
     usersService = new UsersService(usersRepo);
   });
 
@@ -169,6 +170,13 @@ describe('UsersService', () => {
 
       expect(createUser).toHaveBeenCalledWith(expect.objectContaining(data));
       expect(await verifyPassword(plainTextPassword, user.password)).toEqual(true);
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('deletes user via repository', async () => {
+      await usersService.deleteUser('123');
+      expect(deleteUser).toHaveBeenCalledWith('123');
     });
   });
 });

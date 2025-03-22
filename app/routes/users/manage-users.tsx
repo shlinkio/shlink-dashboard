@@ -1,24 +1,28 @@
-import { faPlus, faSortAlphaAsc, faSortAlphaDesc } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSortAlphaAsc, faSortAlphaDesc, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
-import { determineOrder, SimpleCard, stringToOrder } from '@shlinkio/shlink-frontend-kit';
+import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
 import type { PropsWithChildren } from 'react';
+import { useState } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
 import { Link } from 'react-router';
 import { useNavigation } from 'react-router';
 import { href, useLoaderData, useNavigate } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
+import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { Button } from '../../fe-kit/Button';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
+import { SimpleCard } from '../../fe-kit/SimpleCard';
 import { Table } from '../../fe-kit/Table';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
+import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
 import { ensureAdmin } from './utils';
 
@@ -56,6 +60,7 @@ function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: Or
 }
 
 export default function ManageUsers() {
+  const session = useSession();
   const navigation = useNavigation();
   const navigate = useNavigate();
   const { users, totalPages, currentParams } = useLoaderData<typeof loader>();
@@ -83,10 +88,12 @@ export default function ManageUsers() {
     orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
   }), [dir, field, urlForParams]);
 
+  const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
+  const closeDialog = useCallback(() => setUserToDelete(undefined), []);
+
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
       <SearchInput
-        variant="primary"
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
@@ -106,30 +113,22 @@ export default function ManageUsers() {
               >
                 Created
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('username')}
-                orderDir={field === 'username' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('username')} orderDir={field === 'username' ? dir : undefined}>
                 Username
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('displayName')}
-                orderDir={field === 'displayName' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('displayName')} orderDir={field === 'displayName' ? dir : undefined}>
                 Display name
               </HeaderCell>
-              <HeaderCell
-                to={headerUrl('role')}
-                orderDir={field === 'role' ? dir : undefined}
-              >
+              <HeaderCell to={headerUrl('role')} orderDir={field === 'role' ? dir : undefined}>
                 Role
               </HeaderCell>
+              <Table.Cell aria-hidden />
             </Table.Row>
           }
         >
           {navigation.state === 'loading' ? (
             <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={4} className="tw:italic">Loading...</Table.Cell>
+              <Table.Cell colSpan={5} className="tw:italic">Loading...</Table.Cell>
             </Table.Row>
           ) : (
             <>
@@ -143,7 +142,20 @@ export default function ManageUsers() {
                   <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
                   <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
-                  <Table.Cell><RoleBadge role={user.role}/></Table.Cell>
+                  <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
+                  <Table.Cell className="tw:text-right">
+                    {session?.username !== user.username && (
+                      <Button
+                        inline
+                        size="sm"
+                        variant="danger"
+                        aria-label={`Delete user ${user.username}`}
+                        onClick={() => setUserToDelete(user)}
+                      >
+                        <FontAwesomeIcon icon={faTrashCan} />
+                      </Button>
+                    )}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </>
@@ -159,6 +171,8 @@ export default function ManageUsers() {
           </div>
         )}
       </SimpleCard>
+
+      <DeleteUserModal onClose={closeDialog} userToDelete={userToDelete} />
     </Layout>
   );
 }

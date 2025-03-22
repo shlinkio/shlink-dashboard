@@ -3,7 +3,6 @@ import type { FC, InputHTMLAttributes } from 'react';
 import type { Size } from './types';
 
 export type BaseInputProps = {
-  variant?: 'input' | 'primary';
   size?: Size;
   feedback?: 'error',
 };
@@ -14,7 +13,6 @@ export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & B
 
 export const Input: FC<InputProps> = ({
   borderless = false,
-  variant = 'input',
   size = 'md',
   feedback,
   className,
@@ -38,10 +36,8 @@ export const Input: FC<InputProps> = ({
         'tw:border-(--input-border-color)': !borderless && !feedback,
         'tw:border-danger': !borderless && feedback === 'error',
         'tw:bg-(--input-disabled-color)': disabled || readOnly,
-      },
-      !disabled && !readOnly && {
-        'tw:bg-(--primary-color)': variant === 'primary',
-        'tw:bg-(--input-color)': variant === 'input',
+        // Apply different background color when rendered inside a card
+        'tw:bg-(--primary-color) tw:group-[&]/card:bg-(--input-color)': !disabled && !readOnly,
       },
       className,
     )}

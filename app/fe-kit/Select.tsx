@@ -11,7 +11,6 @@ const chevronImageUrl = String.raw`data:image/svg+xml,<svg xmlns='http://www.w3.
 export const Select: FC<SelectProps> = ({
   className,
   size = 'md',
-  variant = 'input',
   feedback,
   style = {},
   disabled,
@@ -34,10 +33,8 @@ export const Select: FC<SelectProps> = ({
         'tw:pl-3 tw:py-1.5': size === 'md',
         'tw:pl-4 tw:py-2 tw:text-xl!': size === 'lg',
         'tw:bg-(--input-disabled-color)': disabled,
-      },
-      !disabled && {
-        'tw:bg-(--primary-color)': variant === 'primary',
-        'tw:bg-(--input-color)': variant === 'input',
+        // Apply different background color when rendered inside a card
+        'tw:bg-(--primary-color) tw:group-[&]/card:bg-(--input-color)': !disabled,
       },
       className,
     )}

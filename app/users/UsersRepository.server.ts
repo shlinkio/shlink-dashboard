@@ -60,6 +60,10 @@ export class UsersRepository extends EntityRepository<User> {
 
     return user;
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    await this.em.nativeDelete(User, { id: userId });
+  }
 }
 
 export function createUsersRepository(em: EntityManager): UsersRepository {
