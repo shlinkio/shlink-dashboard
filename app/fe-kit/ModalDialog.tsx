@@ -110,7 +110,7 @@ export const ModalDialog: FC<ModalDialogProps> = ({
         )}>
           <Card.Header className="tw:flex tw:items-center tw:justify-between tw:sticky tw:top-0">
             <h5 className={clsx({ 'tw:text-danger': variant === 'danger' })}>{title}</h5>
-            <CloseButton onClick={closeDialog} />
+            <CloseButton onClick={closeDialog} label="Close dialog" />
           </Card.Header>
           <Card.Body>{children}</Card.Body>
           <Card.Footer className="tw:flex tw:flex-row-reverse tw:gap-x-2 tw:items-center tw:py-4 tw:sticky tw:bottom-0">

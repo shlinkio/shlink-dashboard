@@ -20,4 +20,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = (() => {}) as any;
 }
 HTMLDialogElement.prototype.showModal = () => {};
-HTMLDialogElement.prototype.close = () => {};
+HTMLDialogElement.prototype.close = function() {
+  const dialog = this as HTMLDialogElement;
+  dialog.dispatchEvent(new CloseEvent('close'));
+};

@@ -14,20 +14,20 @@ export type DeleteUserModalProps = {
  * ModalDialog that handles deleting users
  */
 export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClose }) => {
-  const deleteUserFetcher = useFetcher();
+  const { submit, state } = useFetcher();
   const deleteUser = useCallback(async () => {
     const userId = userToDelete?.id.toString();
     if (!userId) {
       return;
     }
 
-    await deleteUserFetcher.submit({ userId }, {
+    await submit({ userId }, {
       method: 'POST',
       action: '/manage-users/delete',
       encType: 'application/json',
     });
     onClose();
-  }, [onClose, deleteUserFetcher, userToDelete?.id]);
+  }, [onClose, submit, userToDelete?.id]);
 
   return (
     <ModalDialog
@@ -37,7 +37,7 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
       open={!!userToDelete}
       onClose={onClose}
       onConfirm={deleteUser}
-      confirmText={deleteUserFetcher.state === 'submitting' ? 'Deleting...' : 'Delete user'}
+      confirmText={state === 'submitting' ? 'Deleting...' : 'Delete user'}
     >
       Are you sure you want to delete user <b>{userToDelete?.username}</b>?
     </ModalDialog>
