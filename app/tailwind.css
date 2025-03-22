@@ -16,7 +16,7 @@
 
 @layer base {
   a {
-    @apply tw:text-brand;
+    @apply tw:text-brand tw:focus-visible:outline-3 tw:focus-visible:outline-brand/50 tw:focus-visible:outline-offset-3 tw:rounded-xs tw:focus-visible:z-1;
   }
 
   h1 {
@@ -50,7 +50,7 @@
 }
 
 @utility focus-ring-base {
-  @apply tw:outline-none tw:focus-visible:ring-3 tw:transition-[box-shadow];
+  @apply tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:z-1 tw:transition-[box-shadow];
 }
 
 @utility focus-ring {

@@ -38,7 +38,11 @@ export const Button: FC<ButtonProps> = ({
         },
         'tw:gap-2 tw:items-center tw:justify-center',
         'tw:border tw:rounded-md! tw:no-underline!',
-        'tw:transition-colors tw:focus-ring',
+        'tw:transition-colors',
+        {
+          'tw:focus-ring': variant !== 'danger',
+          'tw:focus-ring-danger': variant === 'danger',
+        },
         {
           'tw:px-1.5 tw:py-1 tw:text-sm': size === 'sm',
           'tw:px-3 tw:py-1.5': size === 'md',
