@@ -4,6 +4,7 @@ import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
 import { orderToString } from '@shlinkio/shlink-frontend-kit';
 import { determineOrder, stringToOrder } from '@shlinkio/shlink-frontend-kit';
+import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
 import { useCallback } from 'react';
@@ -97,7 +98,7 @@ export default function ManageUsers() {
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
-      <div className="tw:flex tw:gap-4 tw:flex-col tw:md:flex-row-reverse">
+      <div className="tw:flex tw:gap-4 tw:flex-col tw:lg:flex-row-reverse">
         <Button to="/manage-users/create">
           <FontAwesomeIcon icon={faPlus} />
           New user
@@ -138,12 +139,17 @@ export default function ManageUsers() {
                 </Table.Row>
               )}
               {users.map((user) => (
-                <Table.Row key={user.id}>
-                  <Table.Cell>{user.createdAt.toLocaleDateString()}</Table.Cell>
-                  <Table.Cell>{user.username}</Table.Cell>
-                  <Table.Cell>{user.displayName ?? '-'}</Table.Cell>
-                  <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
-                  <Table.Cell className="tw:text-right">
+                <Table.Row key={user.id} className="tw:relative">
+                  <Table.Cell data-column="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
+                  <Table.Cell data-column="Username:">{user.username}</Table.Cell>
+                  <Table.Cell data-column="Display name:">{user.displayName ?? '-'}</Table.Cell>
+                  <Table.Cell data-column="Role:"><RoleBadge role={user.role} /></Table.Cell>
+                  <Table.Cell
+                    className={clsx(
+                      'tw:lg:static tw:lg:text-right tw:lg:[&]:border-b-1!', // Big screens
+                      'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0!', // Small screens
+                    )}
+                  >
                     {session?.username !== user.username && (
                       <Button
                         inline
