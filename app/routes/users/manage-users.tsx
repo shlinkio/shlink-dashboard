@@ -145,7 +145,13 @@ export default function ManageUsers() {
                   <Table.Cell><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell className="tw:text-right">
                     {session?.username !== user.username && (
-                      <Button inline size="sm" variant="danger" aria-label="Delete user" onClick={() => setUserToDelete(user)}>
+                      <Button
+                        inline
+                        size="sm"
+                        variant="danger"
+                        aria-label={`Delete user ${user.username}`}
+                        onClick={() => setUserToDelete(user)}
+                      >
                         <FontAwesomeIcon icon={faTrashCan} />
                       </Button>
                     )}

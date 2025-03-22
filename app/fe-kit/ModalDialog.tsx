@@ -70,6 +70,7 @@ export const ModalDialog: FC<ModalDialogProps> = ({
       // When opened, hide body scroll and compensate for the scrollbar if present
       body.style.overflow = 'hidden';
       if (body.scrollHeight > body.clientHeight) {
+        // TODO Calculate the offset instead of hardcoding 15px
         body.style.paddingRight = '15px';
       }
       dialogRef.current?.showModal();

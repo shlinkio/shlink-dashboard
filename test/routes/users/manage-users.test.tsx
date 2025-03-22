@@ -4,6 +4,7 @@ import { fromPartial } from '@total-typescript/shoehorn';
 import type { LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
+import { SessionProvider } from '../../../app/auth/session-context';
 import type { User } from '../../../app/entities/User';
 import ManageUsers, { loader } from '../../../app/routes/users/manage-users';
 import type { UserOrderableFields, UsersService } from '../../../app/users/UsersService.server';
@@ -28,7 +29,7 @@ describe('manage-users', () => {
   const mockUser = (userData: Partial<Omit<User, 'id'>>): User => fromPartial({
     createdAt: new Date(),
     ...userData,
-    id: `${Date.now()}`,
+    id: crypto.randomUUID(),
   });
 
   describe('loader', () => {
@@ -62,13 +63,20 @@ describe('manage-users', () => {
       totalPages?: number;
       orderBy?: Order<UserOrderableFields>;
       searchTerm?: string;
+      currentUsername?: string;
     };
 
-    const setUp = async ({ users = [], totalPages = 1, orderBy = {}, searchTerm }: SetUpOptions = {}) => {
+    const setUp = async (
+      { users = [], totalPages = 1, orderBy = {}, searchTerm, currentUsername }: SetUpOptions = {},
+    ) => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
-          Component: ManageUsers,
+          Component: (props) => (
+            <SessionProvider value={currentUsername ? fromPartial({ username: currentUsername }) : null}>
+              <ManageUsers {...props} />
+            </SessionProvider>
+          ),
           HydrateFallback: () => null,
           loader: () => ({
             users,
@@ -207,6 +215,42 @@ describe('manage-users', () => {
 
       await user.click(screen.getByRole('link', { name: /New user$/ }));
       await waitFor(() => expect(screen.getByText('Create user')).toBeInTheDocument());
+    });
+
+    it('shows delete button only for users other than current one', async () => {
+      await setUp({
+        currentUsername: 'current',
+        users: [
+          mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
+          mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
+          mockUser({ username: 'current', displayName: 'John Doe', role: 'admin' }),
+          mockUser({ username: 'baz', displayName: 'John Doe', role: 'managed-user' }),
+        ],
+      });
+
+      expect(screen.getAllByLabelText(/^Delete user/)).toHaveLength(3);
+      expect(screen.getByLabelText('Delete user foo')).toBeInTheDocument();
+      expect(screen.getByLabelText('Delete user bar')).toBeInTheDocument();
+      expect(screen.getByLabelText('Delete user baz')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Delete user current')).not.toBeInTheDocument();
+    });
+
+    it('shows information about the user to be deleted', async () => {
+      const { user } = await setUp({
+        users: [
+          mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
+          mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
+        ],
+      });
+
+      expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+
+      await user.click(screen.getByLabelText('Delete user foo'));
+      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
+      await user.click(screen.getByText('Cancel'));
+
+      await user.click(screen.getByLabelText('Delete user bar'));
+      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
     });
   });
 });
