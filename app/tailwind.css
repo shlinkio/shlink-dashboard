@@ -1,2 +1,2 @@
-@import 'tailwindcss' prefix(tw);
+@import 'tailwindcss' prefix(tw) important;
 @import '@shlinkio/shlink-frontend-kit/tailwind.preset.css';
