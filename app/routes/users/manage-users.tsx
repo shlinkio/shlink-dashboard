@@ -8,7 +8,6 @@ import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { useFetcher } from 'react-router';
 import { Link } from 'react-router';
 import { useNavigation } from 'react-router';
 import { href, useLoaderData, useNavigate } from 'react-router';
@@ -17,13 +16,13 @@ import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { Button } from '../../fe-kit/Button';
-import { ModalDialog } from '../../fe-kit/ModalDialog';
 import { Paginator } from '../../fe-kit/Paginator';
 import { SearchInput } from '../../fe-kit/SearchInput';
 import { SimpleCard } from '../../fe-kit/SimpleCard';
 import { Table } from '../../fe-kit/Table';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
+import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
 import { ensureAdmin } from './utils';
 
@@ -89,22 +88,8 @@ export default function ManageUsers() {
     orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
   }), [dir, field, urlForParams]);
 
-  const [userToDelete, setUserToDelete] = useState<typeof users[number] | null>(null);
-  const closeDialog = useCallback(() => setUserToDelete(null), []);
-  const deleteUserFetcher = useFetcher();
-  const deleteUser = useCallback(async () => {
-    const userId = userToDelete?.id.toString();
-    if (!userId) {
-      return;
-    }
-
-    await deleteUserFetcher.submit({ userId }, {
-      method: 'POST',
-      action: '/manage-users/delete',
-      encType: 'application/json',
-    });
-    closeDialog();
-  }, [closeDialog, deleteUserFetcher, userToDelete?.id]);
+  const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
+  const closeDialog = useCallback(() => setUserToDelete(undefined), []);
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
@@ -181,17 +166,7 @@ export default function ManageUsers() {
         )}
       </SimpleCard>
 
-      <ModalDialog
-        title="Delete user"
-        variant="danger"
-        size="sm"
-        open={userToDelete !== null}
-        onClose={closeDialog}
-        onConfirm={deleteUser}
-        confirmText={deleteUserFetcher.state === 'submitting' ? 'Deleting...' : 'Delete user'}
-      >
-        Are you sure you want to delete user <b>{userToDelete?.username}</b>?
-      </ModalDialog>
+      <DeleteUserModal onClose={closeDialog} userToDelete={userToDelete} />
     </Layout>
   );
 }

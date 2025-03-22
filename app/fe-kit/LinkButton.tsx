@@ -2,12 +2,13 @@ import clsx from 'clsx';
 import type { FC, HTMLProps } from 'react';
 import type { Size } from './types';
 
-export type LinkButtonProps = Omit<HTMLProps<HTMLButtonElement>, 'size'> & {
+export type LinkButtonProps = Omit<HTMLProps<HTMLButtonElement>, 'size' | 'type'> & {
   size?: Size;
+  // HTMLProps<HTMLButtonElement> resolves `type` as `string | undefined`, instead of HTMLButtonElement['type']
+  type?: HTMLButtonElement['type'];
 };
 
 export const LinkButton: FC<LinkButtonProps> = ({ className, disabled, size = 'md', ...rest }) => (
-  // @ts-expect-error `type` is inferred as `string` instead of the union of actually supported values
   <button
     className={clsx(
       'tw:inline-flex tw:rounded-md! tw:focus-ring',
