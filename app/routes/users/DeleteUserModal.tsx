@@ -1,8 +1,8 @@
+import { ModalDialog } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';
 import type { User } from '../../entities/User';
-import { ModalDialog } from '../../fe-kit/ModalDialog';
 
 export type DeleteUserModalProps = {
   /** Represents the user to delete. The modal is closed while it is `undefined` */

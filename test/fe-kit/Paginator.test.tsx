@@ -1,8 +1,7 @@
+import type { PaginatorProps } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { ELLIPSIS, Paginator } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { ELLIPSIS } from '../../app/fe-kit/pagination';
-import type { PaginatorProps } from '../../app/fe-kit/Paginator';
-import { Paginator } from '../../app/fe-kit/Paginator';
 import { checkAccessibility } from '../__helpers__/accessibility';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 

@@ -1,8 +1,8 @@
+import { Card } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { ShlinkLogo } from '../../common/ShlinkLogo';
 import type { Server } from '../../entities/Server';
-import { Card } from '../../fe-kit/Card';
 import { NoServers } from './NoServers';
 import { ServersList } from './ServersList';
 

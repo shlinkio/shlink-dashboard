@@ -1,6 +1,6 @@
+import { useTimeout } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { screen } from '@testing-library/react';
 import type { FC } from 'react';
-import { useTimeout } from '../../app/fe-kit/use-timeout';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('use-timeout', () => {

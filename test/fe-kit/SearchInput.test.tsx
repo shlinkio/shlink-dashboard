@@ -1,6 +1,6 @@
+import type { SearchInputProps } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { SearchInput } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { SearchInputProps } from '../../app/fe-kit/SearchInput';
-import { SearchInput } from '../../app/fe-kit/SearchInput';
 import { checkAccessibility } from '../__helpers__/accessibility';
 
 describe('<SearchInput />', () => {

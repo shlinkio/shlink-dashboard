@@ -1,8 +1,8 @@
 import { faPlus, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { ExternalLink } from 'react-external-link';
-import { Button } from '../../fe-kit/Button';
 
 export const NoServers: FC = () => (
   <div className="tw:p-6 tw:text-center tw:flex tw:flex-col tw:gap-8">

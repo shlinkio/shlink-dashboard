@@ -1,12 +1,11 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
-import { Button } from '../../fe-kit/Button';
-import { SimpleCard } from '../../fe-kit/SimpleCard';
 import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
 import { ValidationError } from '../../validation/ValidationError.server';
