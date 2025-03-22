@@ -13,13 +13,19 @@ export type TableElementProps = PropsWithChildren & {
 
 const TableHead: FC<TableElementProps> = ({ children, className }) => (
   <TableSectionContext.Provider value={{ section: 'head' }}>
-    <thead className={className}>{children}</thead>
+    <thead className={clsx('tw:hidden tw:lg:table-header-group', className)}>{children}</thead>
   </TableSectionContext.Provider>
 );
 
 const TableBody: FC<TableElementProps> = ({ children, className }) => (
   <TableSectionContext.Provider value={{ section: 'body' }}>
-    <tbody className={className}>{children}</tbody>
+    <tbody className={clsx('tw:lg:table-row-group tw:flex tw:flex-col tw:gap-y-3', className)}>{children}</tbody>
+  </TableSectionContext.Provider>
+);
+
+const TableFooter: FC<TableElementProps> = ({ children, className }) => (
+  <TableSectionContext.Provider value={{ section: 'footer' }}>
+    <tfoot className={className}>{children}</tfoot>
   </TableSectionContext.Provider>
 );
 
@@ -27,7 +33,10 @@ const Row: FC<HTMLProps<HTMLTableRowElement>> = ({ children, className, ...rest 
   const sectionContext = useContext(TableSectionContext);
   return (
     <tr
-      className={clsx('tw:group',
+      className={clsx(
+        'tw:group',
+        'tw:lg:table-row tw:flex tw:flex-col',
+        'tw:lg:border-0! tw:border-y-2! tw:border-(--border-color)!',
         {
           'tw:hover:bg-(--secondary-color)': sectionContext?.section === 'body',
         },
@@ -47,11 +56,10 @@ const Cell: FC<HTMLProps<HTMLTableCellElement>> = ({ children, className, ...res
   return (
     <Tag
       className={clsx(
-        'tw:p-2 tw:border-(--border-color)!',
+        'tw:p-2 tw:block tw:lg:table-cell tw:border-b-1! tw:border-(--border-color)!',
         {
-          // For non-header cells, add a bottom border only when not part of the last row
-          'tw:group-[&:not(:last-child)]:border-b-1!': Tag === 'td',
-          'tw:border-b-1!': Tag === 'th',
+          // For md and lower, display the content in data-column attribute as before
+          'tw:before:lg:hidden tw:before:content-[attr(data-column)] tw:before:font-bold tw:before:mr-1': Tag === 'td',
         },
         className,
       )}
@@ -64,9 +72,10 @@ const Cell: FC<HTMLProps<HTMLTableCellElement>> = ({ children, className, ...res
 
 export type TableProps = HTMLProps<HTMLTableElement> & {
   header: ReactNode;
+  footer?: ReactNode;
 };
 
-const BaseTable: FC<TableProps> = ({ header, children, ...rest }) => {
+const BaseTable: FC<TableProps> = ({ header, footer, children, ...rest }) => {
   return (
     <table className="tw:w-full" {...rest}>
       <TableHead>
@@ -75,6 +84,11 @@ const BaseTable: FC<TableProps> = ({ header, children, ...rest }) => {
       <TableBody>
         {children}
       </TableBody>
+      {footer && (
+        <TableFooter>
+          {footer}
+        </TableFooter>
+      )}
     </table>
   );
 };
