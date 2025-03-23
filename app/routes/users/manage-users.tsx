@@ -50,7 +50,7 @@ export async function loader(
 function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
     <Table.Cell>
-      <Link className="tw:text-current!" to={to}>
+      <Link className="tw:text-current" to={to}>
         {children}
       </Link>
       {orderDir && (
@@ -146,8 +146,8 @@ export default function ManageUsers() {
                   <Table.Cell data-column="Role:"><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell
                     className={clsx(
-                      'tw:lg:static tw:lg:text-right tw:lg:[&]:border-b-1!', // Big screens
-                      'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0!', // Small screens
+                      'tw:lg:static tw:lg:text-right tw:lg:[&]:border-b-1', // Big screens
+                      'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
                     )}
                   >
                     {session?.username !== user.username && (

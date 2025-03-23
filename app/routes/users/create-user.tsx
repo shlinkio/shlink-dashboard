@@ -57,8 +57,8 @@ export default function CreateUser() {
     <Layout>
       {fetcher.data?.status === 'success' && (
         <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4" data-testid="success-message">
-          <p className="tw:m-0!">User <b>{fetcher.data.user.username}</b> properly created.</p>
-          <p className="tw:m-0!">
+          <p className="tw:m-0">User <b>{fetcher.data.user.username}</b> properly created.</p>
+          <p className="tw:m-0">
             Their temporary password is <b>{fetcher.data.plainTextPassword}</b>. The user will have to change it the
             first time they log in.
           </p>

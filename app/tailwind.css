@@ -1,4 +1,4 @@
-@import 'tailwindcss' prefix(tw);
+@import 'tailwindcss' prefix(tw) important;
 
 @theme {
   --color-brand: #4696e5;
@@ -16,7 +16,11 @@
 
 @layer base {
   a {
-    @apply tw:text-brand tw:focus-visible:outline-3 tw:focus-visible:outline-brand/50 tw:focus-visible:outline-offset-3 tw:rounded-xs tw:focus-visible:z-1;
+    /* Set these styles as plain CSS instead of @apply to avoid higher specificity */
+    color: var(--text-color);
+    border-radius: var(--tw-radius-xs);
+
+    @apply tw:focus-visible:outline-3 tw:focus-visible:outline-brand/50 tw:focus-visible:outline-offset-3 tw:focus-visible:z-1;
   }
 
   h1 {
@@ -41,7 +45,7 @@
   h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
     line-height: 1.2;
-    @apply tw:m-0!;
+    @apply tw:m-0;
   }
 
   hr {
