@@ -13,7 +13,7 @@ export const CloseButton: FC<CloseButtonProps> = ({ onClick, label = 'Close' }) 
     onClick={onClick}
     className={clsx(
       'tw:opacity-50 tw:highlight:opacity-80 tw:transition-opacity',
-      'tw:rounded-md! tw:focus-ring',
+      'tw:rounded-md tw:focus-ring',
     )}
     aria-label={label}
   >

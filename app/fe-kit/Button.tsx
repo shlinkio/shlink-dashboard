@@ -37,7 +37,7 @@ export const Button: FC<ButtonProps> = ({
           'tw:flex': !inline,
         },
         'tw:gap-2 tw:items-center tw:justify-center',
-        'tw:border tw:rounded-md! tw:no-underline!',
+        'tw:border tw:rounded-md tw:no-underline',
         'tw:transition-colors',
         {
           'tw:focus-ring': variant !== 'danger',
@@ -51,12 +51,12 @@ export const Button: FC<ButtonProps> = ({
         {
           'tw:border-brand tw:text-brand': variant === 'primary',
           'tw:border-zinc-500': variant === 'secondary',
-          'tw:text-zinc-500!': variant === 'secondary' && !solid,
+          'tw:text-zinc-500': variant === 'secondary' && !solid,
           'tw:border-danger': variant === 'danger',
-          'tw:text-danger!': variant === 'danger' && !solid,
+          'tw:text-danger': variant === 'danger' && !solid,
         },
         solid && {
-          'tw:text-white!': true,
+          'tw:text-white': true,
           'tw:bg-brand': variant === 'primary',
           'tw:highlight:bg-brand-dark tw:highlight:border-brand-dark': variant === 'primary',
 
@@ -67,7 +67,7 @@ export const Button: FC<ButtonProps> = ({
           'tw:highlight:bg-danger-dark tw:highlight:border-danger-dark': variant === 'danger',
         },
         !disabled && {
-          'tw:highlight:text-white!': !solid,
+          'tw:highlight:text-white': !solid,
           'tw:highlight:bg-brand': variant === 'primary',
           'tw:highlight:bg-zinc-500': variant === 'secondary',
           'tw:highlight:bg-danger': variant === 'danger',

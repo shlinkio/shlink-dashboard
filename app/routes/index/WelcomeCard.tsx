@@ -19,7 +19,7 @@ export const WelcomeCard: FC<WelcomeCardProps> = ({ servers }) => (
       <ShlinkLogo />
     </div>
     <div className="tw:md:w-8/12 tw:w-full">
-      <h1 className="tw:px-5 tw:py-6 tw:mb-0! tw:text-center tw:border-b tw:border-b-(--border-color)">Welcome!</h1>
+      <h1 className="tw:px-5 tw:py-6 tw:mb-0 tw:text-center tw:border-b tw:border-b-(--border-color)">Welcome!</h1>
       {servers.length > 0 ? <ServersList servers={servers} /> : <NoServers />}
     </div>
   </Card>

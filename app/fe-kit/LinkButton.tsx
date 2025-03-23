@@ -11,7 +11,7 @@ export type LinkButtonProps = Omit<HTMLProps<HTMLButtonElement>, 'size' | 'type'
 export const LinkButton: FC<LinkButtonProps> = ({ className, disabled, size = 'md', ...rest }) => (
   <button
     className={clsx(
-      'tw:inline-flex tw:rounded-md! tw:focus-ring',
+      'tw:inline-flex tw:rounded-md tw:focus-ring',
       'tw:text-brand tw:highlight:text-brand-dark tw:highlight:underline',
       {
         'tw:px-1.5 tw:py-1 tw:text-sm': size === 'sm',
