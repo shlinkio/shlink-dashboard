@@ -15,6 +15,7 @@ export default [
   // Users management
   route('/manage-users/create', './routes/users/create-user.tsx'),
   route('/manage-users/delete', './routes/users/delete-user.ts'),
+  route('/manage-users/edit/:userId', './routes/users/edit-user.tsx'),
   route('/manage-users/:page', './routes/users/manage-users.tsx'),
 
   // TODO Servers management

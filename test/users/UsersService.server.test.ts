@@ -7,28 +7,28 @@ import { UsersService } from '../../app/users/UsersService.server';
 import { DuplicatedEntryError } from '../../app/validation/DuplicatedEntryError.server';
 
 describe('UsersService', () => {
-  const findOneByUsername = vi.fn();
+  const findOne = vi.fn();
   const findAndCountUsers = vi.fn();
   const createUser = vi.fn();
-  const deleteUser = vi.fn();
+  const nativeDelete = vi.fn();
   let usersRepo: UsersRepository;
   let usersService: UsersService;
 
   beforeEach(() => {
-    usersRepo = fromPartial<UsersRepository>({ findOneByUsername, findAndCountUsers, createUser, deleteUser });
+    usersRepo = fromPartial<UsersRepository>({ findOne, findAndCountUsers, createUser, nativeDelete });
     usersService = new UsersService(usersRepo);
   });
 
   describe('getUserByCredentials', () => {
     it('throws when user is not found', async () => {
-      findOneByUsername.mockResolvedValue(null);
+      findOne.mockResolvedValue(null);
       await expect(() => usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
         new Error('User not found with username foo'),
       );
     });
 
     it('throws if password does not match', async () => {
-      findOneByUsername.mockResolvedValue(fromPartial<User>({ password: await hashPassword('the right one') }));
+      findOne.mockResolvedValue(fromPartial<User>({ password: await hashPassword('the right one') }));
       await expect(() => usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
         new Error('Incorrect password for user foo'),
       );
@@ -36,7 +36,7 @@ describe('UsersService', () => {
 
     it('returns user if password is correct', async () => {
       const expectedUser = fromPartial<User>({ password: await hashPassword('bar') });
-      findOneByUsername.mockResolvedValue(expectedUser);
+      findOne.mockResolvedValue(expectedUser);
 
       const result = await usersService.getUserByCredentials('foo', 'bar');
 
@@ -176,7 +176,7 @@ describe('UsersService', () => {
   describe('deleteUser', () => {
     it('deletes user via repository', async () => {
       await usersService.deleteUser('123');
-      expect(deleteUser).toHaveBeenCalledWith('123');
+      expect(nativeDelete).toHaveBeenCalledWith({ id: '123' });
     });
   });
 });

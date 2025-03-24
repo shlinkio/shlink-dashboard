@@ -1,8 +1,8 @@
 import type { EntityManager } from '@mikro-orm/core';
-import { EntityRepository } from '@mikro-orm/core';
+import { BaseEntityRepository } from '../db/BaseEntityRepository';
 import { Server } from '../entities/Server';
 
-export class ServersRepository extends EntityRepository<Server> {
+export class ServersRepository extends BaseEntityRepository<Server> {
   findByPublicIdAndUserId(publicId: string, userId: string): Promise<Server | null> {
     return this.em.findOne(Server, {
       publicId,

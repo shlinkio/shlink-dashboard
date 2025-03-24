@@ -1,4 +1,4 @@
-import { faPlus, faSortAlphaAsc, faSortAlphaDesc, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faPlus, faSortAlphaAsc, faSortAlphaDesc, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
@@ -146,20 +146,31 @@ export default function ManageUsers() {
                   <Table.Cell data-column="Role:"><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell
                     className={clsx(
-                      'tw:lg:static tw:lg:text-right tw:lg:[&]:border-b-1', // Big screens
+                      'tw:lg:static tw:lg:[&]:border-b-1', // Big screens
                       'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
                     )}
                   >
                     {session?.username !== user.username && (
-                      <Button
-                        inline
-                        size="sm"
-                        variant="danger"
-                        aria-label={`Delete user ${user.username}`}
-                        onClick={() => setUserToDelete(user)}
-                      >
-                        <FontAwesomeIcon icon={faTrashCan} />
-                      </Button>
+                      <div className="tw:flex tw:flex-row-reverse tw:gap-x-1">
+                        <Button
+                          inline
+                          size="sm"
+                          variant="danger"
+                          aria-label={`Delete user ${user.username}`}
+                          onClick={() => setUserToDelete(user)}
+                        >
+                          <FontAwesomeIcon icon={faTrashCan} />
+                        </Button>
+                        <Button
+                          inline
+                          size="sm"
+                          variant="secondary"
+                          aria-label={`Edit user ${user.username}`}
+                          to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
+                        >
+                          <FontAwesomeIcon icon={faPencil} />
+                        </Button>
+                      </div>
                     )}
                   </Table.Cell>
                 </Table.Row>
