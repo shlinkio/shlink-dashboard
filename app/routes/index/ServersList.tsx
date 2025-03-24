@@ -17,7 +17,8 @@ export const ServersList: FC<ServersListProps> = ({ servers }) => (
         to={`/server/${server.publicId}`}
         className={clsx(
           'tw:flex tw:justify-between tw:items-center tw:py-3 tw:px-4',
-          'tw:border-b tw:border-b-(--border-color) tw:highlight:bg-(--secondary-color)',
+          'tw:border-b tw:border-b-lm-border tw:dark:border-b-dm-border',
+          'tw:highlight:bg-lm-secondary tw:highlight:dark:bg-dm-secondary',
         )}
       >
         <span>{server.name}</span>
