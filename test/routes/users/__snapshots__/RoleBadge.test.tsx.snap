@@ -3,7 +3,7 @@
 exports[`<RoleBadge /> > renders expected markup 1`] = `
 <div>
   <div
-    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:bg-green-600 tw:text-white"
+    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:whitespace-nowrap tw:bg-green-600 tw:text-white"
   >
     admin
   </div>
@@ -13,7 +13,7 @@ exports[`<RoleBadge /> > renders expected markup 1`] = `
 exports[`<RoleBadge /> > renders expected markup 2`] = `
 <div>
   <div
-    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:bg-gray-500 tw:text-white"
+    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:whitespace-nowrap tw:bg-gray-500 tw:text-white"
   >
     advanced user
   </div>
@@ -23,7 +23,7 @@ exports[`<RoleBadge /> > renders expected markup 2`] = `
 exports[`<RoleBadge /> > renders expected markup 3`] = `
 <div>
   <div
-    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:bg-gray-500 tw:text-white"
+    class="tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:whitespace-nowrap tw:bg-gray-500 tw:text-white"
   >
     managed user
   </div>
