@@ -19,7 +19,7 @@ export const LabelledInput: FC<LabelledInputProps> = (
   const id = useId();
   return (
     <div className="tw:flex tw:flex-col tw:gap-1">
-      <Label htmlFor={id} required={required} hiddenRequired={hiddenRequired}>{label}</Label>
+      <Label htmlFor={id} required={required}>{label}</Label>
       <Input
         id={id}
         className={inputClassName}
