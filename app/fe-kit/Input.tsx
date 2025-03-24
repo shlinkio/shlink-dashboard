@@ -33,11 +33,11 @@ export const Input: FC<InputProps> = ({
         'tw:px-3 tw:py-1.5': size === 'md',
         'tw:px-4 tw:py-2 tw:text-xl': size === 'lg',
         'tw:rounded-md tw:border': !borderless,
-        'tw:border-(--input-border-color)': !borderless && !feedback,
+        'tw:border-lm-input-border tw:dark:border-dm-input-border': !borderless && !feedback,
         'tw:border-danger': !borderless && feedback === 'error',
         'tw:bg-(--input-disabled-color)': disabled || readOnly,
         // Apply different background color when rendered inside a card
-        'tw:bg-(--primary-color) tw:group-[&]/card:bg-(--input-color)': !disabled && !readOnly,
+        'tw:bg-lm-primary tw:dark:bg-dm-primary tw:group-[&]/card:bg-lm-input tw:group-[&]/card:dark:bg-dm-input': !disabled && !readOnly,
       },
       className,
     )}

@@ -1,51 +1,129 @@
 @import 'tailwindcss' prefix(tw) important;
 
-@theme {
+/*
+ * Override `dark:` variant, which applies based on `prefers-color-scheme` by default, and make it apply based on the
+ * presence of `data-theme="dark"` attribute instead.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme static inline {
+  /* Light mode */
+  /*--color-lm-main: #2078CF;*/ /*Properly accessible with white background*/
+  --color-lm-main: #4696e5; /* TODO Rename to "brand" */
+  --color-lm-main-dark: #1f69c0;
+  --color-lm-primary: #ffffff;
+  --color-lm-primary-alfa: rgba(var(--tw-color-lm-primary), .5);
+  --color-lm-secondary: #f5f6fe;
+  --color-lm-text: #232323;
+  --color-lm-border: rgb(0 0 0 / .125);
+  --color-lm-table-border: #dee2e6;
+  --color-lm-active: #eeeeee;
+  --color-lm-brand: var(--tw-color-lm-main); /* TODO Rename to "main" */
+  --color-lm-input: var(--tw-color-lm-primary);
+  --color-lm-disabled-input: var(--tw-color-lm-secondary);
+  --color-lm-input-text: #495057;
+  --color-lm-input-border: rgb(0 0 0 / .19);
+  --color-lm-table-highlight: rgb(0 0 0 / .075);
+
+  /* Dark mode */
+  --color-dm-main: #4696e5; /* TODO Rename to "brand" */
+  --color-dm-main-dark: #1f69c0;
+  --color-dm-primary: #161b22;
+  --color-dm-primary-alfa: rgba(var(--tw-color-dm-primary), .8);
+  --color-dm-secondary: #0f131a;
+  --color-dm-text: rgb(201 209 217);
+  --color-dm-border: rgb(255 255 255 / .15);
+  --color-dm-table-border: #393d43;
+  --color-dm-active: var(--tw-color-dm-secondary);
+  --color-dm-brand: #0b2d4e; /* TODO Rename to "main" */
+  --color-dm-input: rgb(17.9928571429 22.0821428571 27.8071428571);
+  --color-dm-disabled-input: rgb(26.0071428571 31.9178571429 40.1928571429);
+  --color-dm-input-text: var(--tw-color-dm-text);
+  --color-dm-input-border: var(--tw-color-dm-border);
+  --color-dm-table-highlight: var(--tw-color-dm-border);
+
+  /* TODO Remove these two colors */
   --color-brand: #4696e5;
-  /* --color-brand: #2078CF; // Properly accessible */
   --color-brand-dark: #1f69c0;
 
+  /* General color palette */
   --color-danger: #dc3545;
   --color-danger-dark: #bb2d3b;
-
   --color-warning: #ffc107;
   --color-warning-dark: #ffca2c;
-
   --color-placeholder: #6c757d;
 }
 
 @layer base {
+  html:not([data-theme='dark']) {
+    --primary-color: var(--tw-color-lm-primary);
+    --primary-color-alfa: var(--tw-color-lm-primary-alfa);
+    --secondary-color: var(--tw-color-lm-secondary);
+    --text-color: var(--tw-color-lm-text);
+    --border-color: var(--tw-color-lm-border);
+    --active-color: var(--tw-color-lm-active);
+    --brand-color: var(--tw-color-lm-brand);
+    --input-color: var(--tw-color-lm-input);
+    --input-disabled-color: var(--tw-color-lm-disabled-input);
+    --input-text-color: var(--tw-color-lm-input-text);
+    --input-border-color: var(--tw-color-lm-input-border);
+    --table-border-color: var(--tw-color-lm-table-border);
+    --table-highlight-color: var(--tw-color-lm-table-highlight);
+  }
+
+  html[data-theme='dark'] {
+    --primary-color: var(--tw-color-dm-primary);
+    --primary-color-alfa: var(--tw-color-dm-primary-alfa);
+    --secondary-color: var(--tw-color-dm-secondary);
+    --text-color: var(--tw-color-dm-text);
+    --border-color: var(--tw-color-dm-border);
+    --active-color: var(--tw-color-dm-active);
+    --brand-color: var(--tw-color-dm-brand);
+    --input-color: var(--tw-color-dm-input);
+    --input-disabled-color: var(--tw-color-dm-disabled-input);
+    --input-text-color: var(--tw-color-dm-input-text);
+    --input-border-color: var(--tw-color-dm-input-border);
+    --table-border-color: var(--tw-color-dm-table-border);
+    --table-highlight-color: var(--tw-color-dm-table-highlight);
+  }
+}
+
+@layer base {
+  :root {
+    --header-height: 56px;
+    @apply tw:scheme-normal tw:dark:scheme-dark tw:scroll-auto;
+  }
+
+  html, body {
+    @apply tw:h-full tw:bg-lm-secondary tw:dark:bg-dm-secondary tw:text-lm-text tw:dark:text-dm-text;
+  }
+
   a {
     /* Set these styles as plain CSS instead of @apply to avoid higher specificity */
-    color: var(--text-color);
+    /* TODO Use `main` color, not `brand` color */
+    color: var(--tw-color-brand);
     border-radius: var(--tw-radius-xs);
 
     @apply tw:focus-visible:outline-3 tw:focus-visible:outline-brand/50 tw:focus-visible:outline-offset-3 tw:focus-visible:z-1;
   }
 
   h1 {
-    font-size: 2.5rem;
+    @apply tw:text-[2.5rem]/[1.2] tw:m-0 tw:font-medium;
   }
   h2 {
-    font-size: 2rem;
+    @apply tw:text-[2rem]/[1.2] tw:m-0 tw:font-medium;
   }
   h3 {
-    font-size: 1.75rem;
+    @apply tw:text-[1.75rem]/[1.2] tw:m-0 tw:font-medium;
   }
   h4 {
-    font-size: 1.5rem;
+    @apply tw:text-2xl/[1.2] tw:m-0 tw:font-medium;
   }
   h5 {
-    font-size: 1.25rem;
+    @apply tw:text-xl/[1.2] tw:m-0 tw:font-medium;
   }
   h6 {
-    font-size: 1rem;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-    line-height: 1.2;
-    @apply tw:m-0;
+    @apply tw:text-base/[1.2] tw:m-0 tw:font-medium;
   }
 
   hr {

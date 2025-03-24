@@ -31,7 +31,7 @@ export const MainHeader: FC = () => {
   const { pathname } = useLocation();
 
   return (
-    <Navbar color="primary" dark fixed="top" className="tw:text-white tw:bg-(--brand-color)" expand="md">
+    <Navbar color="primary" dark fixed="top" className="tw:text-white tw:bg-lm-brand tw:dark:bg-dm-brand" expand="md">
       <NavbarBrand tag={Link} to="/" className="tw:flex tw:gap-2">
         <ShlinkLogo className="tw:w-[26px]" color="white" /> Shlink
       </NavbarBrand>

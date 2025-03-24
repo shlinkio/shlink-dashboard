@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import type { FC, HTMLProps, PropsWithChildren, ReactNode } from 'react';
-import { useContext } from 'react';
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
 export type SectionType = 'head' | 'body' | 'footer';
 
@@ -36,7 +35,7 @@ const Row: FC<HTMLProps<HTMLTableRowElement>> = ({ children, className, ...rest 
       className={clsx(
         'tw:group',
         'tw:lg:table-row tw:flex tw:flex-col',
-        'tw:lg:border-0 tw:border-y-2 tw:border-(--border-color)',
+        'tw:lg:border-0 tw:border-y-2 tw:border-lm-border tw:dark:border-dm-border',
         {
           'tw:hover:bg-(--secondary-color)': sectionContext?.section === 'body',
         },
@@ -56,7 +55,7 @@ const Cell: FC<HTMLProps<HTMLTableCellElement>> = ({ children, className, ...res
   return (
     <Tag
       className={clsx(
-        'tw:p-2 tw:block tw:lg:table-cell tw:border-b-1 tw:border-(--border-color)',
+        'tw:p-2 tw:block tw:lg:table-cell tw:border-b-1 tw:border-lm-border tw:dark:border-dm-border',
         {
           // For md and lower, display the content in data-column attribute as before
           'tw:before:lg:hidden tw:before:content-[attr(data-column)] tw:before:font-bold tw:before:mr-1': Tag === 'td',
