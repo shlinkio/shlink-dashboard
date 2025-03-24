@@ -11,27 +11,43 @@ describe('UsersService', () => {
   const findAndCountUsers = vi.fn();
   const createUser = vi.fn();
   const nativeDelete = vi.fn();
+  const flush = vi.fn();
   let usersRepo: UsersRepository;
   let usersService: UsersService;
 
   beforeEach(() => {
-    usersRepo = fromPartial<UsersRepository>({ findOne, findAndCountUsers, createUser, nativeDelete });
+    usersRepo = fromPartial<UsersRepository>({ findOne, findAndCountUsers, createUser, nativeDelete, flush });
     usersService = new UsersService(usersRepo);
   });
+
+  const createFormData = (data: Record<string, string | undefined>) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    return formData;
+  };
 
   describe('getUserByCredentials', () => {
     it('throws when user is not found', async () => {
       findOne.mockResolvedValue(null);
-      await expect(() => usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
+
+      await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
         new Error('User not found with username foo'),
       );
+      expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
     });
 
     it('throws if password does not match', async () => {
       findOne.mockResolvedValue(fromPartial<User>({ password: await hashPassword('the right one') }));
-      await expect(() => usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
+
+      await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
         new Error('Incorrect password for user foo'),
       );
+      expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
     });
 
     it('returns user if password is correct', async () => {
@@ -41,6 +57,28 @@ describe('UsersService', () => {
       const result = await usersService.getUserByCredentials('foo', 'bar');
 
       expect(result).toEqual(expectedUser);
+      expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
+    });
+  });
+
+  describe('getUserById', () => {
+    it('throws if a user is not found', async () => {
+      findOne.mockResolvedValue(null);
+
+      await expect(usersService.getUserById('abc123')).rejects.toEqual(
+        new Error('User not found with id abc123'),
+      );
+      expect(findOne).toHaveBeenCalledWith({ id: 'abc123' });
+    });
+
+    it('returns found user', async () => {
+      const expectedUser = fromPartial<User>({ id: 'abc123' });
+      findOne.mockResolvedValue(expectedUser);
+
+      const result = await usersService.getUserById('abc123');
+
+      expect(result).toEqual(expectedUser);
+      expect(findOne).toHaveBeenCalledWith({ id: 'abc123' });
     });
   });
 
@@ -99,17 +137,6 @@ describe('UsersService', () => {
   });
 
   describe('createUser', () => {
-    const createFormData = (data: Record<string, string | undefined>) => {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined) {
-          formData.append(key, value);
-        }
-      });
-
-      return formData;
-    };
-
     it.each([
       {
         data: {},
@@ -177,6 +204,35 @@ describe('UsersService', () => {
     it('deletes user via repository', async () => {
       await usersService.deleteUser('123');
       expect(nativeDelete).toHaveBeenCalledWith({ id: '123' });
+    });
+  });
+
+  describe('editUser', () => {
+    it.only.each([
+      {
+        providedData: createFormData({}),
+        expectedResult: { displayName: 'initial_display_name', role: 'admin' },
+      },
+      {
+        providedData: createFormData({ displayName: 'new one' }),
+        expectedResult: { displayName: 'new one', role: 'admin' },
+      },
+      {
+        providedData: createFormData({ role: 'advanced-user' }),
+        expectedResult: { displayName: 'initial_display_name', role: 'advanced-user' },
+      },
+      {
+        providedData: createFormData({ role: 'managed-user', displayName: 'another name' }),
+        expectedResult: { displayName: 'another name', role: 'managed-user' },
+      },
+    ])('updates the user with provided data', async ({ providedData, expectedResult }) => {
+      const expectedUser = fromPartial<User>({ id: 'abc123', displayName: 'initial_display_name', role: 'admin' });
+      findOne.mockResolvedValue(expectedUser);
+
+      const user = await usersService.editUser('abc123', providedData);
+
+      expect(user).toEqual(expect.objectContaining(expectedResult));
+      expect(flush).toHaveBeenCalled();
     });
   });
 });
