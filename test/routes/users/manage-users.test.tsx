@@ -91,7 +91,10 @@ describe('manage-users', () => {
         {
           path: '/manage-users/create',
           Component: () => <>Create user</>,
-          HydrateFallback: () => null,
+        },
+        {
+          path: '/manage-users/edit/123',
+          Component: () => <>Edit user</>,
         },
       ]);
       const renderResult = renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
@@ -217,22 +220,26 @@ describe('manage-users', () => {
       await waitFor(() => expect(screen.getByText('Create user')).toBeInTheDocument());
     });
 
-    it('shows delete button only for users other than current one', async () => {
-      await setUp({
-        currentUsername: 'current',
-        users: [
-          mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
-          mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
-          mockUser({ username: 'current', displayName: 'John Doe', role: 'admin' }),
-          mockUser({ username: 'baz', displayName: 'John Doe', role: 'managed-user' }),
-        ],
-      });
+    it('shows interaction buttons only for users other than current one', async () => {
+      const users = [
+        mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
+        mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
+        mockUser({ username: 'current', displayName: 'John Doe', role: 'admin' }),
+        mockUser({ username: 'baz', displayName: 'John Doe', role: 'managed-user' }),
+      ];
+      await setUp({ currentUsername: 'current', users });
 
       expect(screen.getAllByLabelText(/^Delete user/)).toHaveLength(3);
       expect(screen.getByLabelText('Delete user foo')).toBeInTheDocument();
       expect(screen.getByLabelText('Delete user bar')).toBeInTheDocument();
       expect(screen.getByLabelText('Delete user baz')).toBeInTheDocument();
       expect(screen.queryByLabelText('Delete user current')).not.toBeInTheDocument();
+
+      expect(screen.getAllByLabelText(/^Edit user/)).toHaveLength(3);
+      expect(screen.getByLabelText('Edit user foo')).toBeInTheDocument();
+      expect(screen.getByLabelText('Edit user bar')).toBeInTheDocument();
+      expect(screen.getByLabelText('Edit user baz')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Edit user current')).not.toBeInTheDocument();
     });
 
     it('shows information about the user to be deleted', async () => {

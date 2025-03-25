@@ -2,6 +2,7 @@ import { fromPartial } from '@total-typescript/shoehorn';
 import type { Server } from '../../app/entities/Server';
 import type { ServersRepository } from '../../app/servers/ServersRepository.server';
 import { ServersService } from '../../app/servers/ServersService.server';
+import { NotFoundError } from '../../app/validation/NotFoundError.server';
 
 describe('ServersService', () => {
   const findByPublicIdAndUserId = vi.fn();
@@ -17,7 +18,7 @@ describe('ServersService', () => {
   describe('getByPublicIdAndUser', () => {
     it('throws error if server is not found', async () => {
       await expect(() => service.getByPublicIdAndUser('123', '1')).rejects.toEqual(
-        new Error('Server with public ID 123 not found'),
+        new NotFoundError('Server with public ID 123 not found'),
       );
     });
 
