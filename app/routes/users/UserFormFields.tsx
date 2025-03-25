@@ -7,15 +7,19 @@ import { SimpleCard } from '../../fe-kit/SimpleCard';
 
 export type UserFormFieldsProps = {
   title: string;
-  user?: User;
   submitText: string;
-  disabled: boolean;
+  disabled?: boolean;
   usernameError?: string;
+
+  /** If provided, input values will be initialized with this user, and the username field will become readonly */
+  user?: User;
 };
 
 const roles = ['managed-user', 'advanced-user', 'admin'];
 
-export const UserFormFields: FC<UserFormFieldsProps> = ({ title, submitText, disabled, usernameError, user }) => {
+export const UserFormFields: FC<UserFormFieldsProps> = (
+  { title, submitText, disabled = false, usernameError, user },
+) => {
   const userIsReadonly = !!user;
 
   return (

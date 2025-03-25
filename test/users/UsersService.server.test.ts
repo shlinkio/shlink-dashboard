@@ -210,7 +210,7 @@ describe('UsersService', () => {
   });
 
   describe('editUser', () => {
-    it.only.each([
+    it.each([
       {
         providedData: createFormData({}),
         expectedResult: { displayName: 'initial_display_name', role: 'admin' },
