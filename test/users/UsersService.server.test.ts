@@ -2,9 +2,11 @@ import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { hashPassword, verifyPassword } from '../../app/auth/passwords.server';
 import type { User } from '../../app/entities/User';
+import { IncorrectPasswordError } from '../../app/users/IncorrectPasswordError.server';
 import type { UsersRepository } from '../../app/users/UsersRepository.server';
 import { UsersService } from '../../app/users/UsersService.server';
 import { DuplicatedEntryError } from '../../app/validation/DuplicatedEntryError.server';
+import { NotFoundError } from '../../app/validation/NotFoundError.server';
 
 describe('UsersService', () => {
   const findOne = vi.fn();
@@ -36,7 +38,7 @@ describe('UsersService', () => {
       findOne.mockResolvedValue(null);
 
       await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
-        new Error('User not found with username foo'),
+        new NotFoundError('User not found with username foo'),
       );
       expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
     });
@@ -45,7 +47,7 @@ describe('UsersService', () => {
       findOne.mockResolvedValue(fromPartial<User>({ password: await hashPassword('the right one') }));
 
       await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
-        new Error('Incorrect password for user foo'),
+        new IncorrectPasswordError('foo'),
       );
       expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
     });
@@ -66,7 +68,7 @@ describe('UsersService', () => {
       findOne.mockResolvedValue(null);
 
       await expect(usersService.getUserById('abc123')).rejects.toEqual(
-        new Error('User not found with id abc123'),
+        new NotFoundError('User not found with id abc123'),
       );
       expect(findOne).toHaveBeenCalledWith({ id: 'abc123' });
     });

@@ -67,6 +67,7 @@ export default function CreateUser() {
       {data?.status !== 'success' && (
         <Form method="post">
           <UserFormFields
+            title="Add new user"
             disabled={isSubmitting}
             usernameError={data?.status === 'error' ? data?.messages.username : undefined}
             submitText={isSubmitting ? 'Saving...' : 'Create user'}

@@ -2,7 +2,9 @@ import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import type { User } from '../entities/User';
 import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
+import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
+import { IncorrectPasswordError } from './IncorrectPasswordError.server';
 import { CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
@@ -28,12 +30,12 @@ export class UsersService {
   async getUserByCredentials(username: string, password: string): Promise<User> {
     const user = await this.#usersRepository.findOne({ username });
     if (!user) {
-      throw new Error(`User not found with username ${username}`);
+      throw new NotFoundError(`User not found with username ${username}`);
     }
 
     const isPasswordCorrect = await verifyPassword(password, user.password);
     if (!isPasswordCorrect) {
-      throw new Error(`Incorrect password for user ${username}`);
+      throw new IncorrectPasswordError(username);
     }
 
     return user;
@@ -42,7 +44,7 @@ export class UsersService {
   async getUserById(userId: string): Promise<User> {
     const user = await this.#usersRepository.findOne({ id: userId });
     if (!user) {
-      throw new Error(`User not found with id ${userId}`);
+      throw new NotFoundError(`User not found with id ${userId}`);
     }
 
     return user;

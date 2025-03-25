@@ -1,4 +1,5 @@
 import type { Server } from '../entities/Server';
+import { NotFoundError } from '../validation/NotFoundError.server';
 import type { ServersRepository } from './ServersRepository.server';
 
 export class ServersService {
@@ -11,7 +12,7 @@ export class ServersService {
   public async getByPublicIdAndUser(publicId: string, userId: string): Promise<Server> {
     const server = await this.#serversRepository.findByPublicIdAndUserId(publicId, userId);
     if (!server) {
-      throw new Error(`Server with public ID ${publicId} not found`);
+      throw new NotFoundError(`Server with public ID ${publicId} not found`);
     }
 
     return server;
