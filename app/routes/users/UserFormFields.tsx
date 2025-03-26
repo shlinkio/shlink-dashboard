@@ -1,9 +1,6 @@
+import { Button, LabelledInput, LabelledSelect, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import type { User } from '../../entities/User';
-import { Button } from '../../fe-kit/Button';
-import { LabelledInput } from '../../fe-kit/LabelledInput';
-import { LabelledSelect } from '../../fe-kit/LabelledSelect';
-import { SimpleCard } from '../../fe-kit/SimpleCard';
 
 export type UserFormFieldsProps = {
   title: string;
