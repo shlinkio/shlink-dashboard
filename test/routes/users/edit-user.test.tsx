@@ -73,6 +73,7 @@ describe('edit-user', () => {
         {
           path,
           Component: EditUser,
+          HydrateFallback: () => null,
           loader: () => ({ user }),
           action: () => ({}),
         },

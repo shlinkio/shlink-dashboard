@@ -1,4 +1,4 @@
-import { ModalDialog } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { CardModal } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';
@@ -30,7 +30,7 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
   }, [onClose, submit, userToDelete?.id]);
 
   return (
-    <ModalDialog
+    <CardModal
       title="Delete user"
       variant="danger"
       size="sm"
@@ -40,6 +40,6 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
       confirmText={state === 'submitting' ? 'Deleting...' : 'Delete user'}
     >
       Are you sure you want to delete user <b>{userToDelete?.username}</b>?
-    </ModalDialog>
+    </CardModal>
   );
 };
