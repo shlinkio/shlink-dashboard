@@ -1,6 +1,8 @@
 import type { Server } from '../entities/Server';
 import { NotFoundError } from '../validation/NotFoundError.server';
-import type { ServersRepository } from './ServersRepository.server';
+import type { FindServersOptions, ServersRepository } from './ServersRepository.server';
+
+export type ListServersOptions = FindServersOptions;
 
 export class ServersService {
   readonly #serversRepository: ServersRepository;
@@ -18,7 +20,7 @@ export class ServersService {
     return server;
   }
 
-  public async getUserServers(userId: string): Promise<Server[]> {
-    return this.#serversRepository.findByUserId(userId);
+  public async getUserServers(userId: string, options?: ListServersOptions): Promise<Server[]> {
+    return this.#serversRepository.findByUserId(userId, options);
   }
 }

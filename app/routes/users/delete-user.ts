@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
-import { ensureAdmin } from './utils';
+import { ensureAdmin } from './utils.server';
 
 export async function action(
   { request }: ActionFunctionArgs,

@@ -2,6 +2,7 @@ import {
   faArrowRightFromBracket as faLogout,
   faChevronDown as arrowIcon,
   faCogs,
+  faServer,
   faUser,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -59,6 +60,11 @@ export const MainHeader: FC = () => {
                   <DropdownItem tag={Link} to="/settings" active={pathname.startsWith('/settings')}>
                     <FontAwesomeIcon icon={faCogs} fixedWidth className="tw:mr-0.5" /> Settings
                   </DropdownItem>
+                  {session.role !== 'managed-user' && (
+                    <DropdownItem tag={Link} to="/manage-servers/1" active={pathname.startsWith('/manage-servers')}>
+                      <FontAwesomeIcon icon={faServer} fixedWidth className="tw:mr-0.5" /> Manage servers
+                    </DropdownItem>
+                  )}
                   <DropdownItem divider tag="hr" />
                   <DropdownItem tag={Link} to="/logout">
                     <FontAwesomeIcon icon={faLogout} fixedWidth className="tw:mr-0.5" /> Logout

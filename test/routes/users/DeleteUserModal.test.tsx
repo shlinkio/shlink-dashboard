@@ -28,8 +28,8 @@ describe('<DeleteUserModal />', () => {
 
   it.each([
     { userToDelete: undefined },
-    { userToDelete: userMock,
-    }])('opens modal if a user is provided', ({ userToDelete }) => {
+    { userToDelete: userMock },
+  ])('opens modal if a user is provided', ({ userToDelete }) => {
     setUp(userToDelete);
 
     if (userToDelete) {

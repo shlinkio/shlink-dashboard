@@ -10,7 +10,7 @@ import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
 import { ValidationError } from '../../validation/ValidationError.server';
 import { UserFormFields } from './UserFormFields';
-import { ensureAdmin } from './utils';
+import { ensureAdmin } from './utils.server';
 
 export async function loader(
   { request }: LoaderFunctionArgs,

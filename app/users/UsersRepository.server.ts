@@ -1,6 +1,7 @@
-import type { EntityManager, FilterQuery, RequiredEntityData } from '@mikro-orm/core';
+import type { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { BaseEntityRepository } from '../db/BaseEntityRepository';
+import { expandSearchTerm } from '../db/utils.server';
 import { User } from '../entities/User';
 import type { UserOrderableFields } from './UsersService.server';
 
@@ -14,7 +15,7 @@ export type FindAndCountUsersOptions = {
 export class UsersRepository extends BaseEntityRepository<User> {
   findAndCountUsers({ searchTerm, limit, offset, orderBy }: FindAndCountUsersOptions): Promise<[User[], number]> {
     return this.findAndCount(
-      this.buildListUsersWhere(searchTerm),
+      expandSearchTerm<User>(searchTerm, { searchableFields: ['displayName', 'username'] }),
       {
         limit,
         offset,
@@ -23,30 +24,6 @@ export class UsersRepository extends BaseEntityRepository<User> {
         },
       },
     );
-  }
-
-  private buildListUsersWhere(searchTerm?: string): FilterQuery<User> {
-    if (!searchTerm) {
-      return {};
-    }
-
-    const searchableFields: Array<keyof User> = ['displayName', 'username'];
-    const lowerSearchTerm = searchTerm.toLowerCase();
-
-    return {
-      $or: searchableFields.flatMap((field) => [
-        {
-          [field]: {
-            $like: `%${lowerSearchTerm}%`,
-          },
-        },
-        {
-          [field]: {
-            $like: `%${searchTerm}%`,
-          },
-        },
-      ]),
-    };
   }
 
   async createUser(userData: Omit<RequiredEntityData<User>, 'createdAt'>): Promise<User> {

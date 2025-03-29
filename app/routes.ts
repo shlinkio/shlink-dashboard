@@ -18,5 +18,5 @@ export default [
   route('/manage-users/edit/:userId', './routes/users/edit-user.tsx'),
   route('/manage-users/:page', './routes/users/manage-users.tsx'),
 
-  // TODO Servers management
+  route('/manage-servers/:page', './routes/servers/manage-servers.tsx'),
 ] satisfies RouteConfig;
