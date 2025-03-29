@@ -17,7 +17,7 @@ export const NoServers: FC = () => (
     </p>
     <p>
       <ExternalLink href="https://shlink.io/documentation">
-        Learn more about Shlink <FontAwesomeIcon icon={faUpRightFromSquare}/>
+        Learn more about Shlink <FontAwesomeIcon icon={faUpRightFromSquare} />
       </ExternalLink>
     </p>
   </div>
