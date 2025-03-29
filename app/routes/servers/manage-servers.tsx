@@ -9,7 +9,7 @@ import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
-import { ensureNotManaged } from '../users/utils';
+import { ensureNotManaged } from '../users/utils.server';
 
 export async function loader(
   { request }: LoaderFunctionArgs,

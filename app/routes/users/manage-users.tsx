@@ -17,7 +17,7 @@ import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersSer
 import { UsersService } from '../../users/UsersService.server';
 import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
-import { ensureAdmin } from './utils';
+import { ensureAdmin } from './utils.server';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,
