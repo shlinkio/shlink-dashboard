@@ -57,7 +57,7 @@
     "@mikro-orm/mssql": "^6.4.11",
     "@mikro-orm/mysql": "^6.4.11",
     "@react-router/dev": "^7.4.1",
-    "@shlinkio/eslint-config-js-coding-standard": "~3.4.0",
+    "@shlinkio/eslint-config-js-coding-standard": "~3.5.0",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@tailwindcss/vite": "^4.0.17",
     "@testing-library/jest-dom": "^6.6.3",
