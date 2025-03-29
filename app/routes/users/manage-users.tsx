@@ -41,7 +41,7 @@ export async function loader(
 
 function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
-    <Table.Cell>
+    <Table.Cell aria-sort={orderDir && (orderDir === 'ASC' ? 'ascending' : 'descending')}>
       <Link className="tw:text-current" to={to}>
         {children}
       </Link>

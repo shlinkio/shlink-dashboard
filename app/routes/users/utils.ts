@@ -10,3 +10,16 @@ export async function ensureAdmin(request: Request, authHelper: AuthHelper) {
     throw notFound();
   }
 }
+
+/**
+ * Verifies current user is not a managed user, throwing a 404 response otherwise.
+ * @returns Current session in case.
+ */
+export async function ensureNotManaged(request: Request, authHelper: AuthHelper) {
+  const session = await authHelper.getSession(request, '/login');
+  if (session.role === 'managed-user') {
+    throw notFound();
+  }
+
+  return session;
+}
