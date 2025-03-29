@@ -2,8 +2,7 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { LoaderFunctionArgs } from 'react-router';
-import { href, Link } from 'react-router';
-import { useLoaderData } from 'react-router';
+import { href, Link , useLoaderData } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
@@ -44,6 +43,11 @@ export default function ManageServers() {
             </Table.Row>
           }
         >
+          {servers.length === 0 && (
+            <Table.Row className="tw:text-center">
+              <Table.Cell colSpan={3} className="tw:italic">No servers found</Table.Cell>
+            </Table.Row>
+          )}
           {servers.map((server) => (
             <Table.Row key={server.id}>
               <Table.Cell>
@@ -56,7 +60,9 @@ export default function ManageServers() {
                 <Table.Cell>
                   <div className="tw:flex tw:items-center tw:gap-x-1">
                     <FontAwesomeIcon icon={faUsers} />
+                    <span className="tw:sr-only">This server has</span>
                     <b>{server.usersCount}</b>
+                    <span className="tw:sr-only">user{server.usersCount === 1 ? '' : 's'}, including yourself.</span>
                   </div>
                 </Table.Cell>
               )}
