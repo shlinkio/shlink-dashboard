@@ -15,7 +15,7 @@ export const NoServers: FC = () => {
       {session?.role !== 'managed-user' && (
         <p>
           <Button inline size="lg" to="/manage-servers/create">
-            <FontAwesomeIcon icon={faPlus}/>
+            <FontAwesomeIcon icon={faPlus} />
             Add a server
           </Button>
         </p>

@@ -34,24 +34,36 @@ describe('<MainHeader />', () => {
   });
 
   it.each([
-    [fromPartial<SessionData>({ username: 'jane_doe' })],
-    [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
-  ])('shows display name only if not null', (session) => {
-    setUp(session);
-    expect(screen.getByTestId('display-name')).toHaveTextContent(session.displayName ?? session.username);
-  });
-
-  it.each([
-    { sessionData: fromPartial<SessionData>({ role: 'admin' }), shouldShowUsersMenu: true },
-    { sessionData: fromPartial<SessionData>({ role: 'advanced-user' }), shouldShowUsersMenu: false },
-    { sessionData: fromPartial<SessionData>({ role: 'managed-user' }), shouldShowUsersMenu: false },
-  ])('shows user management option for admins', ({ sessionData, shouldShowUsersMenu }) => {
+    {
+      sessionData: fromPartial<SessionData>({ role: 'admin' }),
+      shouldShowUsersMenu: true,
+      shouldShowManageServers: true,
+    },
+    {
+      sessionData: fromPartial<SessionData>({ role: 'advanced-user' }),
+      shouldShowUsersMenu: false,
+      shouldShowManageServers: true,
+    },
+    {
+      sessionData: fromPartial<SessionData>({ role: 'managed-user' }),
+      shouldShowUsersMenu: false,
+      shouldShowManageServers: false,
+    },
+  ])('shows expected options depending on the user role', (
+    { sessionData, shouldShowUsersMenu, shouldShowManageServers },
+  ) => {
     setUp(sessionData);
 
     if (shouldShowUsersMenu) {
       expect(screen.getByText('Manage users')).toBeInTheDocument();
     } else {
       expect(screen.queryByText('Manage users')).not.toBeInTheDocument();
+    }
+
+    if (shouldShowManageServers) {
+      expect(screen.getByText('Manage servers')).toBeInTheDocument();
+    } else {
+      expect(screen.queryByText('Manage servers')).not.toBeInTheDocument();
     }
   });
 });

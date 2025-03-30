@@ -16,6 +16,11 @@ export class Server extends BaseEntity {
   }
 }
 
+/**
+ * A Server object without the `users` prop, which does not get serialized when streaming down to the browser
+ */
+export type PlainServer = Omit<Server, 'users'>;
+
 export const ServerSchema = new EntitySchema({
   class: Server,
   repository: () => ServersRepository,

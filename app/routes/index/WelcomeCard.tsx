@@ -2,12 +2,12 @@ import { Card } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { ShlinkLogo } from '../../common/ShlinkLogo';
-import type { Server } from '../../entities/Server';
+import type { PlainServer } from '../../entities/Server';
 import { NoServers } from './NoServers';
 import { ServersList } from './ServersList';
 
 export type WelcomeCardProps = {
-  servers: Server[];
+  servers: PlainServer[];
 };
 
 export const WelcomeCard: FC<WelcomeCardProps> = ({ servers }) => (
