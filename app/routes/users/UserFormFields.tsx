@@ -43,9 +43,9 @@ export const UserFormFields: FC<UserFormFieldsProps> = (
           {roles.map((role) => <option value={role} key={role}>{role.replaceAll('-', ' ')}</option>)}
         </LabelledSelect>
       </SimpleCard>
-      <div className="tw:flex tw:flex-row-reverse tw:gap-2">
-        <Button type="submit" disabled={disabled}>{submitText}</Button>
+      <div className="tw:flex tw:justify-end tw:gap-2">
         <Button variant="secondary" to="/manage-users/1">Cancel</Button>
+        <Button type="submit" disabled={disabled}>{submitText}</Button>
       </div>
     </div>
   );

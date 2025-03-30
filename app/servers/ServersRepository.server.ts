@@ -2,6 +2,8 @@ import type { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { BaseEntityRepository } from '../db/BaseEntityRepository';
 import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
+import { User } from '../entities/User';
+import type { ServerData } from './server-schemas';
 
 export type FindServersOptions = {
   searchTerm?: string;
@@ -24,6 +26,16 @@ export class ServersRepository extends BaseEntityRepository<Server> {
       orderBy: { name: 'ASC' },
       populate: populateUsers ? ['users'] : undefined,
     });
+  }
+
+  async createServer(userId: string, serverData: ServerData): Promise<Server> {
+    const user = this.em.getReference(User, userId);
+    const server = this.create({ publicId: crypto.randomUUID(), ...serverData });
+    server.users.add(user);
+
+    await this.em.persistAndFlush(server);
+
+    return server;
   }
 }
 

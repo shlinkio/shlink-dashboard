@@ -1,6 +1,6 @@
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { LoaderFunctionArgs } from 'react-router';
 import { href, Link , useLoaderData } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
@@ -33,6 +33,12 @@ export default function ManageServers() {
 
   return (
     <Layout className="tw:flex tw:flex-col tw:gap-y-4">
+      <div className="tw:flex tw:gap-4 tw:flex-col tw:lg:flex-row-reverse">
+        <Button to="/manage-servers/create">
+          <FontAwesomeIcon icon={faPlus} />
+          Add a server
+        </Button>
+      </div>
       <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
         <Table
           header={
@@ -45,7 +51,7 @@ export default function ManageServers() {
         >
           {servers.length === 0 && (
             <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={3} className="tw:italic">No servers found</Table.Cell>
+              <Table.Cell colSpan={4} className="tw:italic">No servers found</Table.Cell>
             </Table.Row>
           )}
           {servers.map((server) => (
