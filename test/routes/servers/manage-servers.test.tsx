@@ -104,7 +104,7 @@ describe('manage-servers', () => {
       expect(screen.getByText('No servers found')).toBeInTheDocument();
     });
 
-    it.only('shows list of servers', async () => {
+    it('shows list of servers', async () => {
       const servers = [1, 2].map((id) => fromPartial<ServerItem>({
         name: `Server ${id}`,
         publicId: `public_id_${id}`,
