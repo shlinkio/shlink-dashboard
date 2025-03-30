@@ -1,10 +1,13 @@
 import { Collection } from '@mikro-orm/core';
+import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
+import { SessionProvider } from '../../../app/auth/session-context';
 import type { PlainServer, Server } from '../../../app/entities/Server';
-import type { User } from '../../../app/entities/User';
-import { loader } from '../../../app/routes/servers/manage-servers';
+import type { Role, User } from '../../../app/entities/User';
+import ManageServers, { loader } from '../../../app/routes/servers/manage-servers';
 import type { ServersService } from '../../../app/servers/ServersService.server';
 
 describe('manage-servers', () => {
@@ -51,5 +54,73 @@ describe('manage-servers', () => {
     });
   });
 
-  describe.todo('<ManageServers />');
+  describe('<ManageServers />', () => {
+    type ServerItem = PlainServer & { usersCount?: number };
+    type SetUpOptions = {
+      servers?: ServerItem[];
+      role?: Role;
+    };
+
+    const setUp = async ({ role, servers = [] }: SetUpOptions = {}) => {
+      const path = '/manage-users/1';
+      const Stub = createRoutesStub([
+        {
+          path,
+          Component: (props) => (
+            <SessionProvider value={fromPartial({ role })}>
+              <ManageServers {...props} />
+            </SessionProvider>
+          ),
+          HydrateFallback: () => null,
+          loader: () => ({ servers }),
+        },
+      ]);
+
+      const result = render(<Stub initialEntries={[path]} />);
+
+      // Wait for the table to render before returning...
+      await screen.findByRole('table');
+
+      return result;
+    };
+
+    it.each([
+      'admin' as const,
+      'advanced-user' as const,
+    ])('displays amount of users when logged-in user is an admin', async (role) => {
+      await setUp({ role });
+
+      if (role === 'admin') {
+        expect(screen.getAllByRole('columnheader')).toHaveLength(3);
+        expect(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
+      } else {
+        expect(screen.getAllByRole('columnheader')).toHaveLength(2);
+        expect(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
+      }
+    });
+
+    it('displays fallback message when there are no servers', async () => {
+      await setUp();
+      expect(screen.getByText('No servers found')).toBeInTheDocument();
+    });
+
+    it.only('shows list of servers', async () => {
+      const servers = [1, 2].map((id) => fromPartial<ServerItem>({
+        name: `Server ${id}`,
+        publicId: `public_id_${id}`,
+        baseUrl: `base_url_${id}`,
+        usersCount: id,
+      }));
+      await setUp({ servers });
+
+      // We add 1 for the header row
+      expect(screen.getAllByRole('row')).toHaveLength(servers.length + 1);
+
+      servers.forEach((server) => {
+        expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
+        expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
+        expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
+      });
+    });
+  });
 });

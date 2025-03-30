@@ -49,7 +49,7 @@ export default function ManageServers() {
             </Table.Row>
           )}
           {servers.map((server) => (
-            <Table.Row key={server.id}>
+            <Table.Row key={server.publicId}>
               <Table.Cell>
                 <Link className="tw:font-bold" to={href('/server/:serverId', { serverId: server.publicId })}>
                   {server.name}
@@ -61,7 +61,7 @@ export default function ManageServers() {
                   <div className="tw:flex tw:items-center tw:gap-x-1">
                     <FontAwesomeIcon icon={faUsers} />
                     <span className="tw:sr-only">This server has</span>
-                    <b>{server.usersCount}</b>
+                    <b data-testid={`users-count-${server.publicId}`}>{server.usersCount}</b>
                     <span className="tw:sr-only">user{server.usersCount === 1 ? '' : 's'}, including yourself.</span>
                   </div>
                 </Table.Cell>
