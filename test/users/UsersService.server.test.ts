@@ -7,6 +7,7 @@ import type { UsersRepository } from '../../app/users/UsersRepository.server';
 import { UsersService } from '../../app/users/UsersService.server';
 import { DuplicatedEntryError } from '../../app/validation/DuplicatedEntryError.server';
 import { NotFoundError } from '../../app/validation/NotFoundError.server';
+import { createFormData } from '../__helpers__/utils';
 
 describe('UsersService', () => {
   const findOne = vi.fn();
@@ -21,17 +22,6 @@ describe('UsersService', () => {
     usersRepo = fromPartial<UsersRepository>({ findOne, findAndCountUsers, createUser, nativeDelete, flush });
     usersService = new UsersService(usersRepo);
   });
-
-  const createFormData = (data: Record<string, string | undefined>) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined) {
-        formData.append(key, value);
-      }
-    });
-
-    return formData;
-  };
 
   describe('getUserByCredentials', () => {
     it('throws when user is not found', async () => {

@@ -30,12 +30,17 @@ export async function action(
 }
 
 export default function CreateServer() {
-  const { Form } = useFetcher();
+  const { Form, state } = useFetcher();
+  const isSaving = state !== 'idle';
 
   return (
     <Layout>
       <Form method="post">
-        <ServerFormFields title="Add new server" submitText="Create server" />
+        <ServerFormFields
+          title="Add new server"
+          submitText={isSaving ? 'Saving...' : 'Create server'}
+          disabled={isSaving}
+        />
       </Form>
     </Layout>
   );

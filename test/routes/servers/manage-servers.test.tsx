@@ -1,5 +1,5 @@
 import { Collection } from '@mikro-orm/core';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
@@ -9,6 +9,7 @@ import type { PlainServer, Server } from '../../../app/entities/Server';
 import type { Role, User } from '../../../app/entities/User';
 import ManageServers, { loader } from '../../../app/routes/servers/manage-servers';
 import type { ServersService } from '../../../app/servers/ServersService.server';
+import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('manage-servers', () => {
   const createServer = ({ users = [], ...serverData }: Partial<PlainServer> & { users?: User[] }) => {
@@ -74,9 +75,13 @@ describe('manage-servers', () => {
           HydrateFallback: () => null,
           loader: () => ({ servers }),
         },
+        {
+          path: '/manage-servers/create',
+          Component: () => <>Server creation</>,
+        },
       ]);
 
-      const result = render(<Stub initialEntries={[path]} />);
+      const result = renderWithEvents(<Stub initialEntries={[path]} />);
 
       // Wait for the table to render before returning...
       await screen.findByRole('table');
@@ -121,6 +126,13 @@ describe('manage-servers', () => {
         expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
         expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
       });
+    });
+
+    it('has a link to go to server creation page', async () => {
+      const { user } = await setUp();
+      await user.click(screen.getByRole('link', { name: /Add a server/ }));
+
+      expect(screen.getByText('Server creation'));
     });
   });
 });

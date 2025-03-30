@@ -4,15 +4,16 @@ import type { ServersRepository } from '../../app/servers/ServersRepository.serv
 import type { ListServersOptions } from '../../app/servers/ServersService.server';
 import { ServersService } from '../../app/servers/ServersService.server';
 import { NotFoundError } from '../../app/validation/NotFoundError.server';
+import { createFormData } from '../__helpers__/utils';
 
 describe('ServersService', () => {
   const findByPublicIdAndUserId = vi.fn();
   const findByUserId = vi.fn();
-  let repo: ServersRepository;
+  const createServer = vi.fn().mockReturnValue({});
+  const repo: ServersRepository = fromPartial({ findByPublicIdAndUserId, findByUserId, createServer });
   let service: ServersService;
 
   beforeEach(() => {
-    repo = fromPartial<ServersRepository>({ findByPublicIdAndUserId, findByUserId });
     service = new ServersService(repo);
   });
 
@@ -40,6 +41,32 @@ describe('ServersService', () => {
     ])('delegates into repository', ({ userId, options }) => {
       service.getUserServers(userId, options);
       expect(findByUserId).toHaveBeenCalledWith(userId, options);
+    });
+  });
+
+  describe('createServerForUser', () => {
+    it.each([
+      {},
+      { baseUrl: 'not a URL' },
+      { name: 'too long'.repeat(50) },
+    ])('throws if invalid data is provided', async (data) => {
+      await expect(service.createServerForUser('123', createFormData(data))).rejects.toEqual(expect.objectContaining({
+        name: 'ValidationError',
+      }));
+      expect(createServer).not.toHaveBeenCalled();
+    });
+
+    it('delegates into repository', async () => {
+      await service.createServerForUser('123', createFormData({
+        name: '  The server',
+        baseUrl: 'https://example.com  ',
+        apiKey: '  abc123  ',
+      }));
+      expect(createServer).toHaveBeenCalledWith('123', {
+        name: 'The server',
+        baseUrl: 'https://example.com',
+        apiKey: 'abc123',
+      });
     });
   });
 });
