@@ -10,7 +10,7 @@
     "build": "react-router build && node scripts/expose-server-container.js && tsc --project tsconfig.build-server.json",
     "test": "vitest run",
     "test:ci": "npm run test -- --coverage",
-    "lint": "eslint app scripts test server.ts *.config.ts",
+    "lint": "eslint app scripts test server.ts *.config.{js,ts}",
     "lint:fix": "npm run lint -- --fix",
     "types": "react-router typegen && tsc",
     "start": "tsx ./server.ts",

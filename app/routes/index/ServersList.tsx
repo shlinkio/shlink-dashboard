@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { Link } from 'react-router';
-import type { Server } from '../../entities/Server';
+import type { PlainServer } from '../../entities/Server';
 
 export type ServersListProps = {
-  servers: Server[];
+  servers: PlainServer[];
 };
 
 export const ServersList: FC<ServersListProps> = ({ servers }) => (

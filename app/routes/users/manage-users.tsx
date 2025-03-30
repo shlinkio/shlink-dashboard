@@ -17,7 +17,7 @@ import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersSer
 import { UsersService } from '../../users/UsersService.server';
 import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
-import { ensureAdmin } from './utils';
+import { ensureAdmin } from './utils.server';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,
@@ -41,7 +41,7 @@ export async function loader(
 
 function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
-    <Table.Cell>
+    <Table.Cell aria-sort={orderDir && (orderDir === 'ASC' ? 'ascending' : 'descending')}>
       <Link className="tw:text-current" to={to}>
         {children}
       </Link>

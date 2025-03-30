@@ -1,4 +1,4 @@
-import { EntitySchema, ReferenceKind } from '@mikro-orm/core';
+import { Collection, EntitySchema, ReferenceKind } from '@mikro-orm/core';
 import { ServersRepository } from '../servers/ServersRepository.server';
 import { BaseEntity, idColumnSchema } from './Base';
 import { User } from './User';
@@ -8,8 +8,18 @@ export class Server extends BaseEntity {
   baseUrl!: string;
   apiKey!: string;
   name!: string;
-  users!: User[];
+  users: Collection<User, Server>;
+
+  constructor() {
+    super();
+    this.users = new Collection<User, Server>(this);
+  }
 }
+
+/**
+ * A Server object without the `users` prop, which does not get serialized when streaming down to the browser
+ */
+export type PlainServer = Omit<Server, 'users'>;
 
 export const ServerSchema = new EntitySchema({
   class: Server,

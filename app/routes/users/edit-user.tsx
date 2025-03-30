@@ -7,7 +7,7 @@ import { UsersService } from '../../users/UsersService.server';
 import { notFound } from '../../utils/response.server';
 import { NotFoundError } from '../../validation/NotFoundError.server';
 import { UserFormFields } from './UserFormFields';
-import { ensureAdmin } from './utils';
+import { ensureAdmin } from './utils.server';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,

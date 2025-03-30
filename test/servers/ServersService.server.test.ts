@@ -1,6 +1,7 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { Server } from '../../app/entities/Server';
 import type { ServersRepository } from '../../app/servers/ServersRepository.server';
+import type { ListServersOptions } from '../../app/servers/ServersService.server';
 import { ServersService } from '../../app/servers/ServersService.server';
 import { NotFoundError } from '../../app/validation/NotFoundError.server';
 
@@ -33,9 +34,12 @@ describe('ServersService', () => {
   });
 
   describe('getUserServers', () => {
-    it('delegates into repository', () => {
-      service.getUserServers('1');
-      expect(findByUserId).toHaveBeenCalledWith('1');
+    it.each([
+      { userId: '3', options: undefined },
+      { userId: '87', options: fromPartial<ListServersOptions>({}) },
+    ])('delegates into repository', ({ userId, options }) => {
+      service.getUserServers(userId, options);
+      expect(findByUserId).toHaveBeenCalledWith(userId, options);
     });
   });
 });

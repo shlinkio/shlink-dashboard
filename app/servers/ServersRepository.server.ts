@@ -1,20 +1,28 @@
-import type { EntityManager } from '@mikro-orm/core';
+import type { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { BaseEntityRepository } from '../db/BaseEntityRepository';
+import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
+
+export type FindServersOptions = {
+  searchTerm?: string;
+  populateUsers?: boolean;
+};
 
 export class ServersRepository extends BaseEntityRepository<Server> {
   findByPublicIdAndUserId(publicId: string, userId: string): Promise<Server | null> {
-    return this.em.findOne(Server, {
+    return this.findOne({
       publicId,
       users: { id: userId },
     });
   }
 
-  findByUserId(userId: string): Promise<Server[]> {
-    return this.em.find(Server, {
+  findByUserId(userId: string, { searchTerm, populateUsers = false }: FindServersOptions = {}): Promise<Server[]> {
+    const baseFilter: FilterQuery<Server> = {
       users: { id: userId },
-    }, {
+    };
+    return this.find(expandSearchTerm<Server>(searchTerm, { searchableFields: ['name', 'baseUrl'], baseFilter }), {
       orderBy: { name: 'ASC' },
+      populate: populateUsers ? ['users'] : undefined,
     });
   }
 }
