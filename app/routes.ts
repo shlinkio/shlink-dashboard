@@ -13,11 +13,14 @@ export default [
   route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
 
   // Users management
-  route('/manage-users/create', './routes/users/create-user.tsx'),
-  route('/manage-users/delete', './routes/users/delete-user.ts'),
-  route('/manage-users/edit/:userId', './routes/users/edit-user.tsx'),
-  route('/manage-users/:page', './routes/users/manage-users.tsx'),
+  route('/manage-users/*', 'routes/users/users-common.tsx', {}, [
+    route('create', './routes/users/create-user.tsx'),
+    route('delete', './routes/users/delete-user.ts'),
+    route('edit/:userId', './routes/users/edit-user.tsx'),
+    route(':page', './routes/users/manage-users.tsx'),
+  ]),
 
+  // Server management
   route('/manage-servers/create', './routes/servers/create-server.tsx'),
   route('/manage-servers/:page', './routes/servers/manage-servers.tsx'),
 ] satisfies RouteConfig;

@@ -11,7 +11,6 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { href, Link , useLoaderData, useNavigate,useNavigation  } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
-import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
@@ -85,7 +84,7 @@ export default function ManageUsers() {
   const closeDialog = useCallback(() => setUserToDelete(undefined), []);
 
   return (
-    <Layout className="tw:flex tw:flex-col tw:gap-y-4">
+    <>
       <SearchInput
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
@@ -182,6 +181,6 @@ export default function ManageUsers() {
       </SimpleCard>
 
       <DeleteUserModal onClose={closeDialog} userToDelete={userToDelete} />
-    </Layout>
+    </>
   );
 }

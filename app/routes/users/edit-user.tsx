@@ -53,15 +53,13 @@ export default function EditUser() {
   const isSubmitting = state === 'submitting';
 
   return (
-    <Layout>
-      <Form method="post">
-        <UserFormFields
-          title="Edit user"
-          user={user}
-          disabled={isSubmitting}
-          submitText={isSubmitting ? 'Saving...' : 'Update user'}
-        />
-      </Form>
-    </Layout>
+    <Form method="post">
+      <UserFormFields
+        title="Edit user"
+        user={user}
+        disabled={isSubmitting}
+        submitText={isSubmitting ? 'Saving...' : 'Update user'}
+      />
+    </Form>
   );
 }

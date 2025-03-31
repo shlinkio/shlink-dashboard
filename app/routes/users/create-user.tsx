@@ -4,7 +4,6 @@ import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
-import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
@@ -50,7 +49,7 @@ export default function CreateUser() {
   const isSubmitting = state === 'submitting';
 
   return (
-    <Layout>
+    <>
       {data?.status === 'success' && (
         <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4" data-testid="success-message">
           <p className="tw:m-0">User <b>{data.user.username}</b> properly created.</p>
@@ -73,6 +72,6 @@ export default function CreateUser() {
           />
         </Form>
       )}
-    </Layout>
+    </>
   );
 };
