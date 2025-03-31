@@ -7,11 +7,11 @@ import type { SessionData } from '../../../app/auth/session-context';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { PlainServer, Server } from '../../../app/entities/Server';
 import type { Role, User } from '../../../app/entities/User';
-import ManageServers, { loader } from '../../../app/routes/servers/manage-servers';
+import ListServers, { loader } from '../../../app/routes/servers/list-servers';
 import type { ServersService } from '../../../app/servers/ServersService.server';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
-describe('manage-servers', () => {
+describe('list-servers', () => {
   const createServer = ({ users = [], ...serverData }: Partial<PlainServer> & { users?: User[] }) => {
     const server = fromPartial<Server>(serverData);
     server.users = new Collection(server, users);
@@ -55,7 +55,7 @@ describe('manage-servers', () => {
     });
   });
 
-  describe('<ManageServers />', () => {
+  describe('<ListServers />', () => {
     type ServerItem = PlainServer & { usersCount?: number };
     type SetUpOptions = {
       servers?: ServerItem[];
@@ -69,7 +69,7 @@ describe('manage-servers', () => {
           path,
           Component: (props) => (
             <SessionProvider value={fromPartial({ role })}>
-              <ManageServers {...props} />
+              <ListServers {...props} />
             </SessionProvider>
           ),
           HydrateFallback: () => null,

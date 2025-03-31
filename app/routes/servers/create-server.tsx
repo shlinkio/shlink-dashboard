@@ -1,18 +1,10 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { redirect , useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
-import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { ensureNotManaged } from '../users/utils.server';
 import { ServerFormFields } from './ServerFormFields';
-
-export async function loader(
-  { request }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
-) {
-  await ensureNotManaged(request, authHelper);
-}
 
 export async function action(
   { request }: ActionFunctionArgs,
@@ -34,14 +26,12 @@ export default function CreateServer() {
   const isSaving = state !== 'idle';
 
   return (
-    <Layout>
-      <Form method="post">
-        <ServerFormFields
-          title="Add new server"
-          submitText={isSaving ? 'Saving...' : 'Create server'}
-          disabled={isSaving}
-        />
-      </Form>
-    </Layout>
+    <Form method="post">
+      <ServerFormFields
+        title="Add new server"
+        submitText={isSaving ? 'Saving...' : 'Create server'}
+        disabled={isSaving}
+      />
+    </Form>
   );
 }

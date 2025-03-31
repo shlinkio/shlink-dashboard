@@ -44,7 +44,7 @@ describe('list-users', () => {
     });
   });
 
-  describe('<ManageUsers />', () => {
+  describe('<ListUsers />', () => {
     type SetUpOptions = {
       users?: User[];
       totalPages?: number;
