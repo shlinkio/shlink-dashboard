@@ -7,14 +7,13 @@ import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
-import { ensureNotManaged } from '../users/utils.server';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const sessionData = await ensureNotManaged(request, authHelper);
+  const sessionData = await authHelper.getSession(request, '/login');
   const populateUsers = sessionData.role === 'admin';
   const servers = await serversService.getUserServers(sessionData.userId, { populateUsers });
 

@@ -1,4 +1,5 @@
-import { type LoaderFunctionArgs, Outlet } from 'react-router';
+import type { LoaderFunctionArgs } from 'react-router';
+import {  Outlet } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';

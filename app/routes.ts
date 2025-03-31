@@ -7,10 +7,12 @@ export default [
   route('/logout', './routes/logout.ts'),
   route('/settings/*', './routes/settings.tsx'),
 
-  // Server-specific routes
-  route('/server/:serverId/shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
-  route('/server/:serverId/tags/colors', './routes/save-tags-colors.ts'),
-  route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
+  // Single server routes
+  ...prefix('/server/:serverId/', [
+    route('shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
+    route('tags/colors', './routes/save-tags-colors.ts'),
+    route('*', './routes/shlink-component-wrapper.tsx'),
+  ]),
 
   // Users management
   layout('routes/users/manage-users.tsx', prefix('/manage-users', [
