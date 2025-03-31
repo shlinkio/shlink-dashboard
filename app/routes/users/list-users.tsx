@@ -24,7 +24,7 @@ export async function loader(
   const orderByParam = query.get('orderBy');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
   const currentParams = {
-    page: Number(params.page),
+    page: Number(params.page ?? '1'),
     orderBy,
     searchTerm: query.get('searchTerm') ?? undefined,
   } satisfies ListUsersOptions;

@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@react-router/dev/routes';
-import { index, route } from '@react-router/dev/routes';
+import { index, layout, prefix, route } from '@react-router/dev/routes';
 
 export default [
   index('./routes/index/home.tsx'),
@@ -13,16 +13,16 @@ export default [
   route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
 
   // Users management
-  route('/manage-users/*', 'routes/users/manage-users.tsx', [
+  layout('routes/users/manage-users.tsx', prefix('/manage-users', [
     route('create', './routes/users/create-user.tsx'),
     route('delete', './routes/users/delete-user.ts'),
     route('edit/:userId', './routes/users/edit-user.tsx'),
-    route(':page', './routes/users/list-users.tsx'),
-  ]),
+    route(':page?', './routes/users/list-users.tsx'),
+  ])),
 
   // Server management
-  route('/manage-servers/*', './routes/servers/manage-servers.tsx', [
+  layout('./routes/servers/manage-servers.tsx', prefix('/manage-servers', [
     route('create', './routes/servers/create-server.tsx'),
-    route(':page', './routes/servers/list-servers.tsx'),
-  ]),
+    route(':page?', './routes/servers/list-servers.tsx'),
+  ])),
 ] satisfies RouteConfig;
