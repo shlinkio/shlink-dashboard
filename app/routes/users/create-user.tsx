@@ -1,30 +1,18 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
-import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
-import { AuthHelper } from '../../auth/auth-helper.server';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
 import { ValidationError } from '../../validation/ValidationError.server';
 import { UserFormFields } from './UserFormFields';
-import { ensureAdmin } from './utils.server';
-
-export async function loader(
-  { request }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
-) {
-  await ensureAdmin(request, authHelper);
-}
 
 export async function action(
   { request }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  await ensureAdmin(request, authHelper);
-
   const formData = await request.formData();
   try {
     const [user, plainTextPassword] = await usersService.createUser(formData);

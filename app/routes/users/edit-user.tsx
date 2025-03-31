@@ -1,21 +1,15 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect, useFetcher, useLoaderData } from 'react-router';
-import { AuthHelper } from '../../auth/auth-helper.server';
-import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
 import { notFound } from '../../utils/response.server';
 import { NotFoundError } from '../../validation/NotFoundError.server';
 import { UserFormFields } from './UserFormFields';
-import { ensureAdmin } from './utils.server';
 
 export async function loader(
-  { request, params }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
+  { params }: LoaderFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  await ensureAdmin(request, authHelper);
-
   const { userId } = params;
 
   try {
@@ -32,11 +26,8 @@ export async function loader(
 
 export async function action(
   { request, params }: ActionFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  await ensureAdmin(request, authHelper);
-
   const { userId } = params;
   const formData = await request.formData();
 

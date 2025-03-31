@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { ActionResult } from '../../../app/routes/users/create-user';
 import CreateUser, { action } from '../../../app/routes/users/create-user';
 import type { UsersService } from '../../../app/users/UsersService.server';
@@ -15,11 +14,9 @@ describe('create-user', () => {
   describe('action', () => {
     const createUser = vi.fn();
     const usersService: UsersService = fromPartial({ createUser });
-    const getSession = vi.fn().mockResolvedValue({ role: 'admin' });
-    const authHelper: AuthHelper = fromPartial({ getSession });
     const runAction = () => {
       const request = fromPartial<Request>({ formData: vi.fn().mockResolvedValue(new FormData()) });
-      return action(fromPartial({ request }), usersService, authHelper);
+      return action(fromPartial({ request }), usersService);
     };
 
     it('returns success when creating user works', async () => {
