@@ -2,7 +2,6 @@ import { Collection } from '@mikro-orm/core';
 import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { SessionData } from '../../../app/auth/session-context';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { PlainServer, Server } from '../../../app/entities/Server';
@@ -19,18 +18,20 @@ describe('list-servers', () => {
   };
 
   describe('loader', () => {
-    const getSession = vi.fn();
-    const authHelper: AuthHelper = fromPartial({ getSession });
     const getUserServers = vi.fn().mockResolvedValue([
       createServer({ name: 'server 1', users: [fromPartial({}), fromPartial({}), fromPartial({})] }),
       createServer({ name: 'server 2', users: [fromPartial({})] }),
     ]);
     const serversService: ServersService = fromPartial({ getUserServers });
-    const runLoader = () => loader(fromPartial({ request: fromPartial({}) }), authHelper, serversService);
+    const runLoader = (contextData: SessionData) => loader(
+      fromPartial({
+        context: { get: vi.fn().mockReturnValue(contextData) },
+      }),
+      serversService,
+    );
 
     it('returns user counts when current user is an admin', async () => {
-      getSession.mockResolvedValue(fromPartial<SessionData>({ role: 'admin', userId: '123' }));
-      const result = await runLoader();
+      const result = await runLoader(fromPartial({ role: 'admin', userId: '123' }));
 
       expect(result).toEqual({
         servers: [
@@ -42,8 +43,7 @@ describe('list-servers', () => {
     });
 
     it('does not return user counts when current user is not an admin', async () => {
-      getSession.mockResolvedValue(fromPartial<SessionData>({ role: 'advanced-user', userId: '456' }));
-      const result = await runLoader();
+      const result = await runLoader(fromPartial({ role: 'advanced-user', userId: '456' }));
 
       expect(result).toEqual({
         servers: [

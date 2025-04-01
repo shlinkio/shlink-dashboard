@@ -1,16 +1,8 @@
-import type { LoaderFunctionArgs } from 'react-router';
-import {  Outlet } from 'react-router';
-import { AuthHelper } from '../../auth/auth-helper.server';
+import { Outlet } from 'react-router';
 import { Layout } from '../../common/Layout';
-import { serverContainer } from '../../container/container.server';
-import { ensureNotManaged } from '../users/utils.server';
+import { authMiddleware, ensureNotManagedMiddleware } from '../../middleware/middleware.server';
 
-export async function loader(
-  { request }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
-) {
-  await ensureNotManaged(request, authHelper);
-}
+export const unstable_middleware = [authMiddleware, ensureNotManagedMiddleware];
 
 export default function ManageServers() {
   return (

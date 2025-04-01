@@ -1,20 +1,16 @@
-import type { ActionFunctionArgs } from 'react-router';
-import { redirect , useFetcher } from 'react-router';
-import { AuthHelper } from '../../auth/auth-helper.server';
+import type { ActionFunctionArgs, unstable_RouterContextProvider } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import { serverContainer } from '../../container/container.server';
+import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
-import { ensureNotManaged } from '../users/utils.server';
 import { ServerFormFields } from './ServerFormFields';
 
 export async function action(
-  { request }: ActionFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
+  { request, context }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const [session, formData] = await Promise.all([
-    ensureNotManaged(request, authHelper),
-    request.formData(),
-  ]);
+  const session = (context as unstable_RouterContextProvider).get(sessionContext);
+  const formData = await  request.formData();
 
   // TODO Handle error when creating a server
   await serversService.createServerForUser(session.userId, formData);
