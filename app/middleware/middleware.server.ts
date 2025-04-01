@@ -15,7 +15,7 @@ export const sessionContext = createContext<SessionData>();
  * Verifies a user is logged in, and redirects to login page otherwise
  * @todo Redirect to login with a redirect-to param to return to original location
  */
-export const authMiddleware: MiddlewareFunction = async function (
+export const authMiddleware = async function (
   { request, context },
   next,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
@@ -24,7 +24,7 @@ export const authMiddleware: MiddlewareFunction = async function (
   context.set(sessionContext, sessionData);
 
   return next();
-};
+} satisfies MiddlewareFunction;
 
 /**
  * Verifies logged-in user is not a managed-user, returning a 404 response if so
@@ -32,6 +32,18 @@ export const authMiddleware: MiddlewareFunction = async function (
 export const ensureNotManagedMiddleware: MiddlewareFunction = async function ({ context }, next) {
   const sessionData = context.get(sessionContext);
   if (sessionData.role === 'managed-user') {
+    throw notFound();
+  }
+
+  return next();
+};
+
+/**
+ * Verifies logged-in user is an admin, returning a 404 response otherwise
+ */
+export const ensureAdminMiddleware: MiddlewareFunction = async function ({ context }, next) {
+  const sessionData = context.get(sessionContext);
+  if (sessionData.role !== 'admin') {
     throw notFound();
   }
 
