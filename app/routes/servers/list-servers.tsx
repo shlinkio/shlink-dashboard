@@ -1,19 +1,18 @@
 import { faPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
-import type { LoaderFunctionArgs } from 'react-router';
+import type { LoaderFunctionArgs, unstable_RouterContextProvider } from 'react-router';
 import { href, Link , useLoaderData } from 'react-router';
-import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
+import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
-  authHelper: AuthHelper = serverContainer[AuthHelper.name],
+  { context }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const sessionData = await authHelper.getSession(request, '/login');
+  const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
   const populateUsers = sessionData.role === 'admin';
   const servers = await serversService.getUserServers(sessionData.userId, { populateUsers });
 

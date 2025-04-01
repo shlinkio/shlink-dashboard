@@ -1,7 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import CreateServer, { action } from '../../../app/routes/servers/create-server';
 import type { ServersService } from '../../../app/servers/ServersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -9,15 +8,15 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-server', () => {
   describe('action', () => {
-    const getSession = vi.fn().mockReturnValue({ role: 'admin', userId: '123' });
-    const authHelper: AuthHelper = fromPartial({ getSession });
     const createServerForUser = vi.fn();
     const serversService: ServersService = fromPartial({ createServerForUser });
     const runAction = () => action(
       fromPartial({
         request: fromPartial({ formData: vi.fn().mockResolvedValue(new FormData()) }),
+        context: {
+          get: vi.fn().mockReturnValue({ userId: '123' }),
+        },
       }),
-      authHelper,
       serversService,
     );
 
