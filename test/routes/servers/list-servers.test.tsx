@@ -125,6 +125,7 @@ describe('list-servers', () => {
         expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
         expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
         expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
+        expect(screen.getByLabelText(`Delete server ${server.name}`)).toBeInTheDocument();
       });
     });
 
