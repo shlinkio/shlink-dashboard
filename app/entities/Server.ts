@@ -8,11 +8,11 @@ export class Server extends BaseEntity {
   baseUrl!: string;
   apiKey!: string;
   name!: string;
-  users: Collection<User, Server>;
+  users: Collection<User>;
 
   constructor() {
     super();
-    this.users = new Collection<User, Server>(this);
+    this.users = new Collection<User>(this);
   }
 }
 
@@ -40,7 +40,6 @@ export const ServerSchema = new EntitySchema({
       type: 'string',
       name: 'public_id',
       unique: true,
-      generated: 'uuid',
     },
     users: {
       kind: ReferenceKind.MANY_TO_MANY,

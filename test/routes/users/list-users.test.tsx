@@ -3,10 +3,9 @@ import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
-import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { User } from '../../../app/entities/User';
-import ManageUsers, { loader } from '../../../app/routes/users/manage-users';
+import ListUsers, { loader } from '../../../app/routes/users/list-users';
 import type { UserOrderableFields, UsersService } from '../../../app/users/UsersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
@@ -21,9 +20,7 @@ vi.mock('react-router', async () => {
   };
 });
 
-describe('manage-users', () => {
-  const getSession = vi.fn();
-  const authHelper: AuthHelper = fromPartial({ getSession });
+describe('list-users', () => {
   const listUsers = vi.fn();
   const usersService: UsersService = fromPartial({ listUsers });
   const mockUser = (userData: Partial<Omit<User, 'id'>>): User => fromPartial({
@@ -33,18 +30,9 @@ describe('manage-users', () => {
   });
 
   describe('loader', () => {
-    const runLoader = (args: Partial<LoaderFunctionArgs> = {}) => loader(fromPartial(args), authHelper, usersService);
-
-    it('throws if logged-in user is not an admin', async () => {
-      getSession.mockResolvedValue({ role: 'user' });
-
-      await expect(() => runLoader()).rejects.toThrow(Response);
-      expect(getSession).toHaveBeenCalled();
-      expect(listUsers).not.toHaveBeenCalled();
-    });
+    const runLoader = (args: Partial<LoaderFunctionArgs> = {}) => loader(fromPartial(args), usersService);
 
     it('returns list of users with page if logged-in user is an admin', async () => {
-      getSession.mockResolvedValue({ role: 'admin' });
       listUsers.mockResolvedValue(fromPartial({}));
 
       await runLoader({
@@ -52,12 +40,11 @@ describe('manage-users', () => {
         params: { page: '5' },
       });
 
-      expect(getSession).toHaveBeenCalled();
       expect(listUsers).toHaveBeenCalledWith(expect.objectContaining({ page: 5 }));
     });
   });
 
-  describe('<ManageUsers />', () => {
+  describe('<ListUsers />', () => {
     type SetUpOptions = {
       users?: User[];
       totalPages?: number;
@@ -74,7 +61,7 @@ describe('manage-users', () => {
           path: '/manage-users/1',
           Component: (props) => (
             <SessionProvider value={currentUsername ? fromPartial({ username: currentUsername }) : null}>
-              <ManageUsers {...props} />
+              <ListUsers {...props} />
             </SessionProvider>
           ),
           HydrateFallback: () => null,

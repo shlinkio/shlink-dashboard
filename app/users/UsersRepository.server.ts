@@ -28,7 +28,7 @@ export class UsersRepository extends BaseEntityRepository<User> {
 
   async createUser(userData: Omit<RequiredEntityData<User>, 'createdAt'>): Promise<User> {
     const user = this.create({ ...userData, createdAt: new Date() });
-    await this.em.persist(user).flush();
+    await this.em.persistAndFlush(user);
 
     return user;
   }

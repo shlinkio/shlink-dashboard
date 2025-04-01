@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@react-router/dev/routes';
-import { index, route } from '@react-router/dev/routes';
+import { index, layout, prefix, route } from '@react-router/dev/routes';
 
 export default [
   index('./routes/index/home.tsx'),
@@ -7,16 +7,24 @@ export default [
   route('/logout', './routes/logout.ts'),
   route('/settings/*', './routes/settings.tsx'),
 
-  // Server-specific routes
-  route('/server/:serverId/shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
-  route('/server/:serverId/tags/colors', './routes/save-tags-colors.ts'),
-  route('/server/:serverId/*', './routes/shlink-component-wrapper.tsx'),
+  // Single server routes
+  ...prefix('/server/:serverId/', [
+    route('shlink-api/:method', './routes/shlink-api-rpc-proxy.ts'),
+    route('tags/colors', './routes/save-tags-colors.ts'),
+    route('*', './routes/shlink-component-wrapper.tsx'),
+  ]),
 
   // Users management
-  route('/manage-users/create', './routes/users/create-user.tsx'),
-  route('/manage-users/delete', './routes/users/delete-user.ts'),
-  route('/manage-users/edit/:userId', './routes/users/edit-user.tsx'),
-  route('/manage-users/:page', './routes/users/manage-users.tsx'),
+  layout('routes/users/manage-users.tsx', prefix('/manage-users', [
+    route('create', './routes/users/create-user.tsx'),
+    route('delete', './routes/users/delete-user.ts'),
+    route('edit/:userId', './routes/users/edit-user.tsx'),
+    route(':page?', './routes/users/list-users.tsx'),
+  ])),
 
-  route('/manage-servers/:page', './routes/servers/manage-servers.tsx'),
+  // Server management
+  layout('./routes/servers/manage-servers.tsx', prefix('/manage-servers', [
+    route('create', './routes/servers/create-server.tsx'),
+    route(':page?', './routes/servers/list-servers.tsx'),
+  ])),
 ] satisfies RouteConfig;

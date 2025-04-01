@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
-import type { AuthHelper } from '../../../app/auth/auth-helper.server';
 import type { User } from '../../../app/entities/User';
 import EditUser, { action, loader } from '../../../app/routes/users/edit-user';
 import type { UsersService } from '../../../app/users/UsersService.server';
@@ -11,19 +10,13 @@ import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-user', () => {
-  const getSession = vi.fn().mockResolvedValue({ role: 'admin' });
-  const authHelper: AuthHelper = fromPartial({ getSession });
   const getUserById = vi.fn();
   const editUser = vi.fn();
   const usersService: UsersService = fromPartial({ getUserById, editUser });
   const request: Request = fromPartial({ formData: vi.fn().mockResolvedValue(new FormData()) });
 
   describe('loader', () => {
-    const runLoader = (params: LoaderFunctionArgs['params']) => loader(
-      fromPartial({ params, request }),
-      authHelper,
-      usersService,
-    );
+    const runLoader = (params: LoaderFunctionArgs['params']) => loader(fromPartial({ params, request }), usersService);
 
     it('returns 404 when NotFoundError occurs', async () => {
       getUserById.mockRejectedValue(new NotFoundError(''));
@@ -49,11 +42,7 @@ describe('edit-user', () => {
   });
 
   describe('action', () => {
-    const runAction = (params: ActionFunctionArgs['params']) => action(
-      fromPartial({ params, request }),
-      authHelper,
-      usersService,
-    );
+    const runAction = (params: ActionFunctionArgs['params']) => action(fromPartial({ params, request }), usersService);
 
     it.each([{ userId: '123' }, { userId: 'abc' }])('edits user and redirects to list', async ({ userId }) => {
       editUser.mockResolvedValue(fromPartial({ id: 'abc123' }));
