@@ -76,7 +76,7 @@ export default function ListUsers() {
   }), [dir, field, urlForParams]);
 
   const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
-  const closeDialog = useCallback(() => setUserToDelete(undefined), []);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
@@ -152,7 +152,10 @@ export default function ListUsers() {
                           size="sm"
                           variant="danger"
                           aria-label={`Delete user ${user.username}`}
-                          onClick={() => setUserToDelete(user)}
+                          onClick={() => {
+                            setUserToDelete(user);
+                            setDialogOpen(true);
+                          }}
                         >
                           <FontAwesomeIcon icon={faTrashCan} />
                         </Button>
@@ -175,7 +178,7 @@ export default function ListUsers() {
         )}
       </SimpleCard>
 
-      <DeleteUserModal onClose={closeDialog} userToDelete={userToDelete} />
+      <DeleteUserModal open={dialogOpen} onClose={() => setDialogOpen(false)} userToDelete={userToDelete} />
     </>
   );
 }

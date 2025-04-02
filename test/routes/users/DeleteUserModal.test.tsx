@@ -9,11 +9,11 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 describe('<DeleteUserModal />', () => {
   const onClose = vi.fn();
   const userMock = fromPartial<User>({ username: 'foo', id: 'foo' });
-  const setUp = (userToDelete?: User) => {
+  const setUp = (open = true) => {
     const Stub = createRoutesStub([
       {
         path: '/',
-        Component: () => <DeleteUserModal onClose={onClose} userToDelete={userToDelete} />,
+        Component: () => <DeleteUserModal open={open} onClose={onClose} userToDelete={userMock} />,
       },
       {
         path: '/manage-users/delete',
@@ -24,15 +24,15 @@ describe('<DeleteUserModal />', () => {
     return renderWithEvents(<Stub />);
   };
 
-  it('passes a11y checks', () => checkAccessibility(setUp(userMock)));
+  it('passes a11y checks', () => checkAccessibility(setUp()));
 
   it.each([
-    { userToDelete: undefined },
-    { userToDelete: userMock },
-  ])('opens modal if a user is provided', ({ userToDelete }) => {
-    setUp(userToDelete);
+    { open: true },
+    { open: false },
+  ])('opens modal if open is true', ({ open }) => {
+    setUp(open);
 
-    if (userToDelete) {
+    if (open) {
       expect(screen.getByText(/^Are you sure you want to delete user/)).toBeInTheDocument();
     } else {
       expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('<DeleteUserModal />', () => {
     { buttonText: 'Close dialog' },
     { buttonText: 'Cancel' },
   ])('closes modal when cancel or close are clicked', async ({ buttonText }) => {
-    const { user } = setUp(userMock);
+    const { user } = setUp();
 
     expect(onClose).not.toHaveBeenCalled();
     await user.click(screen.queryByLabelText(buttonText) ?? screen.getByText(buttonText));
@@ -51,7 +51,7 @@ describe('<DeleteUserModal />', () => {
   });
 
   it('deletes user when confirm is clicked', async () => {
-    const { user } = setUp(userMock);
+    const { user } = setUp();
     const button = screen.getAllByText('Delete user').find((element) => element.tagName === 'BUTTON');
     if (!button) {
       throw new Error('Confirm button not found');

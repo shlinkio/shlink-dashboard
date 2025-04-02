@@ -5,7 +5,7 @@ import { useFetcher } from 'react-router';
 import type { PlainServer } from '../../entities/Server';
 
 export type DeleteServerModalProps = {
-  /** Represents the server to delete. The modal is closed while it is `undefined` */
+  /** Represents the server to delete */
   serverToDelete?: PlainServer;
   onClose: () => void;
   open: boolean;
