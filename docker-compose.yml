@@ -2,8 +2,11 @@ services:
   shlink_dashboard_node:
     container_name: shlink_dashboard_node
     user: 1000:1000
-    image: node:22.12-alpine
-    command: /bin/sh -c "cd /home/shlink-dashboard && npm install && node --run start"
+    build:
+      context: .
+      dockerfile: ./data/infra/node.Dockerfile
+    working_dir: /home/shlink-dashboard
+    command: /bin/sh -c "npm install && node --run start"
     volumes:
       - ./:/home/shlink-dashboard
     ports:
