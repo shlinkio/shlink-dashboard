@@ -25,6 +25,7 @@ export default [
   // Server management
   layout('./routes/servers/manage-servers.tsx', prefix('/manage-servers', [
     route('create', './routes/servers/create-server.tsx'),
+    route('delete', './routes/servers/delete-server.ts'),
     route(':page?', './routes/servers/list-servers.tsx'),
   ])),
 ] satisfies RouteConfig;

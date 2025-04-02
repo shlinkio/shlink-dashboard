@@ -10,7 +10,8 @@ describe('ServersService', () => {
   const findByPublicIdAndUserId = vi.fn();
   const findByUserId = vi.fn();
   const createServer = vi.fn().mockReturnValue({});
-  const repo: ServersRepository = fromPartial({ findByPublicIdAndUserId, findByUserId, createServer });
+  const nativeDelete = vi.fn();
+  const repo: ServersRepository = fromPartial({ findByPublicIdAndUserId, findByUserId, createServer, nativeDelete });
   let service: ServersService;
 
   beforeEach(() => {
@@ -66,6 +67,16 @@ describe('ServersService', () => {
         name: 'The server',
         baseUrl: 'https://example.com',
         apiKey: 'abc123',
+      });
+    });
+  });
+
+  describe('deleteServerForUser', () => {
+    it('delegates into repository', async () => {
+      await service.deleteServerForUser('123', 'abc');
+      expect(nativeDelete).toHaveBeenCalledWith({
+        publicId: 'abc',
+        users: { id: '123' },
       });
     });
   });

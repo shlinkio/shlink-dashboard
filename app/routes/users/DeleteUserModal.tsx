@@ -5,16 +5,19 @@ import { useFetcher } from 'react-router';
 import type { User } from '../../entities/User';
 
 export type DeleteUserModalProps = {
-  /** Represents the user to delete. The modal is closed while it is `undefined` */
+  /** Represents the user to delete */
   userToDelete?: User;
   onClose: () => void;
+  open: boolean;
 };
 
 /**
  * ModalDialog that handles deleting users
  */
-export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClose }) => {
+export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClose, open }) => {
   const { submit, state } = useFetcher();
+  const confirmDisabled = state !== 'idle';
+
   const deleteUser = useCallback(async () => {
     const userId = userToDelete?.id.toString();
     if (!userId) {
@@ -34,10 +37,11 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
       title="Delete user"
       variant="danger"
       size="sm"
-      open={!!userToDelete}
+      open={open}
       onClose={onClose}
       onConfirm={deleteUser}
-      confirmText={state === 'submitting' ? 'Deleting...' : 'Delete user'}
+      confirmText={confirmDisabled ? 'Deleting...' : 'Delete user'}
+      confirmDisabled={confirmDisabled}
     >
       Are you sure you want to delete user <b>{userToDelete?.username}</b>?
     </CardModal>

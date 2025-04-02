@@ -76,7 +76,7 @@ export default function ListUsers() {
   }), [dir, field, urlForParams]);
 
   const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
-  const closeDialog = useCallback(() => setUserToDelete(undefined), []);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
@@ -90,7 +90,7 @@ export default function ListUsers() {
           New user
         </Button>
       </div>
-      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4" title="Manage users">
         <Table
           header={
             <Table.Row>
@@ -126,10 +126,10 @@ export default function ListUsers() {
               )}
               {users.map((user) => (
                 <Table.Row key={user.id} className="tw:relative">
-                  <Table.Cell data-column="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
-                  <Table.Cell data-column="Username:">{user.username}</Table.Cell>
-                  <Table.Cell data-column="Display name:">{user.displayName ?? '-'}</Table.Cell>
-                  <Table.Cell data-column="Role:"><RoleBadge role={user.role} /></Table.Cell>
+                  <Table.Cell columnName="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
+                  <Table.Cell columnName="Username:">{user.username}</Table.Cell>
+                  <Table.Cell columnName="Display name:">{user.displayName ?? '-'}</Table.Cell>
+                  <Table.Cell columnName="Role:"><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell
                     className={clsx(
                       'tw:lg:static tw:lg:[&]:border-b-1', // Big screens
@@ -137,16 +137,7 @@ export default function ListUsers() {
                     )}
                   >
                     {session?.username !== user.username && (
-                      <div className="tw:flex tw:flex-row-reverse tw:gap-x-1">
-                        <Button
-                          inline
-                          size="sm"
-                          variant="danger"
-                          aria-label={`Delete user ${user.username}`}
-                          onClick={() => setUserToDelete(user)}
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </Button>
+                      <div className="tw:flex tw:justify-end tw:gap-x-1">
                         <Button
                           inline
                           size="sm"
@@ -155,6 +146,18 @@ export default function ListUsers() {
                           to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
                         >
                           <FontAwesomeIcon icon={faPencil} />
+                        </Button>
+                        <Button
+                          inline
+                          size="sm"
+                          variant="danger"
+                          aria-label={`Delete user ${user.username}`}
+                          onClick={() => {
+                            setUserToDelete(user);
+                            setDialogOpen(true);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faTrashCan} />
                         </Button>
                       </div>
                     )}
@@ -175,7 +178,7 @@ export default function ListUsers() {
         )}
       </SimpleCard>
 
-      <DeleteUserModal onClose={closeDialog} userToDelete={userToDelete} />
+      <DeleteUserModal open={dialogOpen} onClose={() => setDialogOpen(false)} userToDelete={userToDelete} />
     </>
   );
 }

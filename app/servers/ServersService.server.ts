@@ -30,4 +30,11 @@ export class ServersService {
     const serverData = validateFormDataSchema(CREATE_SERVER_SCHEMA, data);
     return this.#serversRepository.createServer(userId, serverData);
   }
+
+  public async deleteServerForUser(userId: string, serverPublicId: string): Promise<number> {
+    return this.#serversRepository.nativeDelete({
+      publicId: serverPublicId,
+      users: { id: userId },
+    });
+  }
 }

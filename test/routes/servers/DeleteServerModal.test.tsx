@@ -1,22 +1,22 @@
 import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import type { User } from '../../../app/entities/User';
-import { DeleteUserModal } from '../../../app/routes/users/DeleteUserModal';
+import { type PlainServer } from '../../../app/entities/Server';
+import { DeleteServerModal } from '../../../app/routes/servers/DeleteServerModal';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
-describe('<DeleteUserModal />', () => {
+describe('<DeleteServerModal />', () => {
   const onClose = vi.fn();
-  const userMock = fromPartial<User>({ username: 'foo', id: 'foo' });
+  const serverMock: PlainServer = fromPartial({ name: 'The server', publicId: 'abc123' });
   const setUp = (open = true) => {
     const Stub = createRoutesStub([
       {
         path: '/',
-        Component: () => <DeleteUserModal open={open} onClose={onClose} userToDelete={userMock} />,
+        Component: () => <DeleteServerModal open={open} onClose={onClose} serverToDelete={serverMock} />,
       },
       {
-        path: '/manage-users/delete',
+        path: '/manage-servers/delete',
         action: () => ({}),
       },
     ]);
@@ -33,9 +33,9 @@ describe('<DeleteUserModal />', () => {
     setUp(open);
 
     if (open) {
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toBeInTheDocument();
+      expect(screen.getByText(/^Are you sure you want to delete server/)).toBeInTheDocument();
     } else {
-      expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Are you sure you want to delete server/)).not.toBeInTheDocument();
     }
   });
 
@@ -50,10 +50,10 @@ describe('<DeleteUserModal />', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('deletes user when confirm is clicked', async () => {
+  it('deletes server when confirm is clicked', async () => {
     const { user } = setUp();
 
-    await user.click(screen.getByRole('button', { name: 'Delete user' }));
+    await user.click(screen.getByRole('button', { name: 'Delete server' }));
     expect(onClose).toHaveBeenCalled();
   });
 });
