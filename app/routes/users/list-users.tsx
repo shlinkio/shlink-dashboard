@@ -26,7 +26,7 @@ export async function loader(
   const currentParams = {
     page: Number(params.page ?? '1'),
     orderBy,
-    searchTerm: query.get('searchTerm') ?? undefined,
+    searchTerm: query.get('search-term') ?? undefined,
   } satisfies ListUsersOptions;
   const usersList = await usersService.listUsers(currentParams);
 
@@ -62,7 +62,7 @@ export default function ListUsers() {
       query.set('orderBy', stringifiedOrderBy);
     }
     if (mergedParams.searchTerm) {
-      query.set('searchTerm', mergedParams.searchTerm);
+      query.set('search-term', mergedParams.searchTerm);
     }
 
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
@@ -81,6 +81,7 @@ export default function ListUsers() {
   return (
     <>
       <SearchInput
+        placeholder="Seacrh users..."
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />

@@ -1,10 +1,10 @@
 import { faPlus, faTrashCan, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import { useState } from 'react';
 import type { LoaderFunctionArgs, unstable_RouterContextProvider } from 'react-router';
-import { href, Link , useLoaderData } from 'react-router';
+import { href, Link , useLoaderData,useNavigate  } from 'react-router';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import type { PlainServer } from '../../entities/Server';
@@ -13,30 +13,42 @@ import { ServersService } from '../../servers/ServersService.server';
 import { DeleteServerModal } from './DeleteServerModal';
 
 export async function loader(
-  { context }: LoaderFunctionArgs,
+  { request, context }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
+  const query = new URL(request.url).searchParams;
+  const currentSearchTerm = query.get('search-term') ?? undefined;
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
   const populateUsers = sessionData.role === 'admin';
-  const servers = await serversService.getUserServers(sessionData.userId, { populateUsers });
+  const servers = await serversService.getUserServers(sessionData.userId, {
+    populateUsers,
+    searchTerm: currentSearchTerm,
+  });
 
   return {
     servers: servers.map(({ users, ...rest }) => ({
       ...rest,
       usersCount: populateUsers ? users.count() : undefined,
     })),
+    currentSearchTerm,
   };
 }
 
 export default function ListServers() {
   const session = useSession();
-  const { servers } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const { servers, currentSearchTerm } = useLoaderData<typeof loader>();
 
   const [serverToDelete, setServerToDelete] = useState<PlainServer>();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
+      <SearchInput
+        placeholder="Search servers..."
+        defaultValue={currentSearchTerm}
+        onChange={(searchTerm) => navigate(searchTerm ? `?search-term=${searchTerm}` : '?', { replace: true })}
+      />
       <div className="tw:flex tw:gap-4 tw:flex-col tw:lg:flex-row-reverse">
         <Button to="/manage-servers/create">
           <FontAwesomeIcon icon={faPlus} />
