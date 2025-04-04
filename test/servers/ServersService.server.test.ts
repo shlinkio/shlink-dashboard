@@ -10,8 +10,11 @@ describe('ServersService', () => {
   const findByPublicIdAndUserId = vi.fn();
   const findByUserId = vi.fn();
   const createServer = vi.fn().mockReturnValue({});
+  const updateServer = vi.fn();
   const nativeDelete = vi.fn();
-  const repo: ServersRepository = fromPartial({ findByPublicIdAndUserId, findByUserId, createServer, nativeDelete });
+  const repo: ServersRepository = fromPartial(
+    { findByPublicIdAndUserId, findByUserId, createServer, updateServer, nativeDelete },
+  );
   let service: ServersService;
 
   beforeEach(() => {
@@ -68,6 +71,37 @@ describe('ServersService', () => {
         baseUrl: 'https://example.com',
         apiKey: 'abc123',
       });
+    });
+  });
+
+  describe('editServerForUser', () => {
+    it.each([
+      { baseUrl: 'not a URL' },
+      { name: 'too long'.repeat(50) },
+    ])('throws if invalid data is provided', async (data) => {
+      await expect(service.editServerForUser('123', 'abc123', createFormData(data))).rejects.toEqual(
+        expect.objectContaining({ name: 'ValidationError' }),
+      );
+      expect(updateServer).not.toHaveBeenCalled();
+    });
+
+    it('throws if the server is not found', async () => {
+      updateServer.mockResolvedValue(null);
+
+      await expect(service.editServerForUser('123', 'abc123', createFormData({}))).rejects.toEqual(
+        expect.objectContaining({ name: 'NotFoundError' }),
+      );
+      expect(updateServer).toHaveBeenCalledWith('abc123', '123', {});
+    });
+
+    it('delegates into repository to return updated server', async () => {
+      const server: Server = fromPartial({});
+      updateServer.mockResolvedValue(server);
+
+      const result = await service.editServerForUser('123', 'abc456', createFormData({}));
+
+      expect(result).toStrictEqual(server);
+      expect(updateServer).toHaveBeenCalledWith('abc456', '123', {});
     });
   });
 

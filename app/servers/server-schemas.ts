@@ -6,4 +6,8 @@ export const CREATE_SERVER_SCHEMA = z.object({
   apiKey: z.string().trim(),
 });
 
-export type ServerData = z.infer<typeof CREATE_SERVER_SCHEMA>;
+export type CreateServerData = z.infer<typeof CREATE_SERVER_SCHEMA>;
+
+export const EDIT_SERVER_SCHEMA = CREATE_SERVER_SCHEMA.partial();
+
+export type EditServerData = z.infer<typeof EDIT_SERVER_SCHEMA>;

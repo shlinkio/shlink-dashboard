@@ -1,10 +1,18 @@
 import type { Server } from '../entities/Server';
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
-import { CREATE_SERVER_SCHEMA } from './server-schemas';
+import { CREATE_SERVER_SCHEMA, EDIT_SERVER_SCHEMA } from './server-schemas';
 import type { FindServersOptions, ServersRepository } from './ServersRepository.server';
 
 export type ListServersOptions = FindServersOptions;
+
+function ensureServer(server: Server | null, serverPublicId: string): Server {
+  if (!server) {
+    throw new NotFoundError(`Server with public ID ${serverPublicId} not found`);
+  }
+
+  return server;
+}
 
 export class ServersService {
   readonly #serversRepository: ServersRepository;
@@ -13,13 +21,9 @@ export class ServersService {
     this.#serversRepository = serversRepository;
   }
 
-  public async getByPublicIdAndUser(publicId: string, userId: string): Promise<Server> {
-    const server = await this.#serversRepository.findByPublicIdAndUserId(publicId, userId);
-    if (!server) {
-      throw new NotFoundError(`Server with public ID ${publicId} not found`);
-    }
-
-    return server;
+  public async getByPublicIdAndUser(serverPublicId: string, userId: string): Promise<Server> {
+    const server = await this.#serversRepository.findByPublicIdAndUserId(serverPublicId, userId);
+    return ensureServer(server, serverPublicId);
   }
 
   public async getUserServers(userId: string, options?: ListServersOptions): Promise<Server[]> {
@@ -29,6 +33,13 @@ export class ServersService {
   public async createServerForUser(userId: string, data: FormData): Promise<Server> {
     const serverData = validateFormDataSchema(CREATE_SERVER_SCHEMA, data);
     return this.#serversRepository.createServer(userId, serverData);
+  }
+
+  public async editServerForUser(userId: string, serverPublicId: string, data: FormData): Promise<Server> {
+    const serverData = validateFormDataSchema(EDIT_SERVER_SCHEMA, data);
+    const server = await this.#serversRepository.updateServer(serverPublicId, userId, serverData);
+
+    return ensureServer(server, serverPublicId);
   }
 
   public async deleteServerForUser(userId: string, serverPublicId: string): Promise<number> {

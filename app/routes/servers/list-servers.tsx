@@ -1,4 +1,4 @@
-import { faPlus, faTrashCan, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faPlus, faTrashCan, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
@@ -91,11 +91,20 @@ export default function ListServers() {
               )}
               <Table.Cell
                 className={clsx(
-                  'tw:lg:static tw:lg:[&]:border-b-1', // Big screens
-                  'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
+                  'tw:lg:[&]:border-b-1', // Big screens
+                  'tw:max-lg:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
                 )}
               >
                 <div className="tw:flex tw:justify-end tw:gap-x-1">
+                  <Button
+                    inline
+                    size="sm"
+                    variant="secondary"
+                    aria-label={`Edit server ${server.name}`}
+                    to={href('/manage-servers/edit/:serverPublicId', { serverPublicId: server.publicId })}
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                  </Button>
                   <Button
                     inline
                     size="sm"

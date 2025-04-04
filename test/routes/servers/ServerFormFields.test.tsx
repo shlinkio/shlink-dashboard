@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
 import type { ServerFormFieldsProps } from '../../../app/routes/servers/ServerFormFields';
 import { ServerFormFields } from '../../../app/routes/servers/ServerFormFields';
@@ -38,5 +39,13 @@ describe('<ServerFormFields />', () => {
   ])('can submit text', (submitText) => {
     setUp({ submitText });
     expect(screen.getByRole('button', { name: submitText })).toBeInTheDocument();
+  });
+
+  it('initializes fields with provided server', () => {
+    setUp({ server: fromPartial({ name: 'initial name', baseUrl: 'initial base url', apiKey: 'initial api key' }) });
+
+    expect(screen.getByLabelText(/^Name/)).toHaveValue('initial name');
+    expect(screen.getByLabelText(/^URL/)).toHaveValue('initial base url');
+    expect(screen.getByLabelText(/^API key/)).toHaveValue('initial api key');
   });
 });
