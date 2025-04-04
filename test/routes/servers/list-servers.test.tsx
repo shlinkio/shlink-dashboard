@@ -1,5 +1,5 @@
 import { Collection } from '@mikro-orm/core';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { SessionData } from '../../../app/auth/session-context';
@@ -9,6 +9,16 @@ import type { Role, User } from '../../../app/entities/User';
 import ListServers, { loader } from '../../../app/routes/servers/list-servers';
 import type { ServersService } from '../../../app/servers/ServersService.server';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
+
+// Mock the useNavigate hook so that we can test programmatic navigations
+const navigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
+  return {
+    ...actual,
+    useNavigate: vi.fn(() => navigate),
+  };
+});
 
 describe('list-servers', () => {
   const createServer = ({ users = [], ...serverData }: Partial<PlainServer> & { users?: User[] }) => {
@@ -23,35 +33,42 @@ describe('list-servers', () => {
       createServer({ name: 'server 2', users: [fromPartial({})] }),
     ]);
     const serversService: ServersService = fromPartial({ getUserServers });
-    const runLoader = (contextData: SessionData) => loader(
+    const runLoader = (contextData: SessionData, queryString = '') => loader(
       fromPartial({
+        request: fromPartial({ url: `https://example.com/?${queryString}` }),
         context: { get: vi.fn().mockReturnValue(contextData) },
       }),
       serversService,
     );
 
     it('returns user counts when current user is an admin', async () => {
-      const result = await runLoader(fromPartial({ role: 'admin', userId: '123' }));
+      const { servers } = await runLoader(fromPartial({ role: 'admin', userId: '123' }));
 
-      expect(result).toEqual({
-        servers: [
-          { name: 'server 1', usersCount: 3 },
-          { name: 'server 2', usersCount: 1 },
-        ],
-      });
+      expect(servers).toEqual([
+        { name: 'server 1', usersCount: 3 },
+        { name: 'server 2', usersCount: 1 },
+      ]);
       expect(getUserServers).toHaveBeenLastCalledWith('123', { populateUsers: true });
     });
 
     it('does not return user counts when current user is not an admin', async () => {
-      const result = await runLoader(fromPartial({ role: 'advanced-user', userId: '456' }));
+      const { servers } = await runLoader(fromPartial({ role: 'advanced-user', userId: '456' }));
 
-      expect(result).toEqual({
-        servers: [
-          { name: 'server 1' },
-          { name: 'server 2' },
-        ],
-      });
+      expect(servers).toEqual([
+        { name: 'server 1' },
+        { name: 'server 2' },
+      ]);
       expect(getUserServers).toHaveBeenLastCalledWith('456', { populateUsers: false });
+    });
+
+    it('parses search term from query string', async () => {
+      const { currentSearchTerm } = await runLoader(
+        fromPartial({ role: 'advanced-user', userId: '456' }),
+        'search-term=hello%20world',
+      );
+
+      expect(getUserServers).toHaveBeenLastCalledWith('456', expect.objectContaining({ searchTerm: 'hello world' }));
+      expect(currentSearchTerm).toEqual('hello world');
     });
   });
 
@@ -60,9 +77,10 @@ describe('list-servers', () => {
     type SetUpOptions = {
       servers?: ServerItem[];
       role?: Role;
+      currentSearchTerm?: string;
     };
 
-    const setUp = async ({ role, servers = [] }: SetUpOptions = {}) => {
+    const setUp = async ({ role, servers = [], currentSearchTerm }: SetUpOptions = {}) => {
       const path = '/manage-users/1';
       const Stub = createRoutesStub([
         {
@@ -73,7 +91,7 @@ describe('list-servers', () => {
             </SessionProvider>
           ),
           HydrateFallback: () => null,
-          loader: () => ({ servers }),
+          loader: () => ({ servers, currentSearchTerm }),
         },
         {
           path: '/manage-servers/create',
@@ -134,6 +152,21 @@ describe('list-servers', () => {
       await user.click(screen.getByRole('link', { name: /Add a server/ }));
 
       expect(screen.getByText('Server creation'));
+    });
+
+    it('initializes current search term', async () => {
+      await setUp({ currentSearchTerm: 'something' });
+      expect(screen.getByRole('searchbox')).toHaveValue('something');
+    });
+
+    it('allows servers list to be filtered by search', async () => {
+      const { user } = await setUp();
+      await user.type(screen.getByRole('searchbox'), 'hello');
+
+      // Search is deferred. It should eventually navigate to the URL with the search term
+      await waitFor(
+        () => expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
+      );
     });
   });
 });
