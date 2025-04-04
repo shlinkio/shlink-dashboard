@@ -36,7 +36,7 @@ export async function action(
 
   // TODO Handle errors while editing the server
   await serversService.editServerForUser(sessionData.userId, serverPublicId!, formData);
-  return redirect('/manage-servers/1');
+  return redirect('/manage-servers');
 }
 
 export default function EditServer() {
