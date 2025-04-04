@@ -21,7 +21,7 @@ export async function loader(
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
   const query = new URL(request.url).searchParams;
-  const orderByParam = query.get('orderBy');
+  const orderByParam = query.get('order-by');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
   const currentParams = {
     page: Number(params.page ?? '1'),
@@ -59,7 +59,7 @@ export default function ListUsers() {
     const stringifiedOrderBy = orderToString(mergedParams.orderBy ?? {});
 
     if (stringifiedOrderBy) {
-      query.set('orderBy', stringifiedOrderBy);
+      query.set('order-by', stringifiedOrderBy);
     }
     if (mergedParams.searchTerm) {
       query.set('search-term', mergedParams.searchTerm);
