@@ -1,4 +1,9 @@
-import { Button, LabelledInput, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import {
+  Button,
+  LabelledInput,
+  LabelledRevealablePasswordInput,
+  SimpleCard,
+} from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import type { PlainServer } from '../../entities/Server';
 
@@ -29,8 +34,7 @@ export const ServerFormFields: FC<ServerFormFieldsProps> = ({ title, submitText,
         defaultValue={server?.baseUrl}
         required
       />
-      <LabelledInput
-        type="password"
+      <LabelledRevealablePasswordInput
         label="API key"
         name="apiKey"
         disabled={disabled}
