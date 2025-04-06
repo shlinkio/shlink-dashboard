@@ -17,6 +17,7 @@ export type ComboboxProps<Item> = {
   loading?: boolean;
 
   size?: Size;
+  listboxSpan?: 'auto' | 'full';
   placeholder?: string;
 };
 
@@ -27,6 +28,7 @@ export function Combobox<Item>({
   renderSearchResult,
   placeholder = 'Search items...',
   size = 'md',
+  listboxSpan = 'full',
 }: ComboboxProps<Item>) {
   const searchInputRef = useRef<HTMLInputElement>();
   const listboxId = useId();
@@ -76,7 +78,14 @@ export function Combobox<Item>({
       {searchResults && (
         <Card
           id={listboxId}
-          className="tw:absolute tw:top-full tw:min-w-60 tw:max-w-full tw:mt-1 tw:py-1 tw:flex tw:flex-col"
+          className={clsx(
+            'tw:absolute tw:top-full tw:mt-1 tw:z-10',
+            'tw:py-1 tw:flex tw:flex-col',
+            {
+              'tw:min-w-60 tw:max-w-full': listboxSpan === 'auto',
+              'tw:w-full': listboxSpan === 'full',
+            },
+          )}
           role="listbox"
           aria-orientation="vertical"
           aria-label="Matching items"
