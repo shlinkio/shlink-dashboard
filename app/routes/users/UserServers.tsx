@@ -15,6 +15,7 @@ export type UserServersProps = {
 export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, searchResults }) => {
   const searchInputRef = useRef<HTMLInputElement>();
 
+  const [highlightedSearchResult, setHighlightedSearchResult] = useState(0);
   const [serversList, setServersList] = useState(initialServers);
   const orderedServers = useMemo(() => [...serversList].sort((a, b) => a.name.localeCompare(b.name)), [serversList]);
   const removeServer = useCallback(
@@ -23,8 +24,13 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
   );
   const addServer = useCallback((server: MinimalServer) => {
     setServersList((prev) => [...prev, server]);
+    setHighlightedSearchResult(0);
     onSearch('');
     searchInputRef.current!.value = '';
+  }, [onSearch]);
+  const updateSearchTerm = useCallback((searchTerm: string) => {
+    onSearch(searchTerm);
+    setHighlightedSearchResult(0);
   }, [onSearch]);
 
   return (
@@ -32,25 +38,46 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
       <div className="tw:relative">
         <SearchInput
           size="md"
-          onChange={onSearch}
+          onChange={updateSearchTerm}
           placeholder="Search servers to add..."
           ref={searchInputRef as any}
+          onKeyDown={(e) => {
+            // Avoid the form to be sent when pressing enter
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
+
+            if (!searchResults) {
+              return;
+            }
+
+            if (e.key === 'ArrowDown') {
+              setHighlightedSearchResult((prev) => Math.min(prev + 1, searchResults.length - 1));
+            } else if (e.key === 'ArrowUp') {
+              setHighlightedSearchResult((prev) => Math.max(prev - 1, 0));
+            } else if (e.key === 'Enter') {
+              addServer(searchResults[highlightedSearchResult]);
+            }
+          }}
         />
         {searchResults && (
           <Card className="tw:absolute tw:top-full tw:min-w-60 tw:max-w-full tw:mt-1 tw:py-1 tw:flex tw:flex-col">
             {searchResults.length === 0 && (
               <i className="tw:px-2 tw:py-1">No servers found matching search</i>
             )}
-            {searchResults.map((serverFromList) => (
+            {searchResults.map((serverFromList, index) => (
               <button
                 key={serverFromList.publicId}
                 type="button"
                 className={clsx(
                   'tw:px-2 tw:py-1 tw:text-left tw:truncate',
-                  'tw:highlight:bg-lm-secondary tw:dark:highlight:bg-dm-secondary',
+                  { 'tw:bg-lm-secondary tw:dark:bg-dm-secondary': index === highlightedSearchResult },
                 )}
                 tabIndex={-1}
                 onClick={() => addServer(serverFromList)}
+                // We are setting tabIndex -1 so that this element cannot be focused
+                // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+                onMouseOver={() => setHighlightedSearchResult(index)}
               >
                 <b>{serverFromList.name}</b> ({serverFromList.baseUrl})
               </button>
