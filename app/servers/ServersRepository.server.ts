@@ -3,6 +3,8 @@ import { BaseEntityRepository } from '../db/BaseEntityRepository';
 import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
 import { User } from '../entities/User';
+import { NotFoundError } from '../validation/NotFoundError.server';
+import { ValidationError } from '../validation/ValidationError.server';
 import type { CreateServerData, EditServerData, UserServers } from './server-schemas';
 
 export type FindServersOptions = {
@@ -58,8 +60,16 @@ export class ServersRepository extends BaseEntityRepository<Server> {
       serverPublicIds.length > 0 ? this.find({ publicId: { '$in': serverPublicIds } }) : Promise.resolve([]),
     ]);
 
-    user?.servers.removeAll();
-    servers.forEach((server) => user?.servers.add(server));
+    if (!user) {
+      throw new NotFoundError(`User ${userId} not found`);
+    }
+
+    if (user.role !== 'managed-user') {
+      throw new ValidationError({ role: 'Servers can be set in managed users only' });
+    }
+
+    user.servers.removeAll();
+    servers.forEach((server) => user.servers.add(server));
 
     await this.em.flush();
   }
