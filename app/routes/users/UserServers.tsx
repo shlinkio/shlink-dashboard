@@ -1,8 +1,8 @@
-import { Card, CloseButton, SearchInput, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
-import clsx from 'clsx';
+import { CloseButton, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
-import { useCallback, useId , useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { Server } from '../../entities/Server';
+import { Combobox } from '../../fe-kit/Combobox';
 
 export type MinimalServer = Pick<Server, 'publicId' | 'name' | 'baseUrl'>;
 
@@ -13,92 +13,27 @@ export type UserServersProps = {
 };
 
 export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, searchResults }) => {
-  const searchInputRef = useRef<HTMLInputElement>();
-
-  const [highlightedSearchResult, setHighlightedSearchResult] = useState(0);
   const [serversList, setServersList] = useState(initialServers);
   const orderedServers = useMemo(() => [...serversList].sort((a, b) => a.name.localeCompare(b.name)), [serversList]);
   const removeServer = useCallback(
     (serverPublicId: string) => setServersList((prev) => prev.filter((s) => s.publicId !== serverPublicId)),
     [],
   );
-  const addServer = useCallback((server: MinimalServer) => {
-    setServersList((prev) => [...prev, server]);
-    setHighlightedSearchResult(0);
-    onSearch('');
-    searchInputRef.current!.value = '';
-  }, [onSearch]);
-  const updateSearchTerm = useCallback((searchTerm: string) => {
-    onSearch(searchTerm);
-    setHighlightedSearchResult(0);
-  }, [onSearch]);
-
-  const listboxId = useId();
+  const addServer = useCallback((server: MinimalServer) => setServersList((prev) => [...prev, server]), []);
+  const searchResultsMap = useMemo(
+    () => searchResults ? new Map(searchResults.map((s) => [s.publicId, s])) : undefined,
+    [searchResults],
+  );
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
-      <div className="tw:relative">
-        <SearchInput
-          size="md"
-          onChange={updateSearchTerm}
-          placeholder="Search servers to add..."
-          ref={searchInputRef as any}
-          role="combobox"
-          aria-autocomplete="list"
-          aria-expanded={!!searchResults}
-          aria-controls={listboxId}
-          onKeyDown={(e) => {
-            // Avoid the form to be sent when pressing enter
-            if (e.key === 'Enter') {
-              e.preventDefault();
-            }
-
-            if (!searchResults) {
-              return;
-            }
-
-            if (e.key === 'ArrowDown') {
-              setHighlightedSearchResult((prev) => Math.min(prev + 1, searchResults.length - 1));
-            } else if (e.key === 'ArrowUp') {
-              setHighlightedSearchResult((prev) => Math.max(prev - 1, 0));
-            } else if (e.key === 'Enter') {
-              addServer(searchResults[highlightedSearchResult]);
-            }
-          }}
-        />
-        {searchResults && (
-          <Card
-            id={listboxId}
-            className="tw:absolute tw:top-full tw:min-w-60 tw:max-w-full tw:mt-1 tw:py-1 tw:flex tw:flex-col"
-            role="listbox"
-            aria-orientation="vertical"
-            aria-label="Matching Shlink servers"
-          >
-            {searchResults.length === 0 && (
-              <i className="tw:px-2 tw:py-1">No servers found matching search</i>
-            )}
-            {searchResults.map((serverFromList, index) => (
-              <button
-                key={serverFromList.publicId}
-                type="button"
-                role="option"
-                aria-selected={index === highlightedSearchResult}
-                className={clsx(
-                  'tw:px-2 tw:py-1 tw:text-left tw:truncate',
-                  { 'tw:bg-lm-secondary tw:dark:bg-dm-secondary': index === highlightedSearchResult },
-                )}
-                tabIndex={-1}
-                onClick={() => addServer(serverFromList)}
-                // We are setting tabIndex -1 so that this element cannot be focused
-                // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-                onMouseOver={() => setHighlightedSearchResult(index)}
-              >
-                <b>{serverFromList.name}</b> ({serverFromList.baseUrl})
-              </button>
-            ))}
-          </Card>
-        )}
-      </div>
+      <Combobox
+        onSearch={onSearch}
+        onSelectSearchResult={addServer}
+        searchResults={searchResultsMap}
+        renderSearchResult={(server) => <><b>{server.name}</b> ({server.baseUrl})</>}
+        placeholder="Search servers to add..."
+      />
       <Table header={(
         <Table.Row>
           <Table.Cell>Name</Table.Cell>
