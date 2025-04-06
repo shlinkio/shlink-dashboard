@@ -3,7 +3,7 @@ import { BaseEntityRepository } from '../db/BaseEntityRepository';
 import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
 import { User } from '../entities/User';
-import type { CreateServerData,EditServerData } from './server-schemas';
+import type { CreateServerData, EditServerData, UserServers } from './server-schemas';
 
 export type FindServersOptions = {
   searchTerm?: string;
@@ -50,6 +50,18 @@ export class ServersRepository extends BaseEntityRepository<Server> {
 
     await this.em.flush();
     return server;
+  }
+
+  async setServersForUser(userId: string, { servers: serverPublicIds }: UserServers): Promise<void> {
+    const [user, servers] = await Promise.all([
+      this.em.findOne(User, { id: userId }, { populate: ['servers'] }),
+      serverPublicIds.length > 0 ? this.find({ publicId: { '$in': serverPublicIds } }) : Promise.resolve([]),
+    ]);
+
+    user?.servers.removeAll();
+    servers.forEach((server) => user?.servers.add(server));
+
+    await this.em.flush();
   }
 }
 

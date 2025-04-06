@@ -47,6 +47,8 @@ export const ServerSchema = new EntitySchema({
       pivotTable: 'user_has_servers',
       joinColumn: 'server_id',
       inverseJoinColumn: 'user_id',
+      owner: true,
+      inversedBy: 'servers',
     },
   },
 });

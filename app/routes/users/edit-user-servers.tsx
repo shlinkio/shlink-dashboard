@@ -1,7 +1,7 @@
 import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { useCallback, useMemo, useState } from 'react';
-import type { LoaderFunctionArgs } from 'react-router';
-import { useFetcher , useLoaderData,useNavigate  } from 'react-router';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { redirect , useFetcher , useLoaderData,useNavigate  } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { UsersService } from '../../users/UsersService.server';
@@ -25,6 +25,19 @@ export async function loader(
   return { servers, user };
 }
 
+export async function action(
+  { request, params }: ActionFunctionArgs,
+  serversService: ServersService = serverContainer[ServersService.name],
+) {
+  const { userId } = params;
+  const formData = await request.formData();
+
+  // TODO Handle error while editing user servers
+  await serversService.setServersForUser(userId!, formData);
+  // TODO redirect back to the original page if known
+  return redirect('/manage-users/1');
+}
+
 export default function EditUserServers() {
   const { servers, user } = useLoaderData<typeof loader>();
 
@@ -38,6 +51,7 @@ export default function EditUserServers() {
 
     const query = new URLSearchParams();
     query.set('search-term', searchTerm);
+    query.set('no-users', '');
     const queryString = query.size > 0 ? `?${query.toString()}` : '';
 
     await serversFetcher.load(`/manage-servers${queryString}`);
@@ -53,8 +67,10 @@ export default function EditUserServers() {
   const navigate = useNavigate();
   const goBack = useCallback(() => navigate(-1), [navigate]);
 
+  const { Form } = useFetcher();
+
   return (
-    <>
+    <Form method="post" className="tw:flex tw:flex-col tw:gap-4">
       <SimpleCard title={`Shlink servers for "${user.username}"`}>
         <UserServers initialServers={servers} onSearch={searchServers} searchResults={searchResults} />
       </SimpleCard>
@@ -62,6 +78,6 @@ export default function EditUserServers() {
         <Button variant="secondary" onClick={goBack}>Cancel</Button>
         <Button type="submit">Save servers</Button>
       </div>
-    </>
+    </Form>
   );
 }

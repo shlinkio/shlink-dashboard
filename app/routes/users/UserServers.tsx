@@ -1,9 +1,10 @@
-import { Button, Card, CloseButton, SearchInput, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Card, CloseButton, SearchInput, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import clsx from 'clsx';
 import type { FC } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Server } from '../../entities/Server';
 
-export type MinimalServer = Pick<Server, 'id' | 'name' | 'baseUrl'>;
+export type MinimalServer = Pick<Server, 'publicId' | 'name' | 'baseUrl'>;
 
 export type UserServersProps = {
   initialServers: MinimalServer[];
@@ -17,7 +18,7 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
   const [serversList, setServersList] = useState(initialServers);
   const orderedServers = useMemo(() => [...serversList].sort((a, b) => a.name.localeCompare(b.name)), [serversList]);
   const removeServer = useCallback(
-    (serverId: string) => setServersList((prev) => prev.filter((s) => s.id !== serverId)),
+    (serverPublicId: string) => setServersList((prev) => prev.filter((s) => s.publicId !== serverPublicId)),
     [],
   );
   const addServer = useCallback((server: MinimalServer) => {
@@ -42,9 +43,12 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
             )}
             {searchResults.map((serverFromList) => (
               <button
-                key={serverFromList.id}
+                key={serverFromList.publicId}
                 type="button"
-                className="tw:px-2 tw:py-1 tw:text-left tw:truncate"
+                className={clsx(
+                  'tw:px-2 tw:py-1 tw:text-left tw:truncate',
+                  'tw:highlight:bg-lm-secondary tw:dark:highlight:bg-dm-secondary',
+                )}
                 tabIndex={-1}
                 onClick={() => addServer(serverFromList)}
               >
@@ -66,18 +70,19 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
             <Table.Cell colSpan={3} className="tw:text-center">This user has no servers</Table.Cell>
           </Table.Row>
         )}
-        {orderedServers.map(({ name, id, baseUrl }) => (
-          <Table.Row key={id}>
+        {orderedServers.map(({ name, publicId, baseUrl }) => (
+          <Table.Row key={publicId}>
             <Table.Cell className="tw:font-bold">{name}</Table.Cell>
             <Table.Cell>{baseUrl}</Table.Cell>
             <Table.Cell>
               <div className="tw:text-danger tw:flex tw:flex-row-reverse" title="Remove server">
-                <CloseButton onClick={() => removeServer(id)} />
+                <CloseButton onClick={() => removeServer(publicId)} />
               </div>
             </Table.Cell>
           </Table.Row>
         ))}
       </Table>
+      {orderedServers.map(({ publicId }) => <input key={publicId} type="hidden" name="servers" value={publicId} />)}
     </div>
   );
 };

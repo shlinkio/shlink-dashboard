@@ -1,6 +1,6 @@
 import { Button, LabelledInput, LabelledSelect, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
-import type { User } from '../../entities/User';
+import type { PlainUser } from '../../entities/User';
 
 export type UserFormFieldsProps = {
   title: string;
@@ -9,7 +9,7 @@ export type UserFormFieldsProps = {
   usernameError?: string;
 
   /** If provided, input values will be initialized with this user, and the username field will become readonly */
-  user?: User;
+  user?: PlainUser;
 };
 
 const roles = ['managed-user', 'advanced-user', 'admin'];

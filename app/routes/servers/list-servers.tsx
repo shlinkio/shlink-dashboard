@@ -19,7 +19,7 @@ export async function loader(
   const query = new URL(request.url).searchParams;
   const currentSearchTerm = query.get('search-term') ?? undefined;
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
-  const populateUsers = sessionData.role === 'admin';
+  const populateUsers = sessionData.role === 'admin' && !query.has('no-users');
   const servers = await serversService.getUserServers(sessionData.userId, {
     populateUsers,
     searchTerm: currentSearchTerm,

@@ -1,7 +1,7 @@
 import type { Server } from '../entities/Server';
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
-import { CREATE_SERVER_SCHEMA, EDIT_SERVER_SCHEMA } from './server-schemas';
+import { CREATE_SERVER_SCHEMA, EDIT_SERVER_SCHEMA, USER_SERVERS } from './server-schemas';
 import type { FindServersOptions, ServersRepository } from './ServersRepository.server';
 
 export type ListServersOptions = FindServersOptions;
@@ -47,5 +47,10 @@ export class ServersService {
       publicId: serverPublicId,
       users: { id: userId },
     });
+  }
+
+  public async setServersForUser(userId: string, data: FormData): Promise<void> {
+    const servers = validateFormDataSchema(USER_SERVERS, data);
+    await this.#serversRepository.setServersForUser(userId, servers);
   }
 }
