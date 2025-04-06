@@ -19,7 +19,13 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
     (serverPublicId: string) => setServersList((prev) => prev.filter((s) => s.publicId !== serverPublicId)),
     [],
   );
-  const addServer = useCallback((server: MinimalServer) => setServersList((prev) => [...prev, server]), []);
+  const addServer = useCallback((server: MinimalServer) => setServersList((prev) => {
+    if (prev.some((s) => s.publicId === server.publicId)) {
+      return prev;
+    }
+
+    return [...prev, server];
+  }), []);
   const searchResultsMap = useMemo(
     () => searchResults ? new Map(searchResults.map((s) => [s.publicId, s])) : undefined,
     [searchResults],
