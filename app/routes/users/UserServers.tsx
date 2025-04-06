@@ -1,7 +1,7 @@
 import { Card, CloseButton, SearchInput, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import type { FC } from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useId , useMemo, useRef, useState } from 'react';
 import type { Server } from '../../entities/Server';
 
 export type MinimalServer = Pick<Server, 'publicId' | 'name' | 'baseUrl'>;
@@ -33,6 +33,8 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
     setHighlightedSearchResult(0);
   }, [onSearch]);
 
+  const listboxId = useId();
+
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
       <div className="tw:relative">
@@ -41,6 +43,10 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
           onChange={updateSearchTerm}
           placeholder="Search servers to add..."
           ref={searchInputRef as any}
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={!!searchResults}
+          aria-controls={listboxId}
           onKeyDown={(e) => {
             // Avoid the form to be sent when pressing enter
             if (e.key === 'Enter') {
@@ -61,7 +67,13 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
           }}
         />
         {searchResults && (
-          <Card className="tw:absolute tw:top-full tw:min-w-60 tw:max-w-full tw:mt-1 tw:py-1 tw:flex tw:flex-col">
+          <Card
+            id={listboxId}
+            className="tw:absolute tw:top-full tw:min-w-60 tw:max-w-full tw:mt-1 tw:py-1 tw:flex tw:flex-col"
+            role="listbox"
+            aria-orientation="vertical"
+            aria-label="Matching Shlink servers"
+          >
             {searchResults.length === 0 && (
               <i className="tw:px-2 tw:py-1">No servers found matching search</i>
             )}
@@ -69,6 +81,8 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
               <button
                 key={serverFromList.publicId}
                 type="button"
+                role="option"
+                aria-selected={index === highlightedSearchResult}
                 className={clsx(
                   'tw:px-2 tw:py-1 tw:text-left tw:truncate',
                   { 'tw:bg-lm-secondary tw:dark:bg-dm-secondary': index === highlightedSearchResult },
