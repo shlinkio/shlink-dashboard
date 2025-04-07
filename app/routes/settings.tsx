@@ -4,10 +4,10 @@ import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { Route, Routes , useFetcher, useLoaderData } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
+import { ClientOnly } from '../common/ClientOnly';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
-import { useIsClient } from '../utils/hooks';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -39,24 +39,23 @@ export default function Settings() {
     method: 'POST',
     encType: 'application/json',
   }), [fetcher]);
-  const isClient = useIsClient();
 
   return (
     <Layout>
-      {isClient && (
+      <ClientOnly>
         <Routes>
           <Route
             path="*"
             element={(
               <ShlinkWebSettings
                 settings={settings}
-                updateSettings={submitSettings}
+                onUpdateSettings={submitSettings}
                 defaultShortUrlsListOrdering={{}}
               />
             )}
           />
         </Routes>
-      )}
+      </ClientOnly>
     </Layout>
   );
 }
