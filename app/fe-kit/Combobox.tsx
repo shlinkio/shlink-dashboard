@@ -1,11 +1,16 @@
-import type { Size } from '@shlinkio/shlink-frontend-kit/tailwind';
+import type { SearchInputProps } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { SearchInput } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { useCallback, useId, useRef } from 'react';
 import { Listbox } from './Listbox';
 
-export type ComboboxProps<Item> = {
+type BaseInputProps = Omit<
+  SearchInputProps,
+  'role' | 'aria-autocomplete' | 'aria-expanded' | 'aria-controls' | 'onChange'
+>;
+
+export type ComboboxProps<Item> = BaseInputProps & {
   /** If not null, it will display a listbox with the results of last search. */
   searchResults?: Map<string, Item>;
   /** Invoked when the input value changes */
@@ -17,9 +22,7 @@ export type ComboboxProps<Item> = {
   /** TODO */
   loading?: boolean;
 
-  size?: Size;
   listboxSpan?: 'auto' | 'full';
-  placeholder?: string;
 };
 
 export function Combobox<Item>({
@@ -27,9 +30,9 @@ export function Combobox<Item>({
   onSearch,
   onSelectSearchResult,
   renderSearchResult,
-  placeholder = 'Search items...',
   size = 'md',
   listboxSpan = 'full',
+  ...rest
 }: ComboboxProps<Item>) {
   const searchInputRef = useRef<HTMLInputElement>();
   const listboxId = useId();
@@ -43,20 +46,14 @@ export function Combobox<Item>({
   return (
     <div className="tw:relative">
       <SearchInput
-        size={size}
         onChange={onSearch}
-        placeholder={placeholder}
+        size={size}
         ref={searchInputRef as any}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={!!searchResults}
         aria-controls={listboxId}
-        onKeyDown={(e) => {
-          // Avoid the form to be sent when pressing enter
-          if (e.key === 'Enter') {
-            e.preventDefault();
-          }
-        }}
+        {...rest}
       />
       {searchResults && (
         <Listbox

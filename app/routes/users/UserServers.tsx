@@ -39,6 +39,12 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
         searchResults={searchResultsMap}
         renderSearchResult={(server) => <><b>{server.name}</b> ({server.baseUrl})</>}
         placeholder="Search servers to add..."
+        onKeyDown={(e) => {
+          // Avoid the form to be sent when pressing enter
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        }}
       />
       <Table header={(
         <Table.Row>

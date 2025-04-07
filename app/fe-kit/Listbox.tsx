@@ -2,7 +2,7 @@ import type { CardProps } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { Card } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import type { ReactNode, RefObject } from 'react';
-import { useEffect, useMemo , useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type ListboxProps<Item> = Omit<CardProps, 'id' | 'role' | 'aria-orientation'> & {
   /** List of items in the listbox */
