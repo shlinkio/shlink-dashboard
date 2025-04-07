@@ -2,6 +2,7 @@ import { CardModal } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';
+import { ClientOnly } from '../../common/ClientOnly';
 import type { User } from '../../entities/User';
 
 export type DeleteUserModalProps = {
@@ -33,17 +34,19 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
   }, [onClose, submit, userToDelete?.id]);
 
   return (
-    <CardModal
-      title="Delete user"
-      variant="danger"
-      size="sm"
-      open={open}
-      onClose={onClose}
-      onConfirm={deleteUser}
-      confirmText={confirmDisabled ? 'Deleting...' : 'Delete user'}
-      confirmDisabled={confirmDisabled}
-    >
-      Are you sure you want to delete user <b>{userToDelete?.username}</b>?
-    </CardModal>
+    <ClientOnly>
+      <CardModal
+        title="Delete user"
+        variant="danger"
+        size="sm"
+        open={open}
+        onClose={onClose}
+        onConfirm={deleteUser}
+        confirmText={confirmDisabled ? 'Deleting...' : 'Delete user'}
+        confirmDisabled={confirmDisabled}
+      >
+        Are you sure you want to delete user <b>{userToDelete?.username}</b>?
+      </CardModal>
+    </ClientOnly>
   );
 };

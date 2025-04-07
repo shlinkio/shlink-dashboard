@@ -2,6 +2,7 @@ import { CardModal } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';
+import { ClientOnly } from '../../common/ClientOnly';
 import type { PlainServer } from '../../entities/Server';
 
 export type DeleteServerModalProps = {
@@ -33,17 +34,19 @@ export const DeleteServerModal: FC<DeleteServerModalProps> = ({ serverToDelete, 
   }, [onClose, submit, serverToDelete?.publicId]);
 
   return (
-    <CardModal
-      title="Delete server"
-      variant="danger"
-      size="sm"
-      open={open}
-      onClose={onClose}
-      onConfirm={deleteServer}
-      confirmText={confirmDisabled ? 'Deleting...' : 'Delete server'}
-      confirmDisabled={confirmDisabled}
-    >
-      Are you sure you want to delete server <b>{serverToDelete?.name}</b>?
-    </CardModal>
+    <ClientOnly>
+      <CardModal
+        title="Delete server"
+        variant="danger"
+        size="sm"
+        open={open}
+        onClose={onClose}
+        onConfirm={deleteServer}
+        confirmText={confirmDisabled ? 'Deleting...' : 'Delete server'}
+        confirmDisabled={confirmDisabled}
+      >
+        Are you sure you want to delete server <b>{serverToDelete?.name}</b>?
+      </CardModal>
+    </ClientOnly>
   );
 };
