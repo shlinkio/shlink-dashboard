@@ -1,3 +1,4 @@
+import { useGoBack } from '@shlinkio/shlink-frontend-kit';
 import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { useCallback, useMemo, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
@@ -57,6 +58,7 @@ export default function EditUserServers() {
     await serversFetcher.load(`/manage-servers${queryString}`);
     setSearching(true);
   }, [serversFetcher]);
+  const isSearching = serversFetcher.state === 'loading';
   const searchResults = useMemo(() => {
     if (!searching) {
       return undefined;
@@ -64,15 +66,19 @@ export default function EditUserServers() {
     return serversFetcher.data?.servers.slice(0, 10);
   }, [searching, serversFetcher.data?.servers]);
 
-  const navigate = useNavigate();
-  const goBack = useCallback(() => navigate(-1), [navigate]);
+  const goBack = useGoBack();
 
   const { Form } = useFetcher();
 
   return (
     <Form method="post" className="tw:flex tw:flex-col tw:gap-4">
       <SimpleCard title={`Shlink servers for "${user.username}"`}>
-        <UserServers initialServers={servers} onSearch={searchServers} searchResults={searchResults} />
+        <UserServers
+          initialServers={servers}
+          onSearch={searchServers}
+          searchResults={searchResults}
+          loading={isSearching}
+        />
       </SimpleCard>
       <div className="tw:flex tw:justify-end tw:gap-2">
         <Button variant="secondary" onClick={goBack}>Cancel</Button>

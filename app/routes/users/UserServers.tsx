@@ -9,9 +9,10 @@ export type UserServersProps = {
   initialServers: MinimalServer[];
   onSearch: (searchTerm: string) => void;
   searchResults?: MinimalServer[];
+  loading: boolean;
 };
 
-export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, searchResults }) => {
+export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, searchResults, loading }) => {
   const [serversList, setServersList] = useState(initialServers);
   const orderedServers = useMemo(() => [...serversList].sort((a, b) => a.name.localeCompare(b.name)), [serversList]);
   const removeServer = useCallback(
@@ -38,6 +39,7 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
         searchResults={searchResultsMap}
         renderSearchResult={(server) => <><b>{server.name}</b> ({server.baseUrl})</>}
         placeholder="Search servers to add..."
+        loading={loading}
         onKeyDown={(e) => {
           // Avoid the form to be sent when pressing enter
           if (e.key === 'Enter') {
