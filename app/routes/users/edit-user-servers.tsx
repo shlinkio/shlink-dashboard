@@ -6,6 +6,7 @@ import { redirect, useFetcher, useLoaderData } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { UsersService } from '../../users/UsersService.server';
+import { badRequest } from '../../utils/response.server';
 import { UserServers } from './UserServers';
 
 export async function loader(
@@ -20,7 +21,7 @@ export async function loader(
   ]);
 
   if (user.role !== 'managed-user') {
-    // TODO Throw 400 error here
+    throw badRequest('Servers can be set only on managed users');
   }
 
   return { servers, user };
