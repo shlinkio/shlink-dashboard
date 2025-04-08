@@ -1,8 +1,7 @@
-import { CloseButton, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { CloseButton, SearchCombobox, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import type { Server } from '../../entities/Server';
-import { Combobox } from '../../fe-kit/Combobox';
 
 export type MinimalServer = Pick<Server, 'publicId' | 'name' | 'baseUrl'>;
 
@@ -33,7 +32,7 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
-      <Combobox
+      <SearchCombobox
         onSearch={onSearch}
         onSelectSearchResult={addServer}
         searchResults={searchResultsMap}
