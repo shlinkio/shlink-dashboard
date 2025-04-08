@@ -8,6 +8,8 @@ import { ValidationError } from '../validation/ValidationError.server';
 import type { CreateServerData, EditServerData, UserServers } from './server-schemas';
 
 export type FindServersOptions = {
+  limit?: number;
+  offset?: number;
   searchTerm?: string;
   populateUsers?: boolean;
 };
@@ -20,13 +22,18 @@ export class ServersRepository extends BaseEntityRepository<Server> {
     });
   }
 
-  findByUserId(userId: string, { searchTerm, populateUsers = false }: FindServersOptions = {}): Promise<Server[]> {
+  findByUserId(
+    userId: string,
+    { searchTerm, populateUsers = false, limit, offset }: FindServersOptions = {},
+  ): Promise<Server[]> {
     const baseFilter: FilterQuery<Server> = {
       users: { id: userId },
     };
     return this.find(expandSearchTerm<Server>(searchTerm, { searchableFields: ['name', 'baseUrl'], baseFilter }), {
       orderBy: { name: 'ASC' },
       populate: populateUsers ? ['users'] : undefined,
+      limit,
+      offset,
     });
   }
 

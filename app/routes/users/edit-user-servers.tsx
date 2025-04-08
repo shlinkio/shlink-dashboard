@@ -2,7 +2,7 @@ import { useGoBack } from '@shlinkio/shlink-frontend-kit';
 import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import { useCallback, useMemo, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { redirect , useFetcher , useLoaderData,useNavigate  } from 'react-router';
+import { redirect, useFetcher, useLoaderData } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { UsersService } from '../../users/UsersService.server';
@@ -53,21 +53,18 @@ export default function EditUserServers() {
     const query = new URLSearchParams();
     query.set('search-term', searchTerm);
     query.set('no-users', '');
-    const queryString = query.size > 0 ? `?${query.toString()}` : '';
+    query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
 
-    await serversFetcher.load(`/manage-servers${queryString}`);
+    await serversFetcher.load(`/manage-servers?${query.toString()}`);
     setSearching(true);
   }, [serversFetcher]);
   const isSearching = serversFetcher.state === 'loading';
-  const searchResults = useMemo(() => {
-    if (!searching) {
-      return undefined;
-    }
-    return serversFetcher.data?.servers.slice(0, 10);
-  }, [searching, serversFetcher.data?.servers]);
+  const searchResults = useMemo(
+    () => !searching ? undefined : serversFetcher.data?.servers,
+    [searching, serversFetcher.data?.servers],
+  );
 
   const goBack = useGoBack();
-
   const { Form } = useFetcher();
 
   return (

@@ -1,10 +1,16 @@
+import { paginationToLimitAndOffset } from '../db/utils.server';
 import type { Server } from '../entities/Server';
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
 import { CREATE_SERVER_SCHEMA, EDIT_SERVER_SCHEMA, USER_SERVERS } from './server-schemas';
 import type { FindServersOptions, ServersRepository } from './ServersRepository.server';
 
-export type ListServersOptions = FindServersOptions;
+export type ListServersOptions = Omit<FindServersOptions, 'limit' | 'offset'> & {
+  /** Defaults to first page */
+  page?: number;
+  /** Defaults to "all" servers */
+  itemsPerPage?: number;
+};
 
 function ensureServer(server: Server | null, serverPublicId: string): Server {
   if (!server) {
@@ -26,8 +32,12 @@ export class ServersService {
     return ensureServer(server, serverPublicId);
   }
 
-  public async getUserServers(userId: string, options?: ListServersOptions): Promise<Server[]> {
-    return this.#serversRepository.findByUserId(userId, options);
+  public async getUserServers(
+    userId: string,
+    { page = 1, itemsPerPage, ...rest }: ListServersOptions = {},
+  ): Promise<Server[]> {
+    const { limit, offset } = paginationToLimitAndOffset(page, itemsPerPage);
+    return this.#serversRepository.findByUserId(userId, { limit, offset, ...rest });
   }
 
   public async createServerForUser(userId: string, data: FormData): Promise<Server> {
