@@ -1,6 +1,6 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { Server } from '../../app/entities/Server';
-import type { ServersRepository } from '../../app/servers/ServersRepository.server';
+import type { FindServersOptions, ServersRepository } from '../../app/servers/ServersRepository.server';
 import type { ListServersOptions } from '../../app/servers/ServersService.server';
 import { ServersService } from '../../app/servers/ServersService.server';
 import { NotFoundError } from '../../app/validation/NotFoundError.server';
@@ -12,8 +12,9 @@ describe('ServersService', () => {
   const createServer = vi.fn().mockReturnValue({});
   const updateServer = vi.fn();
   const nativeDelete = vi.fn();
+  const setServersForUser = vi.fn();
   const repo: ServersRepository = fromPartial(
-    { findByPublicIdAndUserId, findByUserId, createServer, updateServer, nativeDelete },
+    { findByPublicIdAndUserId, findByUserId, createServer, updateServer, nativeDelete, setServersForUser },
   );
   let service: ServersService;
 
@@ -40,11 +41,24 @@ describe('ServersService', () => {
 
   describe('getUserServers', () => {
     it.each([
-      { userId: '3', options: undefined },
-      { userId: '87', options: fromPartial<ListServersOptions>({}) },
-    ])('delegates into repository', ({ userId, options }) => {
+      {
+        userId: '3',
+        options: undefined,
+        expectedRepoOptions: {},
+      },
+      {
+        userId: '87',
+        options: fromPartial<ListServersOptions>({}),
+        expectedRepoOptions: {},
+      },
+      {
+        userId: '87',
+        options: fromPartial<ListServersOptions>({ itemsPerPage: 20, page: 5 }),
+        expectedRepoOptions: fromPartial<FindServersOptions>({ limit: 20, offset: 80 }),
+      },
+    ])('delegates into repository', ({ userId, options, expectedRepoOptions }) => {
       service.getUserServers(userId, options);
-      expect(findByUserId).toHaveBeenCalledWith(userId, options);
+      expect(findByUserId).toHaveBeenCalledWith(userId, expectedRepoOptions);
     });
   });
 
@@ -112,6 +126,24 @@ describe('ServersService', () => {
         publicId: 'abc',
         users: { id: '123' },
       });
+    });
+  });
+
+  describe('setServersForUser', () => {
+    it.each([
+      { servers: 'not an array' },
+      { servers: ['not a uuid'] },
+    ])('throws if invalid data is provided', async (data) => {
+      await expect(service.setServersForUser('123', createFormData(data))).rejects.toEqual(
+        expect.objectContaining({ name: 'ValidationError' }),
+      );
+      expect(setServersForUser).not.toHaveBeenCalled();
+    });
+
+    it('delegates into repository', async () => {
+      const data = { servers: [crypto.randomUUID(), crypto.randomUUID()] };
+      await service.setServersForUser('123', createFormData(data));
+      expect(setServersForUser).toHaveBeenCalledWith('123', data);
     });
   });
 });

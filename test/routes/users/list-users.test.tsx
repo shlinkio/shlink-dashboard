@@ -227,6 +227,12 @@ describe('list-users', () => {
       expect(screen.getByLabelText('Edit bar')).toBeInTheDocument();
       expect(screen.getByLabelText('Edit baz')).toBeInTheDocument();
       expect(screen.queryByLabelText('Edit current')).not.toBeInTheDocument();
+
+      expect(screen.getAllByLabelText(/^Servers for /)).toHaveLength(1);
+      expect(screen.queryByLabelText('Servers for foo')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Servers for bar')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Servers for current')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Servers for baz')).toBeInTheDocument();
     });
 
     it('shows information about the user to be deleted', async () => {
