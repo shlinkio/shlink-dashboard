@@ -43,7 +43,7 @@ export async function action(
 export default function EditUserServers() {
   const { servers, user } = useLoaderData<typeof loader>();
 
-  const serversFetcher = useFetcher<typeof loader>();
+  const searchServersFetcher = useFetcher<typeof loader>();
   const [searching, setSearching] = useState(false);
   const searchServers = useCallback(async (searchTerm: string) => {
     setSearching(false);
@@ -56,13 +56,13 @@ export default function EditUserServers() {
     query.set('no-users', '');
     query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
 
-    await serversFetcher.load(`/manage-servers?${query.toString()}`);
+    await searchServersFetcher.load(`/manage-servers?${query.toString()}`);
     setSearching(true);
-  }, [serversFetcher]);
-  const isSearching = serversFetcher.state === 'loading';
+  }, [searchServersFetcher]);
+  const isSearching = searchServersFetcher.state === 'loading';
   const searchResults = useMemo(
-    () => !searching ? undefined : serversFetcher.data?.servers,
-    [searching, serversFetcher.data?.servers],
+    () => !searching ? undefined : searchServersFetcher.data?.servers,
+    [searching, searchServersFetcher.data?.servers],
   );
 
   const goBack = useGoBack();
