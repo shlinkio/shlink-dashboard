@@ -44,9 +44,9 @@ export default function EditUserServers() {
   const { servers, user } = useLoaderData<typeof loader>();
 
   const searchServersFetcher = useFetcher<typeof loader>();
-  const [searching, setSearching] = useState(false);
+  const [shouldShowResults, setShouldShowResults] = useState(false);
   const searchServers = useCallback(async (searchTerm: string) => {
-    setSearching(false);
+    setShouldShowResults(false);
     if (!searchTerm) {
       return;
     }
@@ -57,16 +57,17 @@ export default function EditUserServers() {
     query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
 
     await searchServersFetcher.load(`/manage-servers?${query.toString()}`);
-    setSearching(true);
+    setShouldShowResults(true);
   }, [searchServersFetcher]);
   const isSearching = searchServersFetcher.state === 'loading';
   const searchResults = useMemo(
-    () => !searching ? undefined : searchServersFetcher.data?.servers,
-    [searching, searchServersFetcher.data?.servers],
+    () => !shouldShowResults ? undefined : searchServersFetcher.data?.servers,
+    [shouldShowResults, searchServersFetcher.data?.servers],
   );
 
   const goBack = useGoBack();
-  const { Form } = useFetcher();
+  const { Form, state } = useFetcher();
+  const isSaving = state !== 'idle';
 
   return (
     <Form method="post" className="tw:flex tw:flex-col tw:gap-4">
@@ -80,7 +81,7 @@ export default function EditUserServers() {
       </SimpleCard>
       <div className="tw:flex tw:justify-end tw:gap-2">
         <Button variant="secondary" onClick={goBack}>Cancel</Button>
-        <Button type="submit">Save servers</Button>
+        <Button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save servers'}</Button>
       </div>
     </Form>
   );
