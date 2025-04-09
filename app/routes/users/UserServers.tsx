@@ -37,8 +37,9 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
         onSearch={onSearch}
         onSelectSearchResult={addServer}
         searchResults={searchResultsMap}
-        renderSearchResult={(server) => <><b>{server.name}</b> ({server.baseUrl})</>}
+        renderSearchResult={(server) => <><b className="tw:mr-2">{server.name}</b> {server.baseUrl}</>}
         placeholder="Search servers to add..."
+        aria-label="Search servers to add"
         loading={loading}
         onKeyDown={(e) => {
           // Avoid the form to be sent when pressing enter
@@ -64,8 +65,8 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
             <Table.Cell className="tw:font-bold">{name}</Table.Cell>
             <Table.Cell>{baseUrl}</Table.Cell>
             <Table.Cell>
-              <div className="tw:text-danger tw:flex tw:flex-row-reverse" title="Remove server">
-                <CloseButton onClick={() => removeServer(publicId)} />
+              <div className="tw:text-danger tw:flex tw:flex-row-reverse" title={`Remove ${name}`}>
+                <CloseButton label={`Remove ${name}`} onClick={() => removeServer(publicId)} />
               </div>
             </Table.Cell>
           </Table.Row>
