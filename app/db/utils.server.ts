@@ -31,3 +31,23 @@ export function expandSearchTerm<T extends BaseEntity>(
     ]),
   };
 }
+
+export type LimitAndOffset = {
+  limit?: number;
+  offset?: number;
+};
+
+export function paginationToLimitAndOffset(page: number, itemsPerPage: number): Required<LimitAndOffset>;
+export function paginationToLimitAndOffset(page: number, itemsPerPage?: number): LimitAndOffset;
+export function paginationToLimitAndOffset(page: number, itemsPerPage?: number): LimitAndOffset {
+  if (!itemsPerPage) {
+    return {};
+  }
+
+  const positivePage = Math.max(1, page);
+  const offset = (positivePage - 1) * itemsPerPage;
+  return {
+    limit: itemsPerPage,
+    offset,
+  };
+}

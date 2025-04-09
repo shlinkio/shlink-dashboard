@@ -216,17 +216,23 @@ describe('list-users', () => {
       ];
       await setUp({ currentUsername: 'current', users });
 
-      expect(screen.getAllByLabelText(/^Delete user/)).toHaveLength(3);
-      expect(screen.getByLabelText('Delete user foo')).toBeInTheDocument();
-      expect(screen.getByLabelText('Delete user bar')).toBeInTheDocument();
-      expect(screen.getByLabelText('Delete user baz')).toBeInTheDocument();
-      expect(screen.queryByLabelText('Delete user current')).not.toBeInTheDocument();
+      expect(screen.getAllByLabelText(/^Delete /)).toHaveLength(3);
+      expect(screen.getByLabelText('Delete foo')).toBeInTheDocument();
+      expect(screen.getByLabelText('Delete bar')).toBeInTheDocument();
+      expect(screen.getByLabelText('Delete baz')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Delete current')).not.toBeInTheDocument();
 
-      expect(screen.getAllByLabelText(/^Edit user/)).toHaveLength(3);
-      expect(screen.getByLabelText('Edit user foo')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit user bar')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit user baz')).toBeInTheDocument();
-      expect(screen.queryByLabelText('Edit user current')).not.toBeInTheDocument();
+      expect(screen.getAllByLabelText(/^Edit /)).toHaveLength(3);
+      expect(screen.getByLabelText('Edit foo')).toBeInTheDocument();
+      expect(screen.getByLabelText('Edit bar')).toBeInTheDocument();
+      expect(screen.getByLabelText('Edit baz')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Edit current')).not.toBeInTheDocument();
+
+      expect(screen.getAllByLabelText(/^Servers for /)).toHaveLength(1);
+      expect(screen.queryByLabelText('Servers for foo')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Servers for bar')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Servers for current')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Servers for baz')).toBeInTheDocument();
     });
 
     it('shows information about the user to be deleted', async () => {
@@ -239,11 +245,11 @@ describe('list-users', () => {
 
       expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
 
-      await user.click(screen.getByLabelText('Delete user foo'));
+      await user.click(screen.getByLabelText('Delete foo'));
       expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
       await user.click(screen.getByText('Cancel'));
 
-      await user.click(screen.getByLabelText('Delete user bar'));
+      await user.click(screen.getByLabelText('Delete bar'));
       expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
     });
   });

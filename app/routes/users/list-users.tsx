@@ -1,4 +1,11 @@
-import { faPencil, faPlus, faSortAlphaAsc, faSortAlphaDesc, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPencil,
+  faPlus,
+  faServer,
+  faSortAlphaAsc,
+  faSortAlphaDesc,
+  faTrashCan,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
@@ -139,11 +146,24 @@ export default function ListUsers() {
                   >
                     {session?.username !== user.username && (
                       <div className="tw:flex tw:justify-end tw:gap-x-1">
+                        {user.role === 'managed-user' && (
+                          <Button
+                            inline
+                            size="sm"
+                            variant="secondary"
+                            aria-label={`Servers for ${user.username}`}
+                            title={`Servers for ${user.username}`}
+                            to={href('/manage-users/edit/:userId/servers', { userId: user.id.toString() })}
+                          >
+                            <FontAwesomeIcon icon={faServer} />
+                          </Button>
+                        )}
                         <Button
                           inline
                           size="sm"
                           variant="secondary"
-                          aria-label={`Edit user ${user.username}`}
+                          aria-label={`Edit ${user.username}`}
+                          title={`Edit ${user.username}`}
                           to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
                         >
                           <FontAwesomeIcon icon={faPencil} />
@@ -152,7 +172,8 @@ export default function ListUsers() {
                           inline
                           size="sm"
                           variant="danger"
-                          aria-label={`Delete user ${user.username}`}
+                          aria-label={`Delete ${user.username}`}
+                          title={`Delete ${user.username}`}
                           onClick={() => {
                             setUserToDelete(user);
                             setDialogOpen(true);

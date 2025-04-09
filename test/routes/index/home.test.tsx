@@ -34,7 +34,7 @@ describe('home', () => {
 
   describe('<Index />', () => {
     const setUp = (servers: Server[] = []) => {
-      const RemixStub = createRoutesStub([
+      const Stub = createRoutesStub([
         {
           path: '/',
           Component: Home,
@@ -42,7 +42,7 @@ describe('home', () => {
           loader: () => ({ servers }),
         },
       ]);
-      return render(<RemixStub />);
+      return render(<Stub />);
     };
 
     it('renders no-servers welcome page when there are no servers', async () => {

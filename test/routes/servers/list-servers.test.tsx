@@ -28,47 +28,76 @@ describe('list-servers', () => {
   };
 
   describe('loader', () => {
+    type RunLoader = {
+      role: Role;
+      userId: string;
+      queryString?: string;
+      page?: string;
+    };
+
     const getUserServers = vi.fn().mockResolvedValue([
       createServer({ name: 'server 1', users: [fromPartial({}), fromPartial({}), fromPartial({})] }),
       createServer({ name: 'server 2', users: [fromPartial({})] }),
     ]);
     const serversService: ServersService = fromPartial({ getUserServers });
-    const runLoader = (contextData: SessionData, queryString = '') => loader(
+    const runLoader = ({ role, userId, queryString, page }: RunLoader) => loader(
       fromPartial({
         request: fromPartial({ url: `https://example.com/?${queryString}` }),
-        context: { get: vi.fn().mockReturnValue(contextData) },
+        context: { get: vi.fn().mockReturnValue(fromPartial<SessionData>({ role, userId })) },
+        params: { page },
       }),
       serversService,
     );
 
-    it('returns user counts when current user is an admin', async () => {
-      const { servers } = await runLoader(fromPartial({ role: 'admin', userId: '123' }));
+    it.each([
+      {
+        role: 'admin' as const,
+        queryString: '',
+        expectedPopulateUsers: true,
+      },
+      {
+        role: 'admin' as const,
+        queryString: 'no-users',
+        expectedPopulateUsers: false,
+      },
+      {
+        role: 'advanced-user' as const,
+        queryString: '',
+        expectedPopulateUsers: false,
+      },
+    ])('returns user counts when current user is an admin and it has not been explicitly disabled', async (
+      { role, queryString, expectedPopulateUsers },
+    ) => {
+      const { servers } = await runLoader({ role, userId: '123', queryString });
 
       expect(servers).toEqual([
-        { name: 'server 1', usersCount: 3 },
-        { name: 'server 2', usersCount: 1 },
+        { name: 'server 1', usersCount: expectedPopulateUsers ? 3 : undefined },
+        { name: 'server 2', usersCount: expectedPopulateUsers ? 1 : undefined },
       ]);
-      expect(getUserServers).toHaveBeenLastCalledWith('123', { populateUsers: true });
-    });
-
-    it('does not return user counts when current user is not an admin', async () => {
-      const { servers } = await runLoader(fromPartial({ role: 'advanced-user', userId: '456' }));
-
-      expect(servers).toEqual([
-        { name: 'server 1' },
-        { name: 'server 2' },
-      ]);
-      expect(getUserServers).toHaveBeenLastCalledWith('456', { populateUsers: false });
+      expect(getUserServers).toHaveBeenCalledWith('123', expect.objectContaining({
+        populateUsers: expectedPopulateUsers,
+      }));
     });
 
     it('parses search term from query string', async () => {
       const { currentSearchTerm } = await runLoader(
-        fromPartial({ role: 'advanced-user', userId: '456' }),
-        'search-term=hello%20world',
+        { role: 'advanced-user', userId: '456', queryString: 'search-term=hello%20world' },
       );
 
-      expect(getUserServers).toHaveBeenLastCalledWith('456', expect.objectContaining({ searchTerm: 'hello world' }));
+      expect(getUserServers).toHaveBeenCalledWith('456', expect.objectContaining({ searchTerm: 'hello world' }));
       expect(currentSearchTerm).toEqual('hello world');
+    });
+
+    it.each([
+      { page: undefined, expectedPage: 1, expectedItemsPerPage: undefined },
+      { page: '3', expectedPage: 3, expectedItemsPerPage: undefined },
+      { page: '41', queryString: 'items-per-page=75', expectedPage: 41, expectedItemsPerPage: 75 },
+    ])('parses pagination params', async ({ page, queryString, expectedPage, expectedItemsPerPage }) => {
+      await runLoader({ role: 'advanced-user', userId: '789', page, queryString });
+      expect(getUserServers).toHaveBeenCalledWith('789', expect.objectContaining({
+        page: expectedPage,
+        itemsPerPage: expectedItemsPerPage,
+      }));
     });
   });
 

@@ -1,5 +1,6 @@
 import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
+import { paginationToLimitAndOffset } from '../db/utils.server';
 import type { User } from '../entities/User';
 import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
 import { NotFoundError } from '../validation/NotFoundError.server';
@@ -51,15 +52,8 @@ export class UsersService {
   }
 
   async listUsers({ page = 1, ...rest }: ListUsersOptions): Promise<UsersList> {
-    const positivePage = Math.max(1, page);
-    const limit = 20;
-    const offset = (positivePage - 1) * limit;
-
-    const [users, totalUsers] = await this.#usersRepository.findAndCountUsers({
-      limit,
-      offset,
-      ...rest,
-    });
+    const { limit, offset } = paginationToLimitAndOffset(page, 20);
+    const [users, totalUsers] = await this.#usersRepository.findAndCountUsers({ limit, offset, ...rest });
 
     return {
       users,

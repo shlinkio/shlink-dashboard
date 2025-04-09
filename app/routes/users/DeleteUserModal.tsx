@@ -3,11 +3,11 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';
 import { ClientOnly } from '../../common/ClientOnly';
-import type { User } from '../../entities/User';
+import type { PlainUser } from '../../entities/User';
 
 export type DeleteUserModalProps = {
   /** Represents the user to delete */
-  userToDelete?: User;
+  userToDelete?: PlainUser;
   onClose: () => void;
   open: boolean;
 };

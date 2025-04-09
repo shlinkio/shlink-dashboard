@@ -13,16 +13,20 @@ import { ServersService } from '../../servers/ServersService.server';
 import { DeleteServerModal } from './DeleteServerModal';
 
 export async function loader(
-  { request, context }: LoaderFunctionArgs,
+  { request, context, params }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
   const query = new URL(request.url).searchParams;
   const currentSearchTerm = query.get('search-term') ?? undefined;
+  const page = Number(params.page ?? 1);
+  const itemsPerPage = query.has('items-per-page') ? Number(query.get('items-per-page')) : undefined;
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
-  const populateUsers = sessionData.role === 'admin';
+  const populateUsers = sessionData.role === 'admin' && !query.has('no-users');
   const servers = await serversService.getUserServers(sessionData.userId, {
     populateUsers,
     searchTerm: currentSearchTerm,
+    page,
+    itemsPerPage,
   });
 
   return {
