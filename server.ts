@@ -30,7 +30,7 @@ const { serverContainer } = isProd
   ? build
   : await import('./app/container/container.server');
 app.use(serverContainer.emForkMiddleware);
-app.all('*', createRequestHandler({ build }));
+app.all('*splat', createRequestHandler({ build }));
 
 const port = Number(SHLINK_DASHBOARD_PORT);
 app.listen(port, () => console.log(`App listening on http://localhost:${port}`));

@@ -24,7 +24,7 @@ describe('create-server', () => {
       const resp = await runAction();
 
       expect(resp.status).toEqual(302);
-      expect(resp.headers.get('Location')).toEqual('/manage-servers');
+      expect(resp.headers.get('Location')).toEqual('/manage-servers/1');
       expect(createServerForUser).toHaveBeenLastCalledWith('123', new FormData());
     });
   });

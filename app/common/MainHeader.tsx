@@ -61,7 +61,7 @@ export const MainHeader: FC = () => {
                     <FontAwesomeIcon icon={faCogs} fixedWidth className="tw:mr-0.5" /> Settings
                   </DropdownItem>
                   {session.role !== 'managed-user' && (
-                    <DropdownItem tag={Link} to="/manage-servers" active={pathname.startsWith('/manage-servers')}>
+                    <DropdownItem tag={Link} to="/manage-servers/1" active={pathname.startsWith('/manage-servers')}>
                       <FontAwesomeIcon icon={faServer} fixedWidth className="tw:mr-0.5" /> Manage servers
                     </DropdownItem>
                   )}

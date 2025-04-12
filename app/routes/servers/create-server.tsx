@@ -14,7 +14,7 @@ export async function action(
 
   // TODO Handle error when creating a server
   await serversService.createServerForUser(session.userId, formData);
-  return redirect('/manage-servers');
+  return redirect('/manage-servers/1');
 }
 
 export default function CreateServer() {

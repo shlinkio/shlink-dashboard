@@ -20,7 +20,7 @@ export default [
     route('delete', './routes/users/delete-user.ts'),
     route('edit/:userId', './routes/users/edit-user.tsx'),
     route('edit/:userId/servers', './routes/users/edit-user-servers.tsx'),
-    route(':page?', './routes/users/list-users.tsx'),
+    route(':page', './routes/users/list-users.tsx'),
   ])),
 
   // Server management
@@ -28,6 +28,6 @@ export default [
     route('create', './routes/servers/create-server.tsx'),
     route('delete', './routes/servers/delete-server.ts'),
     route('edit/:serverPublicId', './routes/servers/edit-server.tsx'),
-    route(':page?', './routes/servers/list-servers.tsx'),
+    route(':page', './routes/servers/list-servers.tsx'),
   ])),
 ] satisfies RouteConfig;

@@ -51,13 +51,13 @@ describe('edit-server', () => {
 
       expect(editServerForUser).toHaveBeenLastCalledWith('123', 'abc456', new FormData());
       expect(resp.status).toEqual(302);
-      expect(resp.headers.get('Location')).toEqual('/manage-servers');
+      expect(resp.headers.get('Location')).toEqual('/manage-servers/1');
     });
   });
 
   describe('<EditServer />', () => {
     const setUp = async () => {
-      const path = '/manage-servers';
+      const path = '/manage-servers/1';
       const Stub = createRoutesStub([
         {
           path,

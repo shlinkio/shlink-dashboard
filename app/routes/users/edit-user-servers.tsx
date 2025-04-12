@@ -56,7 +56,7 @@ export default function EditUserServers() {
     query.set('no-users', '');
     query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
 
-    await searchServersFetcher.load(`/manage-servers?${query.toString()}`);
+    await searchServersFetcher.load(`/manage-servers/1?${query.toString()}`);
     setShouldShowResults(true);
   }, [searchServersFetcher]);
   const isSearching = searchServersFetcher.state === 'loading';
