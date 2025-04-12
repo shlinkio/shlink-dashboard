@@ -25,11 +25,6 @@ const build = viteDevServer
   // @ts-expect-error This code branch is used only when that file is built
   : await import('./server/index.js');
 
-// Fork entity manager on every request
-const { serverContainer } = isProd
-  ? build
-  : await import('./app/container/container.server');
-app.use(serverContainer.emForkMiddleware);
 app.all('*splat', createRequestHandler({ build }));
 
 const port = Number(SHLINK_DASHBOARD_PORT);

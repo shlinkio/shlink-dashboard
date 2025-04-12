@@ -7,9 +7,12 @@ import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
+import { forkEmMiddleware } from './middleware/fork-em-middleware.server';
 import { SettingsService } from './settings/SettingsService.server';
 import './tailwind.css';
 import './index.scss';
+
+export const unstable_middleware = [forkEmMiddleware];
 
 export async function loader(
   { request }: LoaderFunctionArgs,

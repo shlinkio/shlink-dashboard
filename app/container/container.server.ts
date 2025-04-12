@@ -5,7 +5,7 @@ import { apiClientBuilder } from '../api/apiClientBuilder.server';
 import { createAuthenticator } from '../auth/auth.server';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { createSessionStorage } from '../auth/session.server';
-import { createEntityManager, createEntityManagerForkingMiddleware, createMigrator, createORM } from '../db/db.server';
+import { createEntityManager, createMigrator, createORM } from '../db/db.server';
 import { createServersRepository, ServersRepository } from '../servers/ServersRepository.server';
 import { ServersService } from '../servers/ServersService.server';
 import { SettingsService } from '../settings/SettingsService.server';
@@ -18,7 +18,6 @@ const bottle = new Bottle();
 bottle.serviceFactory('orm', createORM);
 bottle.serviceFactory(Migrator.name, createMigrator, 'orm');
 bottle.serviceFactory('em', createEntityManager, 'orm');
-bottle.serviceFactory('emForkMiddleware', createEntityManagerForkingMiddleware, 'em');
 
 bottle.service(ServersService.name, ServersService, ServersRepository.name);
 bottle.serviceFactory(ServersRepository.name, createServersRepository, 'em');
