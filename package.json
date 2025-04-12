@@ -75,7 +75,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-e993439-20250328",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-e993439-20250405",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jsdom": "^26.0.0",
@@ -84,7 +84,7 @@
     "tailwindcss": "^4.0.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.0",
+    "typescript-eslint": "^8.29.1",
     "vite": "^6.2.6",
     "vitest": "^3.0.2"
   }
