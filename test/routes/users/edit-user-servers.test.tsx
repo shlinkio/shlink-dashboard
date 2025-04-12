@@ -71,7 +71,7 @@ describe('edit-user-servers', () => {
         },
         {
           // Search servers endpoint
-          path: '/manage-servers',
+          path: '/manage-servers/1',
           loader: () => ({
             servers: [{ name: 'bar', publicId: crypto.randomUUID }, { name: 'baz', publicId: crypto.randomUUID }],
           }),

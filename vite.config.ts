@@ -26,7 +26,6 @@ export default defineConfig({
 
   test: {
     globals: true,
-    allowOnly: true,
     workspace: [
       // Run tests for server-only files in node environment
       {

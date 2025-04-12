@@ -43,7 +43,7 @@ export const ServerFormFields: FC<ServerFormFieldsProps> = ({ title, submitText,
       />
     </SimpleCard>
     <div className="tw:flex tw:justify-end tw:gap-2">
-      <Button variant="secondary" to="/manage-servers">Cancel</Button>
+      <Button variant="secondary" to="/manage-servers/1">Cancel</Button>
       <Button type="submit" disabled={disabled}>{submitText}</Button>
     </div>
   </div>
