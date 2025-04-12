@@ -1,4 +1,5 @@
 import {
+  faKey,
   faPencil,
   faPlus,
   faServer,
@@ -167,6 +168,15 @@ export default function ListUsers() {
                           to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
                         >
                           <FontAwesomeIcon icon={faPencil} />
+                        </Button>
+                        <Button
+                          inline
+                          size="sm"
+                          variant="secondary"
+                          aria-label={`Reset ${user.username} password`}
+                          title={`Reset ${user.username} password`}
+                        >
+                          <FontAwesomeIcon icon={faKey} />
                         </Button>
                         <Button
                           inline
