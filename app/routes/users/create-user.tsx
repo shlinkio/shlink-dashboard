@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
+import { CopyToClipboard } from '../../common/CopyToClipboard';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
 import { DuplicatedEntryError } from '../../validation/DuplicatedEntryError.server';
@@ -30,20 +31,19 @@ export async function action(
   }
 }
 
-export type ActionResult = Awaited<ReturnType<typeof action>>;
-
 export default function CreateUser() {
-  const { Form, state, data } = useFetcher<ActionResult>();
+  const { Form, state, data } = useFetcher<typeof action>();
   const isSubmitting = state === 'submitting';
 
   return (
     <>
       {data?.status === 'success' && (
         <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4" data-testid="success-message">
-          <p className="tw:m-0">User <b>{data.user.username}</b> properly created.</p>
-          <p className="tw:m-0">
-            Their temporary password is <b>{data.plainTextPassword}</b>. The user will have to change it the
-            first time they log in.
+          <p>User <b>{data.user.username}</b> properly created.</p>
+          <p>
+            Their temporary password
+            is <CopyToClipboard text={data.plainTextPassword}><b>{data.plainTextPassword}</b></CopyToClipboard>. The
+            user will have to change it the first time they log in.
           </p>
           <div>
             <Button inline to="/manage-users/1"><FontAwesomeIcon icon={faArrowLeft} /> Manage users</Button>

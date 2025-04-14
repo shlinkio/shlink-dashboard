@@ -64,12 +64,11 @@ export class UsersService {
 
   async createUser(data: FormData): Promise<[User, string]> {
     const userData = validateFormDataSchema(CREATE_USER_SCHEMA, data);
-    const plainTextTempPassword = generatePassword();
-    const password = await hashPassword(plainTextTempPassword);
+    const [password, plainTextPassword] = await this.#generatePassword();
 
     try {
       const user = await this.#usersRepository.createUser({ ...userData, password });
-      return [user, plainTextTempPassword];
+      return [user, plainTextPassword];
     } catch (e) {
       if (e instanceof UniqueConstraintViolationException) {
         throw new DuplicatedEntryError('username');
@@ -97,5 +96,22 @@ export class UsersService {
 
   async deleteUser(userId: string): Promise<void> {
     await this.#usersRepository.nativeDelete({ id: userId });
+  }
+
+  async resetUserPassword(userId: string): Promise<[User, string]> {
+    const user = await this.getUserById(userId);
+    const [password, plainTextPassword] = await this.#generatePassword();
+
+    user.password = password;
+    await this.#usersRepository.flush();
+
+    return [user, plainTextPassword];
+  }
+
+  async #generatePassword(): Promise<[string, string]> {
+    const plainTextPassword = generatePassword();
+    const password = await hashPassword(plainTextPassword);
+
+    return [password, plainTextPassword];
   }
 }

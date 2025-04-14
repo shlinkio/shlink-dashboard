@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import type { ActionResult } from '../../../app/routes/users/create-user';
 import CreateUser, { action } from '../../../app/routes/users/create-user';
 import type { UsersService } from '../../../app/users/UsersService.server';
 import { DuplicatedEntryError } from '../../../app/validation/DuplicatedEntryError.server';
@@ -66,7 +65,7 @@ describe('create-user', () => {
   });
 
   describe('<CreateUser />', () => {
-    const setUp = async (actionResult?: ActionResult) => {
+    const setUp = async (actionResult?: Awaited<ReturnType<typeof action>>) => {
       const path = '/manage-users/create';
       const Stub = createRoutesStub([
         {

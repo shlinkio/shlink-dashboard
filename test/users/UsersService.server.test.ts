@@ -227,4 +227,17 @@ describe('UsersService', () => {
       expect(flush).toHaveBeenCalled();
     });
   });
+
+  describe('resetPassword', () => {
+    it('sets a new generated password for user', async () => {
+      const expectedUser = fromPartial<User>({ id: 'abc123', password: 'old_password' });
+      findOne.mockResolvedValue(expectedUser);
+
+      const [user, newPassword] = await usersService.resetUserPassword('abc123');
+
+      expect(user.id).toEqual(expectedUser.id);
+      expect(await verifyPassword(newPassword, user.password)).toEqual(true);
+      expect(flush).toHaveBeenCalled();
+    });
+  });
 });
