@@ -228,6 +228,12 @@ describe('list-users', () => {
       expect(screen.getByLabelText('Edit baz')).toBeInTheDocument();
       expect(screen.queryByLabelText('Edit current')).not.toBeInTheDocument();
 
+      expect(screen.getAllByLabelText(/^Reset /)).toHaveLength(3);
+      expect(screen.getByLabelText('Reset foo password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Reset bar password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Reset baz password')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Reset current password')).not.toBeInTheDocument();
+
       expect(screen.getAllByLabelText(/^Servers for /)).toHaveLength(1);
       expect(screen.queryByLabelText('Servers for foo')).not.toBeInTheDocument();
       expect(screen.queryByLabelText('Servers for bar')).not.toBeInTheDocument();
