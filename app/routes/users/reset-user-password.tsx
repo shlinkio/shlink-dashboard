@@ -15,6 +15,7 @@ export async function loader(
 ) {
   const { userId } = params;
   const user = await usersService.getUserById(userId!);
+
   return { user };
 }
 
@@ -34,10 +35,11 @@ export default function ResetUserPassword() {
   const { state, data, submit } = useFetcher<typeof action>();
   const submitting = state === 'submitting';
   const resetPassword = useCallback(() => submit({}, { method: 'POST' }), [submit]);
+  const username = data?.user.username ?? user.username;
 
   return (
-    <SimpleCard title={`Reset "${user.username}" password`} bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
-      {!data && (
+    <SimpleCard title={`Reset "${username}" password`} bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+      {!data ? (
         <>
           <p className="tw:font-bold"><span className="tw:text-danger">Caution!</span> This action cannot be undone.</p>
           <p>Are you sure you want to reset <b>{user.username}</b> password?</p>
@@ -48,10 +50,9 @@ export default function ResetUserPassword() {
             </Button>
           </div>
         </>
-      )}
-      {data && (
+      ) : (
         <>
-          <p>Password for <b>{data.user.username}</b> properly reset.</p>
+          <p>Password for <b>{username}</b> properly reset.</p>
           <p>
             Their new temporary password
             is <CopyToClipboard text={data.plainTextPassword}>
