@@ -20,6 +20,7 @@ export default [
     route('delete', './routes/users/delete-user.ts'),
     route('edit/:userId', './routes/users/edit-user.tsx'),
     route('edit/:userId/servers', './routes/users/edit-user-servers.tsx'),
+    route('reset-password/:userId', './routes/users/reset-user-password.tsx'),
     route(':page', './routes/users/list-users.tsx'),
   ])),
 

@@ -1,3 +1,4 @@
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faKey,
   faPencil,
@@ -51,6 +52,29 @@ function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: Or
         <FontAwesomeIcon className="tw:ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />
       )}
     </Table.Cell>
+  );
+}
+
+type UserButtonProps = {
+  label: string;
+  icon: IconProp;
+  to?: string;
+  onClick?: () => void;
+  danger?: boolean;
+};
+
+function UserButton({ label, danger, icon, ...rest }: UserButtonProps) {
+  return (
+    <Button
+      inline
+      size="sm"
+      variant={danger ? 'danger' : 'secondary'}
+      aria-label={label}
+      title={label}
+      {...rest}
+    >
+      <FontAwesomeIcon icon={icon} />
+    </Button>
   );
 }
 
@@ -148,49 +172,31 @@ export default function ListUsers() {
                     {session?.username !== user.username && (
                       <div className="tw:flex tw:justify-end tw:gap-x-1">
                         {user.role === 'managed-user' && (
-                          <Button
-                            inline
-                            size="sm"
-                            variant="secondary"
-                            aria-label={`Servers for ${user.username}`}
-                            title={`Servers for ${user.username}`}
+                          <UserButton
+                            label={`Servers for ${user.username}`}
+                            icon={faServer}
                             to={href('/manage-users/edit/:userId/servers', { userId: user.id.toString() })}
-                          >
-                            <FontAwesomeIcon icon={faServer} />
-                          </Button>
+                          />
                         )}
-                        <Button
-                          inline
-                          size="sm"
-                          variant="secondary"
-                          aria-label={`Edit ${user.username}`}
-                          title={`Edit ${user.username}`}
+                        <UserButton
+                          label={`Reset ${user.username} password`}
+                          icon={faKey}
+                          to={href('/manage-users/reset-password/:userId', { userId: user.id.toString() })}
+                        />
+                        <UserButton
+                          label={`Edit ${user.username}`}
+                          icon={faPencil}
                           to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
-                        >
-                          <FontAwesomeIcon icon={faPencil} />
-                        </Button>
-                        <Button
-                          inline
-                          size="sm"
-                          variant="secondary"
-                          aria-label={`Reset ${user.username} password`}
-                          title={`Reset ${user.username} password`}
-                        >
-                          <FontAwesomeIcon icon={faKey} />
-                        </Button>
-                        <Button
-                          inline
-                          size="sm"
-                          variant="danger"
-                          aria-label={`Delete ${user.username}`}
-                          title={`Delete ${user.username}`}
+                        />
+                        <UserButton
+                          danger
+                          label={`Delete ${user.username}`}
+                          icon={faTrashCan}
                           onClick={() => {
                             setUserToDelete(user);
                             setDialogOpen(true);
                           }}
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </Button>
+                        />
                       </div>
                     )}
                   </Table.Cell>

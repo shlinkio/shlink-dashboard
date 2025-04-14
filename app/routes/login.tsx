@@ -31,10 +31,8 @@ export async function action(
   }
 }
 
-type ActionResult = Awaited<ReturnType<typeof action>>;
-
 export default function Login() {
-  const fetcher = useFetcher<ActionResult>();
+  const fetcher = useFetcher<typeof action>();
   const isSaving = fetcher.state === 'submitting';
 
   return (

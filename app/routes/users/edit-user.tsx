@@ -36,11 +36,9 @@ export async function action(
   return redirect('/manage-users/1');
 }
 
-export type ActionResult = Awaited<ReturnType<typeof action>>;
-
 export default function EditUser() {
   const { user } = useLoaderData<typeof loader>();
-  const { Form, state } = useFetcher<ActionResult>();
+  const { Form, state } = useFetcher<typeof action>();
   const isSubmitting = state === 'submitting';
 
   return (
