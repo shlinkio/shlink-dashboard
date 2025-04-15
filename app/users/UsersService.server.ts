@@ -42,10 +42,10 @@ export class UsersService {
     return user;
   }
 
-  async getUserById(userId: string): Promise<User> {
-    const user = await this.#usersRepository.findOne({ id: userId });
+  async getUserById(publicId: string): Promise<User> {
+    const user = await this.#usersRepository.findOne({ publicId });
     if (!user) {
-      throw new NotFoundError(`User not found with id ${userId}`);
+      throw new NotFoundError(`User not found with public id ${publicId}`);
     }
 
     return user;
@@ -78,9 +78,9 @@ export class UsersService {
     }
   }
 
-  async editUser(userId: string, data: FormData): Promise<User> {
+  async editUser(publicId: string, data: FormData): Promise<User> {
     const { displayName, role } = validateFormDataSchema(EDIT_USER_SCHEMA, data);
-    const user = await this.getUserById(userId);
+    const user = await this.getUserById(publicId);
 
     if (displayName !== undefined) {
       user.displayName = displayName;
@@ -94,12 +94,12 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(userId: string): Promise<void> {
-    await this.#usersRepository.nativeDelete({ id: userId });
+  async deleteUser(publicId: string): Promise<void> {
+    await this.#usersRepository.nativeDelete({ publicId });
   }
 
-  async resetUserPassword(userId: string): Promise<[User, string]> {
-    const user = await this.getUserById(userId);
+  async resetUserPassword(publicId: string): Promise<[User, string]> {
+    const user = await this.getUserById(publicId);
     const [password, plainTextPassword] = await this.#generatePassword();
 
     user.password = password;

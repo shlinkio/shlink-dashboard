@@ -49,7 +49,7 @@ describe('shlink-api-rpc-proxy', () => {
   });
 
   it('returns error if server is not found', async () => {
-    getSession.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ publicId: '123' });
     getByPublicIdAndUser.mockRejectedValue(new Error('Server not found'));
     const action = setUp();
 
@@ -71,7 +71,7 @@ describe('shlink-api-rpc-proxy', () => {
   });
 
   it('returns error if requested method is invalid', async () => {
-    getSession.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ publicId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -99,7 +99,7 @@ describe('shlink-api-rpc-proxy', () => {
     ['editTag', []],
     ['editTag', ['just_one_arg']],
   ])('returns error if provided args are invalid', async (method, args) => {
-    getSession.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ publicId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -124,7 +124,7 @@ describe('shlink-api-rpc-proxy', () => {
   });
 
   it('returns error if invoking SDK fails', async () => {
-    getSession.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ publicId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
@@ -150,7 +150,7 @@ describe('shlink-api-rpc-proxy', () => {
     ['getShortUrl', ['foo'], { shortCode: 'foo' }],
     ['editTag', ['foo', 'bar'], { oldTag: 'foo', newTag: 'bar' }],
   ])('returns result from calling corresponding SDK method', async (method, args, expectedResponse) => {
-    getSession.mockResolvedValue({ userId: '123' });
+    getSession.mockResolvedValue({ publicId: '123' });
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 

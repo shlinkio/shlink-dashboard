@@ -37,18 +37,18 @@ describe('TagsService', () => {
       getByPublicIdAndUser.mockResolvedValue(server);
       findOne.mockResolvedValue(user);
 
-      const result = await tagsService.tagColors({ userId: '1', serverPublicId: '2' });
+      const result = await tagsService.tagColors({ userPublicId: '1', serverPublicId: '2' });
 
       expect(result).toEqual({});
       expect(find).not.toHaveBeenCalled();
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
       expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', '1');
     });
 
     it('returns empty map serverPublicId is not provided', async () => {
       findOne.mockResolvedValue(fromPartial<User>({}));
 
-      const result = await tagsService.tagColors({ userId: '1' });
+      const result = await tagsService.tagColors({ userPublicId: '1' });
 
       expect(result).toEqual({});
       expect(find).not.toHaveBeenCalled();
@@ -68,12 +68,12 @@ describe('TagsService', () => {
         fromPartial<Tag>({ tag: 'baz', color: 'yellow' }),
       ]);
 
-      const result = await tagsService.tagColors({ userId: '1', serverPublicId: '2' });
+      const result = await tagsService.tagColors({ userPublicId: '1', serverPublicId: '2' });
 
       expect(result).toEqual({ foo: 'red', bar: 'green', baz: 'yellow' });
       expect(find).toHaveBeenCalledWith(TagEntity, { user, server });
       expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', '1');
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
     });
   });
 
@@ -86,11 +86,11 @@ describe('TagsService', () => {
       getByPublicIdAndUser.mockResolvedValue(server);
       findOne.mockResolvedValue(user);
 
-      await tagsService.updateTagColors({ userId: '1', serverPublicId: '2', colors: {} });
+      await tagsService.updateTagColors({ userPublicId: '1', serverPublicId: '2', colors: {} });
 
       expect(transactional).not.toHaveBeenCalled();
       expect(getByPublicIdAndUser).toHaveBeenCalledWith('2', '1');
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
     });
 
     it('upserts tags for non-ms databases', async () => {
@@ -101,7 +101,7 @@ describe('TagsService', () => {
       getByPublicIdAndUser.mockResolvedValue(server);
       findOne.mockResolvedValue(user);
 
-      await tagsService.updateTagColors({ userId: '1', serverPublicId: '2', colors });
+      await tagsService.updateTagColors({ userPublicId: '1', serverPublicId: '2', colors });
 
       expect(transactional).toHaveBeenCalled();
       expect(upsert).toHaveBeenCalledTimes(3);

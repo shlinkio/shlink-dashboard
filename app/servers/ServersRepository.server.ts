@@ -1,5 +1,5 @@
 import type { EntityManager, FilterQuery } from '@mikro-orm/core';
-import { BaseEntityRepository } from '../db/BaseEntityRepository';
+import { BaseEntityRepository } from '../db/BaseEntityRepository.server';
 import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
 import { User } from '../entities/User';
@@ -15,19 +15,19 @@ export type FindServersOptions = {
 };
 
 export class ServersRepository extends BaseEntityRepository<Server> {
-  findByPublicIdAndUserId(publicId: string, userId: string): Promise<Server | null> {
+  findByPublicIdAndUserId(publicId: string, userPublicId: string): Promise<Server | null> {
     return this.findOne({
       publicId,
-      users: { id: userId },
+      users: { publicId: userPublicId },
     });
   }
 
   findByUserId(
-    userId: string,
+    userPublicId: string,
     { searchTerm, populateUsers = false, limit, offset }: FindServersOptions = {},
   ): Promise<Server[]> {
     const baseFilter: FilterQuery<Server> = {
-      users: { id: userId },
+      users: { publicId: userPublicId },
     };
     return this.find(expandSearchTerm<Server>(searchTerm, { searchableFields: ['name', 'baseUrl'], baseFilter }), {
       orderBy: { name: 'ASC' },
@@ -37,8 +37,8 @@ export class ServersRepository extends BaseEntityRepository<Server> {
     });
   }
 
-  async createServer(userId: string, serverData: CreateServerData): Promise<Server> {
-    const user = this.em.getReference(User, userId);
+  async createServer(userPublicId: string, serverData: CreateServerData): Promise<Server> {
+    const user = await this.em.findOneOrFail(User, { publicId: userPublicId });
     const server = this.create({ publicId: crypto.randomUUID(), ...serverData });
     server.users.add(user);
 
@@ -47,8 +47,8 @@ export class ServersRepository extends BaseEntityRepository<Server> {
     return server;
   }
 
-  async updateServer(publicId: string, userId: string, serverData: EditServerData): Promise<Server | null> {
-    const server = await this.findByPublicIdAndUserId(publicId, userId);
+  async updateServer(publicId: string, userPublicId: string, serverData: EditServerData): Promise<Server | null> {
+    const server = await this.findByPublicIdAndUserId(publicId, userPublicId);
     if (!server) {
       return null;
     }
@@ -61,14 +61,14 @@ export class ServersRepository extends BaseEntityRepository<Server> {
     return server;
   }
 
-  async setServersForUser(userId: string, { servers: serverPublicIds }: UserServers): Promise<void> {
+  async setServersForUser(userPublicId: string, { servers: serverPublicIds }: UserServers): Promise<void> {
     const [user, servers] = await Promise.all([
-      this.em.findOne(User, { id: userId }, { populate: ['servers'] }),
+      this.em.findOne(User, { publicId: userPublicId }, { populate: ['servers'] }),
       serverPublicIds.length > 0 ? this.find({ publicId: { '$in': serverPublicIds } }) : Promise.resolve([]),
     ]);
 
     if (!user) {
-      throw new NotFoundError(`User ${userId} not found`);
+      throw new NotFoundError(`User ${userPublicId} not found`);
     }
 
     if (user.role !== 'managed-user') {

@@ -17,10 +17,10 @@ export async function loader(
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
   const { serverId: serverPublicId } = params;
-  const { userId } = await authHelper.getSession(request, '/login');
+  const { publicId } = await authHelper.getSession(request, '/login');
   const [tagColors, settings] = await Promise.all([
-    tagsService.tagColors({ userId, serverPublicId }),
-    settingsService.userSettings(userId),
+    tagsService.tagColors({ userPublicId: publicId, serverPublicId }),
+    settingsService.userSettings(publicId),
   ]);
 
   return { settings, tagColors };

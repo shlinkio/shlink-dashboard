@@ -27,7 +27,7 @@ export async function loader(
     : authHelper.getSession(request, `/login?redirect-to=${encodeURIComponent(pathname)}`)
   );
 
-  const settings = sessionData && (await settingsService.userSettings(sessionData.userId));
+  const settings = sessionData && (await settingsService.userSettings(sessionData.publicId));
   const sessionCookie = await authHelper.refreshSessionExpiration(request);
 
   return data(

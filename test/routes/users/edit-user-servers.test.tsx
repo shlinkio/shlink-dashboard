@@ -16,7 +16,7 @@ describe('edit-user-servers', () => {
     const getUserById = vi.fn();
     const usersService: UsersService = fromPartial({ getUserById });
     const runLoader = () => loader(fromPartial({
-      params: { userId: '' },
+      params: { userPublicId: '' },
     }), serversService, usersService);
 
     it('fetches servers and user', async () => {
@@ -47,7 +47,7 @@ describe('edit-user-servers', () => {
 
   describe('action', () => {
     const runAction = () => action(fromPartial({
-      params: { userId: '123' },
+      params: { userPublicId: '123' },
       request: { formData: vi.fn().mockResolvedValue(new FormData()) },
     }), serversService);
 

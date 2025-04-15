@@ -12,10 +12,8 @@ describe('create-server', () => {
     const serversService: ServersService = fromPartial({ createServerForUser });
     const runAction = () => action(
       fromPartial({
-        request: fromPartial({ formData: vi.fn().mockResolvedValue(new FormData()) }),
-        context: {
-          get: vi.fn().mockReturnValue({ userId: '123' }),
-        },
+        request: { formData: vi.fn().mockResolvedValue(new FormData()) },
+        context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
       }),
       serversService,
     );

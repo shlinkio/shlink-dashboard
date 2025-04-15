@@ -13,7 +13,7 @@ describe('reset-user-password', () => {
   const usersService: UsersService = fromPartial({ getUserById, resetUserPassword });
 
   describe('loader', () => {
-    const runLoader = () => loader(fromPartial({ params: { userId: '123' } }), usersService);
+    const runLoader = () => loader(fromPartial({ params: { userPublicId: '123' } }), usersService);
 
     it('fetches user by ID', async () => {
       const expectedUser = fromPartial<User>({ id: '123', username: 'username' });
@@ -26,7 +26,7 @@ describe('reset-user-password', () => {
   });
 
   describe('action', () => {
-    const runAction = () => action(fromPartial({ params: { userId: '123' } }), usersService);
+    const runAction = () => action(fromPartial({ params: { userPublicId: '123' } }), usersService);
 
     it('resets user password by ID', async () => {
       const expectedUser = fromPartial<User>({ id: '123', username: 'username' });

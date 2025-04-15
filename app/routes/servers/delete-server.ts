@@ -9,5 +9,5 @@ export async function action(
 ) {
   const session = (context as unstable_RouterContextProvider).get(sessionContext);
   const { serverPublicId } = await request.json();
-  await serversService.deleteServerForUser(session.userId, serverPublicId);
+  await serversService.deleteServerForUser(session.publicId, serverPublicId);
 }

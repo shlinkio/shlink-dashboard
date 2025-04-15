@@ -20,18 +20,18 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
   const confirmDisabled = state !== 'idle';
 
   const deleteUser = useCallback(async () => {
-    const userId = userToDelete?.id.toString();
-    if (!userId) {
+    const userPublicId = userToDelete?.publicId;
+    if (!userPublicId) {
       return;
     }
 
-    await submit({ userId }, {
+    await submit({ userPublicId }, {
       method: 'POST',
       action: '/manage-users/delete',
       encType: 'application/json',
     });
     onClose();
-  }, [onClose, submit, userToDelete?.id]);
+  }, [onClose, submit, userToDelete?.publicId]);
 
   return (
     <ClientOnly>

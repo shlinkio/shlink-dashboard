@@ -8,15 +8,15 @@ describe('delete-server', () => {
     const serversService: ServersService = fromPartial({ deleteServerForUser });
     const runAction = () => action(
       fromPartial({
-        request: fromPartial({ json: vi.fn().mockResolvedValue({ serverPublicId: 'serverPublicId' }) }),
-        context: { get: vi.fn().mockReturnValue({ userId: 'userId' }) },
+        request: { json: vi.fn().mockResolvedValue({ serverPublicId: 'serverPublicId' }) },
+        context: { get: vi.fn().mockReturnValue({ publicId: 'userPublicId' }) },
       }),
       serversService,
     );
 
     it('deletes server for current user', async () => {
       await runAction();
-      expect(deleteServerForUser).toHaveBeenCalledWith('userId', 'serverPublicId');
+      expect(deleteServerForUser).toHaveBeenCalledWith('userPublicId', 'serverPublicId');
     });
   });
 });

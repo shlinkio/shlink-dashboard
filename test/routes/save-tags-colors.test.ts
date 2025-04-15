@@ -23,7 +23,7 @@ describe('save-tags-colors', () => {
   });
 
   it('updates tags in action and returns response', async () => {
-    getSession.mockResolvedValue({ userId: '1' });
+    getSession.mockResolvedValue({ publicId: '1' });
 
     const colors = { foo: 'red' };
     const request = fromPartial<ActionFunctionArgs['request']>({ json: vi.fn().mockResolvedValue(colors) });
@@ -32,6 +32,6 @@ describe('save-tags-colors', () => {
 
     expect(resp.status).toEqual(204);
     expect(getSession).toHaveBeenCalledWith(request);
-    expect(updateTagColors).toHaveBeenCalledWith(expect.objectContaining({ colors, userId: '1' }));
+    expect(updateTagColors).toHaveBeenCalledWith(expect.objectContaining({ colors, userPublicId: '1' }));
   });
 });

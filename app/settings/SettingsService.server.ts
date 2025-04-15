@@ -10,8 +10,8 @@ export class SettingsService {
     this.#em = em;
   }
 
-  async userSettings(userId: string): Promise<Settings> {
-    const user = await this.#em.findOne(User, { id: userId });
+  async userSettings(publicId: string): Promise<Settings> {
+    const user = await this.#em.findOne(User, { publicId });
     if (!user) {
       return {};
     }
@@ -20,8 +20,8 @@ export class SettingsService {
     return s?.settings ?? {};
   }
 
-  async saveUserSettings(userId: string, newSettings: Settings): Promise<void> {
-    const user = await this.#em.findOne(User, { id: userId });
+  async saveUserSettings(userPublicId: string, newSettings: Settings): Promise<void> {
+    const user = await this.#em.findOne(User, { publicId: userPublicId });
     if (!user) {
       return;
     }

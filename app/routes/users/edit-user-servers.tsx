@@ -14,10 +14,10 @@ export async function loader(
   serversService: ServersService = serverContainer[ServersService.name],
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = params;
+  const { userPublicId } = params;
   const [servers, user] = await Promise.all([
-    serversService.getUserServers(userId!),
-    usersService.getUserById(userId!),
+    serversService.getUserServers(userPublicId!),
+    usersService.getUserById(userPublicId!),
   ]);
 
   if (user.role !== 'managed-user') {
@@ -31,11 +31,11 @@ export async function action(
   { request, params }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const { userId } = params;
+  const { userPublicId } = params;
   const formData = await request.formData();
 
   // TODO Handle error while editing user servers
-  await serversService.setServersForUser(userId!, formData);
+  await serversService.setServersForUser(userPublicId!, formData);
   // TODO redirect back to the original page if known
   return redirect('/manage-users/1');
 }

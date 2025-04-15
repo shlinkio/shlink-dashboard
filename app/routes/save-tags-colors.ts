@@ -14,11 +14,11 @@ export async function action(
     return empty();
   }
 
-  const { userId } = sessionData;
+  const { publicId: userPublicId } = sessionData;
   const { serverId: serverPublicId } = params;
   const colors = await request.json();
 
-  await tagsService.updateTagColors({ colors, userId, serverPublicId });
+  await tagsService.updateTagColors({ colors, userPublicId, serverPublicId });
 
   return empty();
 }

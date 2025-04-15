@@ -30,7 +30,7 @@ describe('list-servers', () => {
   describe('loader', () => {
     type RunLoader = {
       role: Role;
-      userId: string;
+      publicId: string;
       queryString?: string;
       page?: string;
     };
@@ -40,10 +40,10 @@ describe('list-servers', () => {
       createServer({ name: 'server 2', users: [fromPartial({})] }),
     ]);
     const serversService: ServersService = fromPartial({ getUserServers });
-    const runLoader = ({ role, userId, queryString, page }: RunLoader) => loader(
+    const runLoader = ({ role, publicId, queryString, page }: RunLoader) => loader(
       fromPartial({
         request: fromPartial({ url: `https://example.com/?${queryString}` }),
-        context: { get: vi.fn().mockReturnValue(fromPartial<SessionData>({ role, userId })) },
+        context: { get: vi.fn().mockReturnValue(fromPartial<SessionData>({ role, publicId })) },
         params: { page },
       }),
       serversService,
@@ -68,7 +68,7 @@ describe('list-servers', () => {
     ])('returns user counts when current user is an admin and it has not been explicitly disabled', async (
       { role, queryString, expectedPopulateUsers },
     ) => {
-      const { servers } = await runLoader({ role, userId: '123', queryString });
+      const { servers } = await runLoader({ role, publicId: '123', queryString });
 
       expect(servers).toEqual([
         { name: 'server 1', usersCount: expectedPopulateUsers ? 3 : undefined },
@@ -81,7 +81,7 @@ describe('list-servers', () => {
 
     it('parses search term from query string', async () => {
       const { currentSearchTerm } = await runLoader(
-        { role: 'advanced-user', userId: '456', queryString: 'search-term=hello%20world' },
+        { role: 'advanced-user', publicId: '456', queryString: 'search-term=hello%20world' },
       );
 
       expect(getUserServers).toHaveBeenCalledWith('456', expect.objectContaining({ searchTerm: 'hello world' }));
@@ -93,7 +93,7 @@ describe('list-servers', () => {
       { page: '3', expectedPage: 3, expectedItemsPerPage: undefined },
       { page: '41', queryString: 'items-per-page=75', expectedPage: 41, expectedItemsPerPage: 75 },
     ])('parses pagination params', async ({ page, queryString, expectedPage, expectedItemsPerPage }) => {
-      await runLoader({ role: 'advanced-user', userId: '789', page, queryString });
+      await runLoader({ role: 'advanced-user', publicId: '789', page, queryString });
       expect(getUserServers).toHaveBeenCalledWith('789', expect.objectContaining({
         page: expectedPage,
         itemsPerPage: expectedItemsPerPage,

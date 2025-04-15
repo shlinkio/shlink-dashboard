@@ -175,18 +175,18 @@ export default function ListUsers() {
                           <UserButton
                             label={`Servers for ${user.username}`}
                             icon={faServer}
-                            to={href('/manage-users/edit/:userId/servers', { userId: user.id.toString() })}
+                            to={href('/manage-users/edit/:userPublicId/servers', { userPublicId: user.publicId })}
                           />
                         )}
                         <UserButton
                           label={`Reset ${user.username} password`}
                           icon={faKey}
-                          to={href('/manage-users/reset-password/:userId', { userId: user.id.toString() })}
+                          to={href('/manage-users/reset-password/:userPublicId', { userPublicId: user.publicId })}
                         />
                         <UserButton
                           label={`Edit ${user.username}`}
                           icon={faPencil}
-                          to={href('/manage-users/edit/:userId', { userId: user.id.toString() })}
+                          to={href('/manage-users/edit/:userPublicId', { userPublicId: user.publicId })}
                         />
                         <UserButton
                           danger

@@ -15,7 +15,7 @@ describe('edit-server', () => {
 
   describe('loader', () => {
     const runLoader = () => loader(fromPartial({
-      context: { get: vi.fn().mockReturnValue({ userId: '123' }) },
+      context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
       params: { serverPublicId: 'abc456' },
     }), serversService);
 
@@ -41,9 +41,9 @@ describe('edit-server', () => {
 
   describe('action', () => {
     const runAction = () => action(fromPartial({
-      context: { get: vi.fn().mockReturnValue({ userId: '123' }) },
+      context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
       params: { serverPublicId: 'abc456' },
-      request: fromPartial({ formData: vi.fn().mockResolvedValue(new FormData()) }),
+      request: { formData: vi.fn().mockResolvedValue(new FormData()) },
     }), serversService);
 
     it('creates server and redirects to servers list', async () => {

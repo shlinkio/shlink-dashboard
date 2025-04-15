@@ -15,7 +15,7 @@ describe('home', () => {
     const serversService: ServersService = fromPartial({ getUserServers });
 
     it('returns list of servers', async () => {
-      const sessionData: SessionData = fromPartial({ userId: '1' });
+      const sessionData: SessionData = fromPartial({ publicId: '1' });
       getSession.mockResolvedValue(sessionData);
 
       const servers: Server[] = [fromPartial({})];
@@ -26,7 +26,7 @@ describe('home', () => {
 
       expect(data.servers).toStrictEqual(servers);
       expect(getSession).toHaveBeenCalledWith(request, '/login');
-      expect(getUserServers).toHaveBeenCalledWith(sessionData.userId);
+      expect(getUserServers).toHaveBeenCalledWith(sessionData.publicId);
     });
 
     it.todo('redirects to login if session is not set');

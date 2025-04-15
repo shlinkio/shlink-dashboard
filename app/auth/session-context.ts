@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import type { Role } from '../entities/User';
 
 export type SessionData = {
-  userId: string;
+  publicId: string;
   displayName: string | null;
   username: string;
   role: Role;

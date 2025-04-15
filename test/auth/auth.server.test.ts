@@ -38,14 +38,14 @@ describe('auth', () => {
     });
 
     it('tries to find user with credentials', async () => {
-      getUserByCredentials.mockResolvedValue({ id: '123' });
+      getUserByCredentials.mockResolvedValue({ publicId: '123' });
 
       const result = await authenticator.authenticate(
         CREDENTIALS_STRATEGY,
         requestWithBody('username=foo&password=bar'),
       );
 
-      expect(result).toEqual({ userId: '123' });
+      expect(result).toEqual({ publicId: '123' });
       expect(getUserByCredentials).toHaveBeenCalledWith('foo', 'bar');
     });
   });
