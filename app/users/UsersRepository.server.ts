@@ -1,6 +1,6 @@
 import type { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
-import { BaseEntityRepository } from '../db/BaseEntityRepository';
+import { BaseEntityRepository } from '../db/BaseEntityRepository.server';
 import { expandSearchTerm } from '../db/utils.server';
 import { User } from '../entities/User';
 import type { UserOrderableFields } from './UsersService.server';

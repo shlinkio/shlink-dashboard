@@ -1,5 +1,5 @@
 import type { EntityManager, FilterQuery } from '@mikro-orm/core';
-import { BaseEntityRepository } from '../db/BaseEntityRepository';
+import { BaseEntityRepository } from '../db/BaseEntityRepository.server';
 import { expandSearchTerm } from '../db/utils.server';
 import { Server } from '../entities/Server';
 import { User } from '../entities/User';
