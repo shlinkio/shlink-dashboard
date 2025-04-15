@@ -15,7 +15,7 @@ export async function loader(
   const { serverPublicId } = params;
 
   try {
-    const server = await serversService.getByPublicIdAndUser(serverPublicId!, sessionData.userId);
+    const server = await serversService.getByPublicIdAndUser(serverPublicId!, sessionData.publicId);
     return { server };
   } catch (e) {
     if (e instanceof NotFoundError) {
@@ -35,7 +35,7 @@ export async function action(
   const formData = await request.formData();
 
   // TODO Handle errors while editing the server
-  await serversService.editServerForUser(sessionData.userId, serverPublicId!, formData);
+  await serversService.editServerForUser(sessionData.publicId, serverPublicId!, formData);
   return redirect('/manage-servers/1');
 }
 

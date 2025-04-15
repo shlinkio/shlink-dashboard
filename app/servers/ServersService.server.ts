@@ -27,40 +27,40 @@ export class ServersService {
     this.#serversRepository = serversRepository;
   }
 
-  public async getByPublicIdAndUser(serverPublicId: string, userId: string): Promise<Server> {
-    const server = await this.#serversRepository.findByPublicIdAndUserId(serverPublicId, userId);
+  public async getByPublicIdAndUser(serverPublicId: string, userPublicId: string): Promise<Server> {
+    const server = await this.#serversRepository.findByPublicIdAndUserId(serverPublicId, userPublicId);
     return ensureServer(server, serverPublicId);
   }
 
   public async getUserServers(
-    userId: string,
+    userPublicId: string,
     { page = 1, itemsPerPage, ...rest }: ListServersOptions = {},
   ): Promise<Server[]> {
     const { limit, offset } = paginationToLimitAndOffset(page, itemsPerPage);
-    return this.#serversRepository.findByUserId(userId, { limit, offset, ...rest });
+    return this.#serversRepository.findByUserId(userPublicId, { limit, offset, ...rest });
   }
 
-  public async createServerForUser(userId: string, data: FormData): Promise<Server> {
+  public async createServerForUser(userPublicId: string, data: FormData): Promise<Server> {
     const serverData = validateFormDataSchema(CREATE_SERVER_SCHEMA, data);
-    return this.#serversRepository.createServer(userId, serverData);
+    return this.#serversRepository.createServer(userPublicId, serverData);
   }
 
-  public async editServerForUser(userId: string, serverPublicId: string, data: FormData): Promise<Server> {
+  public async editServerForUser(userPublicId: string, serverPublicId: string, data: FormData): Promise<Server> {
     const serverData = validateFormDataSchema(EDIT_SERVER_SCHEMA, data);
-    const server = await this.#serversRepository.updateServer(serverPublicId, userId, serverData);
+    const server = await this.#serversRepository.updateServer(serverPublicId, userPublicId, serverData);
 
     return ensureServer(server, serverPublicId);
   }
 
-  public async deleteServerForUser(userId: string, serverPublicId: string): Promise<number> {
+  public async deleteServerForUser(userPublicId: string, serverPublicId: string): Promise<number> {
     return this.#serversRepository.nativeDelete({
       publicId: serverPublicId,
-      users: { id: userId },
+      users: { publicId: userPublicId },
     });
   }
 
-  public async setServersForUser(userId: string, data: FormData): Promise<void> {
+  public async setServersForUser(userPublicId: string, data: FormData): Promise<void> {
     const servers = validateFormDataSchema(USER_SERVERS, data);
-    await this.#serversRepository.setServersForUser(userId, servers);
+    await this.#serversRepository.setServersForUser(userPublicId, servers);
   }
 }

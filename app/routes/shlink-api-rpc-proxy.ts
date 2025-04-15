@@ -47,11 +47,11 @@ export async function action(
     });
   }
 
-  const { userId } = sessionData;
+  const { publicId } = sessionData;
   const { method, serverId = '' } = params;
   let server;
   try {
-    server = await serversService.getByPublicIdAndUser(serverId, userId);
+    server = await serversService.getByPublicIdAndUser(serverId, publicId);
   } catch {
     return problemDetails({
       status: 404,

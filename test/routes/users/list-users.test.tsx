@@ -23,10 +23,10 @@ vi.mock('react-router', async () => {
 describe('list-users', () => {
   const listUsers = vi.fn();
   const usersService: UsersService = fromPartial({ listUsers });
-  const mockUser = (userData: Partial<Omit<User, 'id'>>): User => fromPartial({
+  const mockUser = (userData: Partial<Omit<User, 'publicId'>>): User => fromPartial({
     createdAt: new Date(),
     ...userData,
-    id: crypto.randomUUID(),
+    publicId: crypto.randomUUID(),
   });
 
   describe('loader', () => {

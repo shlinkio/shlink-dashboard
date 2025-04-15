@@ -58,19 +58,19 @@ describe('UsersService', () => {
       findOne.mockResolvedValue(null);
 
       await expect(usersService.getUserById('abc123')).rejects.toEqual(
-        new NotFoundError('User not found with id abc123'),
+        new NotFoundError('User not found with public id abc123'),
       );
-      expect(findOne).toHaveBeenCalledWith({ id: 'abc123' });
+      expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
     });
 
     it('returns found user', async () => {
-      const expectedUser = fromPartial<User>({ id: 'abc123' });
+      const expectedUser = fromPartial<User>({ publicId: 'abc123' });
       findOne.mockResolvedValue(expectedUser);
 
       const result = await usersService.getUserById('abc123');
 
       expect(result).toEqual(expectedUser);
-      expect(findOne).toHaveBeenCalledWith({ id: 'abc123' });
+      expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
     });
   });
 
@@ -195,7 +195,7 @@ describe('UsersService', () => {
   describe('deleteUser', () => {
     it('deletes user via repository', async () => {
       await usersService.deleteUser('123');
-      expect(nativeDelete).toHaveBeenCalledWith({ id: '123' });
+      expect(nativeDelete).toHaveBeenCalledWith({ publicId: '123' });
     });
   });
 
@@ -218,7 +218,9 @@ describe('UsersService', () => {
         expectedResult: { displayName: 'another name', role: 'managed-user' },
       },
     ])('updates the user with provided data', async ({ providedData, expectedResult }) => {
-      const expectedUser = fromPartial<User>({ id: 'abc123', displayName: 'initial_display_name', role: 'admin' });
+      const expectedUser = fromPartial<User>(
+        { publicId: 'abc123', displayName: 'initial_display_name', role: 'admin' },
+      );
       findOne.mockResolvedValue(expectedUser);
 
       const user = await usersService.editUser('abc123', providedData);
@@ -230,12 +232,12 @@ describe('UsersService', () => {
 
   describe('resetPassword', () => {
     it('sets a new generated password for user', async () => {
-      const expectedUser = fromPartial<User>({ id: 'abc123', password: 'old_password' });
+      const expectedUser = fromPartial<User>({ publicId: 'abc123', password: 'old_password' });
       findOne.mockResolvedValue(expectedUser);
 
       const [user, newPassword] = await usersService.resetUserPassword('abc123');
 
-      expect(user.id).toEqual(expectedUser.id);
+      expect(user.publicId).toEqual(expectedUser.publicId);
       expect(await verifyPassword(newPassword, user.password)).toEqual(true);
       expect(flush).toHaveBeenCalled();
     });

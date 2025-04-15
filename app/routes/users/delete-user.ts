@@ -6,6 +6,6 @@ export async function action(
   { request }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = await request.json();
-  await usersService.deleteUser(userId);
+  const { userPublicId } = await request.json();
+  await usersService.deleteUser(userPublicId);
 }

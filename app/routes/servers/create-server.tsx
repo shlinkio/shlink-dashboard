@@ -13,7 +13,7 @@ export async function action(
   const formData = await  request.formData();
 
   // TODO Handle error when creating a server
-  await serversService.createServerForUser(session.userId, formData);
+  await serversService.createServerForUser(session.publicId, formData);
   return redirect('/manage-servers/1');
 }
 

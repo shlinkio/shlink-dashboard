@@ -20,38 +20,41 @@ describe('edit-user', () => {
 
     it('returns 404 when NotFoundError occurs', async () => {
       getUserById.mockRejectedValue(new NotFoundError(''));
-      await expect(runLoader({ userId: '123' })).rejects.toThrow(expect.objectContaining({ status: 404 }));
+      await expect(runLoader({ userPublicId: '123' })).rejects.toThrow(expect.objectContaining({ status: 404 }));
     });
 
     it('throws unknown errors verbatim', async () => {
       const unknownError = new Error('Something went wrong');
       getUserById.mockRejectedValue(unknownError);
 
-      await expect(runLoader({ userId: '123' })).rejects.toThrow(unknownError);
+      await expect(runLoader({ userPublicId: '123' })).rejects.toThrow(unknownError);
     });
 
-    it.each([{ userId: '123' }, { userId: 'abc' }])('returns user by id', async ({ userId }) => {
+    it.each([{ userPublicId: '123' }, { userPublicId: 'abc' }])('returns user by id', async ({ userPublicId }) => {
       const user: User = fromPartial({ id: 'abc123' });
       getUserById.mockResolvedValue(user);
 
-      const result = await runLoader({ userId });
+      const result = await runLoader({ userPublicId });
 
       expect(result).toEqual({ user });
-      expect(getUserById).toHaveBeenCalledWith(userId);
+      expect(getUserById).toHaveBeenCalledWith(userPublicId);
     });
   });
 
   describe('action', () => {
     const runAction = (params: ActionFunctionArgs['params']) => action(fromPartial({ params, request }), usersService);
 
-    it.each([{ userId: '123' }, { userId: 'abc' }])('edits user and redirects to list', async ({ userId }) => {
+    it.each([
+      { userPublicId: '123' },
+      { userPublicId: 'abc' },
+    ])('edits user and redirects to list', async ({ userPublicId }) => {
       editUser.mockResolvedValue(fromPartial({ id: 'abc123' }));
 
-      const response = await runAction({ userId });
+      const response = await runAction({ userPublicId });
 
       expect(response.status).toEqual(302);
       expect(response.headers.get('Location')).toEqual('/manage-users/1');
-      expect(editUser).toHaveBeenCalledWith(userId, new FormData());
+      expect(editUser).toHaveBeenCalledWith(userPublicId, new FormData());
     });
   });
 

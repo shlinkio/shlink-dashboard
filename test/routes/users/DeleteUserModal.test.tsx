@@ -8,7 +8,7 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('<DeleteUserModal />', () => {
   const onClose = vi.fn();
-  const userMock = fromPartial<User>({ username: 'foo', id: 'foo' });
+  const userMock = fromPartial<User>({ username: 'foo', publicId: 'foo' });
   const setUp = (open = true) => {
     const Stub = createRoutesStub([
       {

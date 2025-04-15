@@ -12,7 +12,7 @@ export async function loader(
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   const sessionData = await authHelper.getSession(request, '/login');
-  const servers = await serversService.getUserServers(sessionData.userId);
+  const servers = await serversService.getUserServers(sessionData.publicId);
 
   return { servers };
 }

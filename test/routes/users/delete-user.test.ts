@@ -6,14 +6,14 @@ describe('delete-user', () => {
   describe('action', () => {
     const deleteUser = vi.fn().mockResolvedValue(undefined);
     const usersService: UsersService = fromPartial({ deleteUser });
-    const runAction = (userId: string) => {
-      const request = fromPartial<Request>({ json: vi.fn().mockResolvedValue({ userId }) });
+    const runAction = (userPublicId: string) => {
+      const request = fromPartial<Request>({ json: vi.fn().mockResolvedValue({ userPublicId }) });
       return action(fromPartial({ request }), usersService);
     };
 
-    it.each([['123', '456']])('deletes provided user by id', async (userId) => {
-      await runAction(userId);
-      expect(deleteUser).toHaveBeenCalledWith(userId);
+    it.each([['123', '456']])('deletes provided user by id', async (publicId) => {
+      await runAction(publicId);
+      expect(deleteUser).toHaveBeenCalledWith(publicId);
     });
   });
 });

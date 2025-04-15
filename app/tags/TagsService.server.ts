@@ -6,7 +6,7 @@ import { User as UserEntity } from '../entities/User';
 import type { ServersService } from '../servers/ServersService.server';
 
 export type FindTagsParam = {
-  userId: string;
+  userPublicId: string;
   serverPublicId?: string;
 };
 
@@ -62,10 +62,10 @@ export class TagsService {
     })));
   }
 
-  private async resolveServerAndUser({ userId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
+  private async resolveServerAndUser({ userPublicId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {
     const [server, user] = await Promise.all([
-      serverPublicId ? this.#serversService.getByPublicIdAndUser(serverPublicId, userId) : null,
-      this.#em.findOne(UserEntity, { id: userId }),
+      serverPublicId ? this.#serversService.getByPublicIdAndUser(serverPublicId, userPublicId) : null,
+      this.#em.findOne(UserEntity, { publicId: userPublicId }),
     ]);
 
     return { server, user };

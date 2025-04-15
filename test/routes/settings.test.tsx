@@ -20,7 +20,7 @@ describe('settings', () => {
         ui: { theme: 'dark' },
       });
       userSettings.mockResolvedValue(settings);
-      getSession.mockResolvedValue({ userId: '1' });
+      getSession.mockResolvedValue({ publicId: '1' });
 
       const result = await loader(fromPartial({ request: {} }), authHelper, settingsService);
 
@@ -48,7 +48,7 @@ describe('settings', () => {
     it('saves settings when user is logged in', async () => {
       const action = setUp();
 
-      getSession.mockResolvedValue({ userId: '1' });
+      getSession.mockResolvedValue({ publicId: '1' });
 
       await action(fromPartial({ request }));
 

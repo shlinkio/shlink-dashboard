@@ -42,23 +42,23 @@ describe('ServersService', () => {
   describe('getUserServers', () => {
     it.each([
       {
-        userId: '3',
+        publicId: '3',
         options: undefined,
         expectedRepoOptions: {},
       },
       {
-        userId: '87',
+        publicId: '87',
         options: fromPartial<ListServersOptions>({}),
         expectedRepoOptions: {},
       },
       {
-        userId: '87',
+        publicId: '87',
         options: fromPartial<ListServersOptions>({ itemsPerPage: 20, page: 5 }),
         expectedRepoOptions: fromPartial<FindServersOptions>({ limit: 20, offset: 80 }),
       },
-    ])('delegates into repository', ({ userId, options, expectedRepoOptions }) => {
-      service.getUserServers(userId, options);
-      expect(findByUserId).toHaveBeenCalledWith(userId, expectedRepoOptions);
+    ])('delegates into repository', ({ publicId, options, expectedRepoOptions }) => {
+      service.getUserServers(publicId, options);
+      expect(findByUserId).toHaveBeenCalledWith(publicId, expectedRepoOptions);
     });
   });
 
@@ -124,7 +124,7 @@ describe('ServersService', () => {
       await service.deleteServerForUser('123', 'abc');
       expect(nativeDelete).toHaveBeenCalledWith({
         publicId: 'abc',
-        users: { id: '123' },
+        users: { publicId: '123' },
       });
     });
   });

@@ -23,7 +23,7 @@ describe('middleware', () => {
     const authHelper: AuthHelper = fromPartial({ getSession });
 
     it('sets session in context', async () => {
-      const session = fromPartial<SessionData>({ role: 'admin', userId: '123' });
+      const session = fromPartial<SessionData>({ role: 'admin', publicId: '123' });
       getSession.mockResolvedValue(session);
 
       await authMiddleware(fromPartial({ request, context: createContext() }), next, authHelper);

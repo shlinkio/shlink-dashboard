@@ -22,7 +22,7 @@ export async function loader(
   const itemsPerPage = query.has('items-per-page') ? Number(query.get('items-per-page')) : undefined;
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
   const populateUsers = sessionData.role === 'admin' && !query.has('no-users');
-  const servers = await serversService.getUserServers(sessionData.userId, {
+  const servers = await serversService.getUserServers(sessionData.publicId, {
     populateUsers,
     searchTerm: currentSearchTerm,
     page,

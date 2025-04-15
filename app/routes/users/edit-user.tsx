@@ -10,10 +10,10 @@ export async function loader(
   { params }: LoaderFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = params;
+  const { userPublicId } = params;
 
   try {
-    const user = await usersService.getUserById(userId!);
+    const user = await usersService.getUserById(userPublicId!);
     return { user };
   } catch (e) {
     if (e instanceof NotFoundError) {
@@ -28,11 +28,11 @@ export async function action(
   { request, params }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = params;
+  const { userPublicId } = params;
   const formData = await request.formData();
 
   // TODO Handle error while editing the user
-  await usersService.editUser(userId!, formData);
+  await usersService.editUser(userPublicId!, formData);
   return redirect('/manage-users/1');
 }
 

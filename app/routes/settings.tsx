@@ -14,8 +14,8 @@ export async function loader(
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  const { userId } = await authHelper.getSession(request, '/login');
-  return settingsService.userSettings(userId);
+  const { publicId } = await authHelper.getSession(request, '/login');
+  return settingsService.userSettings(publicId);
 }
 
 export async function action(
@@ -25,7 +25,7 @@ export async function action(
 ) {
   const [sessionData, newSettings] = await Promise.all([authHelper.getSession(request), request.json()]);
   if (sessionData) {
-    await settingsService.saveUserSettings(sessionData.userId, newSettings);
+    await settingsService.saveUserSettings(sessionData.publicId, newSettings);
   }
 
   return {};

@@ -13,8 +13,8 @@ export async function loader(
   { params }: LoaderFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = params;
-  const user = await usersService.getUserById(userId!);
+  const { userPublicId } = params;
+  const user = await usersService.getUserById(userPublicId!);
 
   return { user };
 }
@@ -23,8 +23,8 @@ export async function action(
   { params }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const { userId } = params;
-  const [user, plainTextPassword] = await usersService.resetUserPassword(userId!);
+  const { userPublicId } = params;
+  const [user, plainTextPassword] = await usersService.resetUserPassword(userPublicId!);
 
   return { user, plainTextPassword };
 }

@@ -25,7 +25,7 @@ describe('SettingsService', () => {
 
       expect(settings).toEqual({});
       expect(findOne).toHaveBeenCalledOnce();
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
     });
 
     it('returns no settings when user does not have any', async () => {
@@ -38,7 +38,7 @@ describe('SettingsService', () => {
 
       expect(settings).toEqual({});
       expect(findOne).toHaveBeenCalledTimes(2);
-      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { publicId: '1' });
       expect(findOne).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
     });
 
@@ -57,7 +57,7 @@ describe('SettingsService', () => {
 
       expect(result).toEqual(settings);
       expect(findOne).toHaveBeenCalledTimes(2);
-      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenNthCalledWith(1, UserEntity, { publicId: '1' });
       expect(findOne).toHaveBeenNthCalledWith(2, SettingsEntity, { user });
     });
   });
@@ -68,7 +68,7 @@ describe('SettingsService', () => {
 
       await settingsService.saveUserSettings('1', fromPartial({}));
 
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
       expect(upsert).not.toHaveBeenCalledOnce();
     });
 
@@ -80,7 +80,7 @@ describe('SettingsService', () => {
 
       await settingsService.saveUserSettings('1', newSettings);
 
-      expect(findOne).toHaveBeenCalledWith(UserEntity, { id: '1' });
+      expect(findOne).toHaveBeenCalledWith(UserEntity, { publicId: '1' });
       expect(upsert).toHaveBeenCalledWith(SettingsEntity, { user, settings: newSettings });
     });
   });
