@@ -1,8 +1,9 @@
-import type { EntityManager, RequiredEntityData } from '@mikro-orm/core';
+import type { EntityManager } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { BaseEntityRepository } from '../db/BaseEntityRepository.server';
 import { expandSearchTerm } from '../db/utils.server';
 import { User } from '../entities/User';
+import type { CreateUserData } from './user-schemas.server';
 import type { UserOrderableFields } from './UsersService.server';
 
 export type FindAndCountUsersOptions = {
@@ -26,8 +27,8 @@ export class UsersRepository extends BaseEntityRepository<User> {
     );
   }
 
-  async createUser(userData: Omit<RequiredEntityData<User>, 'createdAt'>): Promise<User> {
-    const user = this.create({ ...userData, createdAt: new Date() });
+  async createUser(userData: CreateUserData & { password: string }): Promise<User> {
+    const user = this.create({ ...userData, createdAt: new Date(), publicId: crypto.randomUUID() });
     await this.em.persistAndFlush(user);
 
     return user;

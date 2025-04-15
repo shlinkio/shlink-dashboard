@@ -8,6 +8,7 @@ export const roles = ['admin', 'advanced-user', 'managed-user'] as const;
 export type Role = typeof roles[number];
 
 export class User extends BaseEntity {
+  publicId!: string;
   username!: string;
   password!: string;
   role!: Role;
@@ -32,6 +33,11 @@ export const UserSchema = new EntitySchema({
   repository: () => UsersRepository,
   properties: {
     id: idColumnSchema,
+    publicId: {
+      type: 'string',
+      name: 'public_id',
+      unique: true,
+    },
     username: { type: 'string', unique: true },
     password: { type: 'string' },
     role: {
