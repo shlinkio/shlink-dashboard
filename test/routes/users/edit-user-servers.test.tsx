@@ -63,7 +63,7 @@ describe('edit-user-servers', () => {
   describe('<EditUserServers />', () => {
     const setUp = async () => {
       const prevPath = '/manage-users/1';
-      const path = '/manage-users/edit/1/servers';
+      const path = '/manage-users/1/edit-servers';
       const Stub = createRoutesStub([
         {
           path: prevPath,

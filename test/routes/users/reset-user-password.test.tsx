@@ -41,7 +41,7 @@ describe('reset-user-password', () => {
 
   describe('<ResetUserPassword />', () => {
     const setUp = async () => {
-      const path = '/manage-users/reset-password/123';
+      const path = '/manage-users/123/reset-password';
       const user = fromPartial<User>({ username: 'john_doe' });
       const Stub = createRoutesStub([
         {
