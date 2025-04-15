@@ -80,7 +80,7 @@ describe('list-users', () => {
           Component: () => <>Create user</>,
         },
         {
-          path: '/manage-users/edit/123',
+          path: '/manage-users/123/edit',
           Component: () => <>Edit user</>,
         },
       ]);

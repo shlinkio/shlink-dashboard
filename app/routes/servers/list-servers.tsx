@@ -105,7 +105,7 @@ export default function ListServers() {
                     size="sm"
                     variant="secondary"
                     aria-label={`Edit server ${server.name}`}
-                    to={href('/manage-servers/edit/:serverPublicId', { serverPublicId: server.publicId })}
+                    to={href('/manage-servers/:serverPublicId/edit', { serverPublicId: server.publicId })}
                   >
                     <FontAwesomeIcon icon={faPencil} />
                   </Button>
