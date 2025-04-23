@@ -2,11 +2,14 @@ import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import { paginationToLimitAndOffset } from '../db/utils.server';
 import type { User } from '../entities/User';
+import { formDataToRecord } from '../utils/form.server';
 import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
 import { NotFoundError } from '../validation/NotFoundError.server';
-import { validateFormDataSchema } from '../validation/validator.server';
+import { validateFormDataSchema, validateSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
-import { CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
+import { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from './user-profile-actions';
+import type { ChangePasswordData, EditUserData } from './user-schemas.server';
+import { CHANGE_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -79,7 +82,23 @@ export class UsersService {
   }
 
   async editUser(publicId: string, data: FormData): Promise<User> {
-    const { displayName, role } = validateFormDataSchema(EDIT_USER_SCHEMA, data);
+    const userData = validateFormDataSchema(EDIT_USER_SCHEMA, data);
+    return this.#editUserData(publicId, userData);
+  }
+
+  async editUserProfile(publicId: string, formData: FormData): Promise<User> {
+    const { action, ...data } = formDataToRecord(formData);
+    switch (action) {
+      case PROFILE_ACTION:
+        return this.#editUserData(publicId, validateSchema(EDIT_USER_SCHEMA, { displayName: data.displayName }));
+      case CHANGE_PASSWORD_ACTION:
+        return this.#editUserPassword(publicId, validateSchema(CHANGE_PASSWORD_SCHEMA, data));
+    }
+
+    throw new Error(`Invalid action ${action}`);
+  }
+
+  async #editUserData(publicId: string,  { displayName, role }: EditUserData): Promise<User> {
     const user = await this.getUserById(publicId);
 
     if (displayName !== undefined) {
@@ -94,8 +113,21 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(publicId: string): Promise<void> {
-    await this.#usersRepository.nativeDelete({ publicId });
+  async #editUserPassword(publicId: string, passwords: ChangePasswordData): Promise<User> {
+    if (passwords.newPassword !== passwords.repeatPassword) {
+      // TODO Throw
+    }
+
+    const user = await this.getUserById(publicId);
+    const currentPasswordMatches = await verifyPassword(passwords.currentPassword, user.password);
+    if (!currentPasswordMatches) {
+      // TODO Throw
+    }
+
+    user.password = await hashPassword(passwords.newPassword);
+    await this.#usersRepository.flush();
+
+    return user;
   }
 
   async resetUserPassword(publicId: string): Promise<[User, string]> {
@@ -113,5 +145,9 @@ export class UsersService {
     const password = await hashPassword(plainTextPassword);
 
     return [password, plainTextPassword];
+  }
+
+  async deleteUser(publicId: string): Promise<void> {
+    await this.#usersRepository.nativeDelete({ publicId });
   }
 }

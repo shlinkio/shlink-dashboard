@@ -72,7 +72,7 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
           </Table.Row>
         ))}
       </Table>
-      {orderedServers.map(({ publicId }) => <input key={publicId} type="hidden" name="servers" value={publicId} />)}
+      {orderedServers.map(({ publicId }) => <input key={publicId} type="hidden" name="servers[]" value={publicId} />)}
     </div>
   );
 };

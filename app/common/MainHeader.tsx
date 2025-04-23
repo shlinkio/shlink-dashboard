@@ -57,13 +57,19 @@ export const MainHeader: FC = () => {
                   <FontAwesomeIcon icon={faUser} fixedWidth /> {session.displayName ?? session.username}
                 </DropdownToggle>
                 <DropdownMenu end>
+                  <DropdownItem tag={Link} to="/profile" active={pathname === '/profile'}>
+                    <FontAwesomeIcon icon={faUser} fixedWidth className="tw:mr-0.5" /> My profile
+                  </DropdownItem>
                   <DropdownItem tag={Link} to="/settings" active={pathname.startsWith('/settings')}>
-                    <FontAwesomeIcon icon={faCogs} fixedWidth className="tw:mr-0.5" /> Settings
+                    <FontAwesomeIcon icon={faCogs} fixedWidth className="tw:mr-0.5" /> My settings
                   </DropdownItem>
                   {session.role !== 'managed-user' && (
-                    <DropdownItem tag={Link} to="/manage-servers/1" active={pathname.startsWith('/manage-servers')}>
-                      <FontAwesomeIcon icon={faServer} fixedWidth className="tw:mr-0.5" /> Manage servers
-                    </DropdownItem>
+                    <>
+                      <DropdownItem divider tag="hr" />
+                      <DropdownItem tag={Link} to="/manage-servers/1" active={pathname.startsWith('/manage-servers')}>
+                        <FontAwesomeIcon icon={faServer} fixedWidth className="tw:mr-0.5" /> Manage servers
+                      </DropdownItem>
+                    </>
                   )}
                   <DropdownItem divider tag="hr" />
                   <DropdownItem tag={Link} to="/logout">
