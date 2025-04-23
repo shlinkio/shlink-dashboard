@@ -16,8 +16,8 @@ export const CREATE_USER_SCHEMA = z.object({
 
 export type CreateUserData = z.infer<typeof CREATE_USER_SCHEMA>;
 
-// Enforce passwords to have a lowercase, an uppercase, a number and a special character
 // Enforce passwords to be at least 8 characters long.
+// Enforce passwords to have a lowercase, an uppercase, a number and a special character
 const passwordSchema = z.string().trim().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/);
 
 export const CHANGE_PASSWORD_SCHEMA = z.object({
