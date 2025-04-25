@@ -10,13 +10,14 @@ import { serverContainer } from '../../container/container.server';
 import type { PlainServer } from '../../entities/Server';
 import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
+import { requestQueryParams } from '../../utils/request.server';
 import { DeleteServerModal } from './DeleteServerModal';
 
 export async function loader(
   { request, context, params }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const query = new URL(request.url).searchParams;
+  const query = requestQueryParams(request);
   const currentSearchTerm = query.get('search-term') ?? undefined;
   const page = Number(params.page ?? 1);
   const itemsPerPage = query.has('items-per-page') ? Number(query.get('items-per-page')) : undefined;

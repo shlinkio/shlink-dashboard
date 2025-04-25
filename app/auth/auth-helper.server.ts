@@ -1,6 +1,7 @@
 import type { Session, SessionStorage } from 'react-router';
 import { redirect } from 'react-router';
 import type { Authenticator } from 'remix-auth';
+import { requestQueryParam } from '../utils/request.server';
 import { CREDENTIALS_STRATEGY } from './auth.server';
 import type { SessionData, ShlinkSessionData } from './session-context';
 
@@ -24,7 +25,7 @@ export class AuthHelper {
     ]);
     session.set('sessionData', sessionData);
 
-    const redirectTo = new URL(request.url).searchParams.get('redirect-to');
+    const redirectTo = requestQueryParam(request, 'redirect-to');
     const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
 
     return redirect(successRedirect, {

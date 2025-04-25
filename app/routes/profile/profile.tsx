@@ -7,6 +7,7 @@ import { serverContainer } from '../../container/container.server';
 import { authMiddleware, sessionContext } from '../../middleware/middleware.server';
 import { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from '../../users/user-profile-actions';
 import { UsersService } from '../../users/UsersService.server';
+import { requestQueryParam } from '../../utils/request.server';
 import { changePasswordAction } from './change-password-action.server';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { editProfileActionServer } from './edit-profile-action.server';
@@ -19,7 +20,7 @@ export async function action(
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
-  const action = new URL(request.url).searchParams.get('action');
+  const action = requestQueryParam(request, 'action');
   const formData = await request.formData();
 
   switch (action) {
