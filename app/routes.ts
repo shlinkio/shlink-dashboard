@@ -5,7 +5,7 @@ export default [
   index('./routes/index/home.tsx'),
   route('/login', './routes/login.tsx'),
   route('/logout', './routes/logout.ts'),
-  route('/profile', './routes/profile.tsx'),
+  route('/profile', './routes/profile/profile.tsx'),
   route('/settings/*', './routes/settings.tsx'),
 
   // Single server routes

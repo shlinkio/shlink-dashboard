@@ -2,13 +2,11 @@ import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import { paginationToLimitAndOffset } from '../db/utils.server';
 import type { User } from '../entities/User';
-import { formDataToRecord } from '../utils/form.server';
 import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
 import { NotFoundError } from '../validation/NotFoundError.server';
-import { validateFormDataSchema, validateSchema } from '../validation/validator.server';
+import { validateFormDataSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
-import { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from './user-profile-actions';
-import type { ChangePasswordData, EditUserData } from './user-schemas.server';
+import type { EditUserData } from './user-schemas.server';
 import { CHANGE_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
@@ -81,21 +79,19 @@ export class UsersService {
     }
   }
 
-  async editUser(publicId: string, data: FormData): Promise<User> {
+  async editUser(publicId: string, data: FormData, propsAllowList?: Array<keyof EditUserData>): Promise<User> {
     const userData = validateFormDataSchema(EDIT_USER_SCHEMA, data);
-    return this.#editUserData(publicId, userData);
-  }
-
-  async editUserProfile(publicId: string, formData: FormData): Promise<User> {
-    const { action, ...data } = formDataToRecord(formData);
-    switch (action) {
-      case PROFILE_ACTION:
-        return this.#editUserData(publicId, validateSchema(EDIT_USER_SCHEMA, { displayName: data.displayName }));
-      case CHANGE_PASSWORD_ACTION:
-        return this.#editUserPassword(publicId, validateSchema(CHANGE_PASSWORD_SCHEMA, data));
+    if (!propsAllowList?.length) {
+      return this.#editUserData(publicId, userData);
     }
 
-    throw new Error(`Invalid action ${action}`);
+    const allowedUserData: EditUserData = {};
+    propsAllowList.forEach((prop) => {
+      // @ts-expect-error We are assigning the same prop from origin and destination, so the type should be correct
+      allowedUserData[prop] = userData[prop];
+    });
+
+    return this.#editUserData(publicId, allowedUserData);
   }
 
   async #editUserData(publicId: string,  { displayName, role }: EditUserData): Promise<User> {
@@ -113,7 +109,8 @@ export class UsersService {
     return user;
   }
 
-  async #editUserPassword(publicId: string, passwords: ChangePasswordData): Promise<User> {
+  async editUserPassword(publicId: string, formData: FormData): Promise<User> {
+    const passwords = validateFormDataSchema(CHANGE_PASSWORD_SCHEMA, formData);
     if (passwords.newPassword !== passwords.repeatPassword) {
       // TODO Throw
     }
