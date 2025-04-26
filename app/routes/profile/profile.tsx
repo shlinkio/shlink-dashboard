@@ -33,7 +33,7 @@ export async function action(
 
 export default function Profile() {
   const sessionData = useSession();
-  const profileFetcher = useFetcher();
+  const profileFetcher = useFetcher<typeof editProfileActionServer>();
   const changePasswordFetcher = useFetcher<typeof changePasswordAction>();
 
   return (
