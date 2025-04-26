@@ -6,6 +6,7 @@ import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server'
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
+import { PasswordMismatchError } from './PasswordMismatchError.server';
 import type { EditUserData } from './user-schemas.server';
 import { CHANGE_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
@@ -112,13 +113,13 @@ export class UsersService {
   async editUserPassword(publicId: string, formData: FormData): Promise<User> {
     const passwords = validateFormDataSchema(CHANGE_PASSWORD_SCHEMA, formData);
     if (passwords.newPassword !== passwords.repeatPassword) {
-      // TODO Throw
+      throw new PasswordMismatchError();
     }
 
     const user = await this.getUserById(publicId);
     const currentPasswordMatches = await verifyPassword(passwords.currentPassword, user.password);
     if (!currentPasswordMatches) {
-      // TODO Throw
+      throw new IncorrectPasswordError();
     }
 
     user.password = await hashPassword(passwords.newPassword);
