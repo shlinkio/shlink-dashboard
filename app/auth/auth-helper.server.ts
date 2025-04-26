@@ -55,8 +55,16 @@ export class AuthHelper {
    * Refresh an active session expiration, to avoid expiring cookies for users which are active in the app
    */
   async refreshSessionExpiration(request: Request): Promise<string | undefined> {
+    return this.updateSession(request, {});
+  }
+
+  /**
+   * Update and commit current session, if any, with the changed information
+   */
+  async updateSession(request: Request, newSessionData: Partial<SessionData>): Promise<string | undefined> {
     const [sessionData, session] = await this.sessionAndData(request);
     if (sessionData) {
+      session.set('sessionData', { ...sessionData, ...newSessionData });
       return await this.#sessionStorage.commitSession(session);
     }
 

@@ -1,6 +1,7 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { ActionFunctionArgs, unstable_RouterContextProvider } from 'react-router';
-import { useFetcher } from 'react-router';
+import { data , useFetcher } from 'react-router';
+import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
@@ -18,14 +19,23 @@ export const unstable_middleware = [authMiddleware];
 export async function action(
   { request, context }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
+  authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
   const action = requestQueryParam(request, 'action');
   const formData = await request.formData();
 
   switch (action) {
-    case PROFILE_ACTION:
-      return editProfileActionServer(sessionData.publicId, formData, usersService);
+    case PROFILE_ACTION: {
+      const { user, ...payload } = await editProfileActionServer(sessionData.publicId, formData, usersService);
+      const sessionCookie = await authHelper.updateSession(request, { displayName: user.displayName });
+
+      return data(
+        payload,
+        sessionCookie ? {
+          headers: { 'Set-Cookie': sessionCookie },
+        } : undefined);
+    }
     case CHANGE_PASSWORD_ACTION:
       return changePasswordAction(sessionData.publicId, formData, usersService);
   }
