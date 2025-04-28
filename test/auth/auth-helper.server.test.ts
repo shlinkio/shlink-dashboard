@@ -130,7 +130,7 @@ describe('AuthHelper', () => {
   });
 
   describe('updateSession', () => {
-    it.only('commits session with new data', async () => {
+    it('commits session with new data', async () => {
       const authHelper = setUp();
       const request = buildRequest();
       const newSession: Partial<SessionData> = { username: 'updated', role: 'advanced-user' };
