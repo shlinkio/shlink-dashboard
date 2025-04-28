@@ -7,12 +7,12 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { useFetcher } from 'react-router';
 import type { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from '../../users/user-profile-actions';
 
-export type EditProfileFormProps = PropsWithChildren<{
+export type ProfileFormProps = PropsWithChildren<{
   fetcher: ReturnType<typeof useFetcher<{ ok: boolean }>>;
   action: typeof PROFILE_ACTION | typeof CHANGE_PASSWORD_ACTION;
 }>;
 
-export const ProfileForm: FC<EditProfileFormProps> = ({ fetcher, children, action }) => {
+export const ProfileForm: FC<ProfileFormProps> = ({ fetcher, children, action }) => {
   const formAction = useMemo(() => `?${new URLSearchParams({ action }).toString()}`, [action]);
   const { Form, state, data } = fetcher;
   const savingProfile = state === 'submitting';
