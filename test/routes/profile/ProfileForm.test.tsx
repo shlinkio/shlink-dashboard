@@ -34,7 +34,6 @@ function TestComponent({ newStateAfterRender, state: initialState, data }: SetUp
 }
 
 describe('<ProfileForm />', () => {
-
   const setUp = async ({ state, data, newStateAfterRender = state }: SetUpOptions = {}) => {
     const renderResult = renderWithEvents(
       <TestComponent state={state} data={data} newStateAfterRender={newStateAfterRender} />,
