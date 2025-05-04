@@ -1,5 +1,9 @@
 import '@testing-library/jest-dom/vitest';
 import axe from 'axe-core';
+import { URLSearchParams } from 'node:url';
+
+// @ts-expect-error Workaround for https://github.com/vitest-dev/vitest/issues/7906
+globalThis.URLSearchParams = URLSearchParams;
 
 axe.configure({
   checks: [
