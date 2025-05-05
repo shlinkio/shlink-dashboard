@@ -3,7 +3,7 @@ import { PasswordMismatchError } from '../../users/PasswordMismatchError.server'
 import type { UsersService } from '../../users/UsersService.server';
 import { ValidationError } from '../../validation/ValidationError.server';
 
-const INVALID_PASSWORD_FORMAT = 'Passwords must be at least 8-characters long and include a lowercase, an uppercase, a number and a special character';
+export const INVALID_PASSWORD_FORMAT = 'Passwords must be at least 8-characters long and include a lowercase, an uppercase, a number and a special character';
 
 export type ChangePasswordResult =
   | { ok: true; invalidFields?: undefined }
@@ -17,7 +17,7 @@ export async function changePasswordAction(
   try {
     await usersService.editUserPassword(userPublicId, formData);
     return { ok: true };
-  } catch (e: any) {
+  } catch (e) {
     if (e instanceof ValidationError) {
       return {
         ok: false,
@@ -41,6 +41,6 @@ export async function changePasswordAction(
       };
     }
 
-    return { ok: false, invalidFields: {} };
+    throw e;
   }
 }
