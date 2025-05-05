@@ -11,7 +11,7 @@ import { UsersService } from '../../users/UsersService.server';
 import { requestQueryParam } from '../../utils/request.server';
 import { changePasswordAction } from './change-password-action.server';
 import { ChangePasswordForm } from './ChangePasswordForm';
-import { editProfileActionServer } from './edit-profile-action.server';
+import { editProfileAction } from './edit-profile-action.server';
 import { EditProfileForm } from './EditProfileForm';
 
 export const unstable_middleware = [authMiddleware];
@@ -27,7 +27,7 @@ export async function action(
 
   switch (action) {
     case PROFILE_ACTION: {
-      const { user, ...payload } = await editProfileActionServer(sessionData.publicId, formData, usersService);
+      const { user, ...payload } = await editProfileAction(sessionData.publicId, formData, usersService);
       const sessionCookie = await authHelper.updateSession(request, { displayName: user.displayName });
 
       return data(
@@ -43,7 +43,7 @@ export async function action(
 
 export default function Profile() {
   const sessionData = useSession();
-  const profileFetcher = useFetcher<typeof editProfileActionServer>();
+  const profileFetcher = useFetcher<typeof editProfileAction>();
   const changePasswordFetcher = useFetcher<typeof changePasswordAction>();
 
   return (
