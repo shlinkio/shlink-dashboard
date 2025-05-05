@@ -12,7 +12,8 @@ describe('AuthHelper', () => {
     sessionData: { displayName: 'foo' },
   });
   const getSessionData = vi.fn().mockReturnValue(defaultSessionData);
-  const getSession = vi.fn().mockResolvedValue({ get: getSessionData, set: vi.fn() });
+  const setSessionData = vi.fn();
+  const getSession = vi.fn().mockResolvedValue({ get: getSessionData, set: setSessionData });
   const commitSession = vi.fn();
   const destroySession = vi.fn();
   const sessionStorage: SessionStorage = fromPartial({ getSession, commitSession, destroySession });
@@ -125,6 +126,20 @@ describe('AuthHelper', () => {
 
       expect(cookie).toEqual('the-cookie-value');
       expect(commitSession).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateSession', () => {
+    it('commits session with new data', async () => {
+      const authHelper = setUp();
+      const request = buildRequest();
+      const newSession: Partial<SessionData> = { username: 'updated', role: 'advanced-user' };
+
+      getSessionData.mockReturnValue(defaultSessionData.sessionData);
+
+      await authHelper.updateSession(request, newSession);
+
+      expect(setSessionData).toHaveBeenCalledWith('sessionData', { ...defaultSessionData.sessionData, ...newSession });
     });
   });
 });

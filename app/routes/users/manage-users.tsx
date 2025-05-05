@@ -6,7 +6,7 @@ export const unstable_middleware = [authMiddleware, ensureAdminMiddleware];
 
 export default function ManageUsers() {
   return (
-    <Layout className="tw:flex tw:flex-col tw:gap-y-4">
+    <Layout flexColumn>
       <Outlet />
     </Layout>
   );

@@ -131,8 +131,9 @@ describe('ServersService', () => {
 
   describe('setServersForUser', () => {
     it.each([
-      { servers: 'not an array' },
-      { servers: ['not a uuid'] },
+      { 'servers': ['not a key array'] },
+      { 'servers[]': 'not an array' },
+      { 'servers[]': ['not a uuid'] },
     ])('throws if invalid data is provided', async (data) => {
       await expect(service.setServersForUser('123', createFormData(data))).rejects.toEqual(
         expect.objectContaining({ name: 'ValidationError' }),
@@ -141,9 +142,9 @@ describe('ServersService', () => {
     });
 
     it('delegates into repository', async () => {
-      const data = { servers: [crypto.randomUUID(), crypto.randomUUID()] };
-      await service.setServersForUser('123', createFormData(data));
-      expect(setServersForUser).toHaveBeenCalledWith('123', data);
+      const servers = [crypto.randomUUID(), crypto.randomUUID()];
+      await service.setServersForUser('123', createFormData({ 'servers[]': servers }));
+      expect(setServersForUser).toHaveBeenCalledWith('123', { servers });
     });
   });
 });

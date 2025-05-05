@@ -6,7 +6,9 @@ import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server'
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
-import { CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
+import { PasswordMismatchError } from './PasswordMismatchError.server';
+import type { EditUserData } from './user-schemas.server';
+import { CHANGE_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -78,8 +80,22 @@ export class UsersService {
     }
   }
 
-  async editUser(publicId: string, data: FormData): Promise<User> {
-    const { displayName, role } = validateFormDataSchema(EDIT_USER_SCHEMA, data);
+  async editUser(publicId: string, data: FormData, propsAllowList?: Array<keyof EditUserData>): Promise<User> {
+    const userData = validateFormDataSchema(EDIT_USER_SCHEMA, data);
+    if (!propsAllowList?.length) {
+      return this.#editUserData(publicId, userData);
+    }
+
+    const allowedUserData: EditUserData = {};
+    propsAllowList.forEach((prop) => {
+      // @ts-expect-error We are assigning the same prop from origin and destination, so the type should be correct
+      allowedUserData[prop] = userData[prop];
+    });
+
+    return this.#editUserData(publicId, allowedUserData);
+  }
+
+  async #editUserData(publicId: string,  { displayName, role }: EditUserData): Promise<User> {
     const user = await this.getUserById(publicId);
 
     if (displayName !== undefined) {
@@ -94,8 +110,22 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(publicId: string): Promise<void> {
-    await this.#usersRepository.nativeDelete({ publicId });
+  async editUserPassword(publicId: string, formData: FormData): Promise<User> {
+    const passwords = validateFormDataSchema(CHANGE_PASSWORD_SCHEMA, formData);
+    if (passwords.newPassword !== passwords.repeatPassword) {
+      throw new PasswordMismatchError();
+    }
+
+    const user = await this.getUserById(publicId);
+    const currentPasswordMatches = await verifyPassword(passwords.currentPassword, user.password);
+    if (!currentPasswordMatches) {
+      throw new IncorrectPasswordError();
+    }
+
+    user.password = await hashPassword(passwords.newPassword);
+    await this.#usersRepository.flush();
+
+    return user;
   }
 
   async resetUserPassword(publicId: string): Promise<[User, string]> {
@@ -113,5 +143,9 @@ export class UsersService {
     const password = await hashPassword(plainTextPassword);
 
     return [password, plainTextPassword];
+  }
+
+  async deleteUser(publicId: string): Promise<void> {
+    await this.#usersRepository.nativeDelete({ publicId });
   }
 }

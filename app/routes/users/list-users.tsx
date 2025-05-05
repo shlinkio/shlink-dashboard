@@ -22,6 +22,7 @@ import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
+import { requestQueryParams } from '../../utils/request.server';
 import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
 
@@ -29,7 +30,7 @@ export async function loader(
   { request, params }: LoaderFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const query = new URL(request.url).searchParams;
+  const query = requestQueryParams(request);
   const orderByParam = query.get('order-by');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
   const currentParams = {

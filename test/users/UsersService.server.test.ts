@@ -228,6 +228,46 @@ describe('UsersService', () => {
       expect(user).toEqual(expect.objectContaining(expectedResult));
       expect(flush).toHaveBeenCalled();
     });
+
+    it.each([
+      {
+        allowList: undefined,
+        expectedNewDisplayName: 'new display name',
+        expectedNewRole: 'managed-user',
+      },
+      {
+        allowList: [],
+        expectedNewDisplayName: 'new display name',
+        expectedNewRole: 'managed-user',
+      },
+      {
+        allowList: ['displayName' as const],
+        expectedNewDisplayName: 'new display name',
+        expectedNewRole: 'admin',
+      },
+      {
+        allowList: ['role' as const],
+        expectedNewDisplayName: 'initial_display_name',
+        expectedNewRole: 'managed-user',
+      },
+      {
+        allowList: ['role' as const, 'displayName' as const],
+        expectedNewDisplayName: 'new display name',
+        expectedNewRole: 'managed-user',
+      },
+    ])('skips props not defined in the allowlist', async ({ allowList, expectedNewDisplayName, expectedNewRole }) => {
+      findOne.mockResolvedValue(fromPartial<User>({
+        publicId: 'abc123',
+        displayName: 'initial_display_name',
+        role: 'admin',
+      }));
+
+      const newData = createFormData({ displayName: 'new display name', role: 'managed-user' });
+      const user = await usersService.editUser('abc123', newData, allowList);
+
+      expect(user.displayName).toEqual(expectedNewDisplayName);
+      expect(user.role).toEqual(expectedNewRole);
+    });
   });
 
   describe('resetPassword', () => {
@@ -239,6 +279,85 @@ describe('UsersService', () => {
 
       expect(user.publicId).toEqual(expectedUser.publicId);
       expect(await verifyPassword(newPassword, user.password)).toEqual(true);
+      expect(flush).toHaveBeenCalled();
+    });
+  });
+
+  describe('editUserPassword', () => {
+    it.each([
+      // Missing required fields
+      {},
+      // New passwords do not match length requirements
+      {
+        currentPassword: '1234',
+        newPassword: 'abc123',
+        repeatPassword: 'abc123',
+      },
+      // New passwords do not match pattern requirements
+      {
+        currentPassword: '1234',
+        newPassword: 'Aa12345678',
+        repeatPassword: 'Aa12345678',
+      },
+    ])('throws error if provided data is invalid', async (passwords) => {
+      await expect(usersService.editUserPassword('abc123', createFormData(passwords))).rejects.toThrow(
+        expect.objectContaining({ message: 'Provided data is invalid' }),
+      );
+      expect(findOne).not.toHaveBeenCalled();
+      expect(flush).not.toHaveBeenCalled();
+    });
+
+    it('throws error if new passwords do not match', async () => {
+      const passwords = {
+        currentPassword: '1234',
+        newPassword: 'Aa12345678!',
+        repeatPassword: 'Bb12345678!',
+      };
+
+      await expect(usersService.editUserPassword('abc123', createFormData(passwords))).rejects.toThrow(
+        expect.objectContaining({
+          name: 'PasswordMismatchError',
+          message: 'Passwords do not match',
+        }),
+      );
+      expect(findOne).not.toHaveBeenCalled();
+      expect(flush).not.toHaveBeenCalled();
+    });
+
+    it('throws error if current password does not match logged-in user', async () => {
+      findOne.mockResolvedValue(fromPartial<User>({
+        password: await hashPassword('old_password'),
+      }));
+      const passwords = {
+        currentPassword: 'not_the_right_one',
+        newPassword: 'Aa12345678!',
+        repeatPassword: 'Aa12345678!',
+      };
+
+      await expect(usersService.editUserPassword('abc123', createFormData(passwords))).rejects.toThrow(
+        expect.objectContaining({
+          name: 'IncorrectPasswordError',
+          message: 'Current password is invalid',
+        }),
+      );
+      expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
+      expect(flush).not.toHaveBeenCalled();
+    });
+
+    it('updates user password if provided data is correct', async () => {
+      findOne.mockResolvedValue(fromPartial<User>({
+        password: await hashPassword('old_password'),
+      }));
+      const passwords = {
+        currentPassword: 'old_password',
+        newPassword: 'Aa12345678!',
+        repeatPassword: 'Aa12345678!',
+      };
+
+      const result = await usersService.editUserPassword('abc123', createFormData(passwords));
+
+      expect(await verifyPassword('Aa12345678!', result.password)).toEqual(true);
+      expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
       expect(flush).toHaveBeenCalled();
     });
   });

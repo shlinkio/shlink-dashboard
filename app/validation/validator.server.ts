@@ -1,5 +1,6 @@
 import type { ZodObject, ZodRawShape } from 'zod';
-import { ZodArray , ZodError } from 'zod';
+import { ZodError } from 'zod';
+import { formDataToRecord } from '../utils/form.server';
 import { ValidationError } from './ValidationError.server';
 
 /**
@@ -10,7 +11,7 @@ import { ValidationError } from './ValidationError.server';
  */
 export function validateSchema<T extends ZodRawShape>(
   schema: ZodObject<T>,
-  object: unknown,
+  object: Record<string, unknown>,
 ): ReturnType<typeof schema['parse']> {
   try {
     return schema.parse(object);
@@ -33,13 +34,5 @@ export function validateFormDataSchema<T extends ZodRawShape>(
   schema: ZodObject<T>,
   formData: FormData,
 ): ReturnType<typeof schema['parse']> {
-  const fields = Object.keys(schema.shape);
-  const object: Record<string, FormDataEntryValue | FormDataEntryValue[] | undefined> = {};
-
-  fields.forEach((field) => {
-    const isArray = schema.shape[field] instanceof ZodArray;
-    object[field] = isArray ? formData.getAll(field) : (formData.get(field) ?? undefined);
-  });
-
-  return validateSchema(schema, object);
+  return validateSchema(schema, formDataToRecord(formData));
 }
