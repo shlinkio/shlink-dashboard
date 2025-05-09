@@ -28,11 +28,11 @@ import { ShlinkLogo } from './ShlinkLogo';
 
 export const MainHeader: FC = () => {
   const session = useSession();
-  const [isOpen, toggleCollapse] = useToggle();
+  const { flag: isOpen, toggle: toggleCollapse } = useToggle(false, true);
   const { pathname } = useLocation();
 
   return (
-    <Navbar color="primary" dark fixed="top" className="tw:text-white tw:bg-lm-brand tw:dark:bg-dm-brand" expand="md">
+    <Navbar color="primary" dark fixed="top" className="tw:text-white tw:bg-lm-main tw:dark:bg-dm-main" expand="md">
       <NavbarBrand tag={Link} to="/" className="tw:flex tw:gap-2">
         <ShlinkLogo className="tw:w-[26px]" color="white" /> Shlink
       </NavbarBrand>
