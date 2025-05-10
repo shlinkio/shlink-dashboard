@@ -1,5 +1,5 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
-import type { ActionFunctionArgs, unstable_RouterContextProvider } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { data , useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
@@ -21,7 +21,7 @@ export async function action(
   usersService: UsersService = serverContainer[UsersService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
+  const sessionData = context.get(sessionContext);
   const action = requestQueryParam(request, 'action');
   const formData = await request.formData();
 

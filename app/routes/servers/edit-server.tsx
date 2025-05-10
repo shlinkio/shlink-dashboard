@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, unstable_RouterContextProvider } from 'react-router';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect , useFetcher,useLoaderData  } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { sessionContext } from '../../middleware/middleware.server';
@@ -11,7 +11,7 @@ export async function loader(
   { params, context }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
+  const sessionData = context.get(sessionContext);
   const { serverPublicId } = params;
 
   try {
@@ -30,7 +30,7 @@ export async function action(
   { request, params, context }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
+  const sessionData = context.get(sessionContext);
   const { serverPublicId } = params;
   const formData = await request.formData();
 

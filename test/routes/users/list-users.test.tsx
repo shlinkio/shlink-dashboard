@@ -59,9 +59,9 @@ describe('list-users', () => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
-          Component: (props) => (
+          Component: () => (
             <SessionProvider value={currentUsername ? fromPartial({ username: currentUsername }) : null}>
-              <ListUsers {...props} />
+              <ListUsers />
             </SessionProvider>
           ),
           HydrateFallback: () => null,

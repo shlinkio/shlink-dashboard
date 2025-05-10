@@ -114,9 +114,9 @@ describe('list-servers', () => {
       const Stub = createRoutesStub([
         {
           path,
-          Component: (props) => (
+          Component: () => (
             <SessionProvider value={fromPartial({ role })}>
-              <ListServers {...props} />
+              <ListServers  />
             </SessionProvider>
           ),
           HydrateFallback: () => null,
