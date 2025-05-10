@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
 import clsx from 'clsx';
 import { useState } from 'react';
-import type { LoaderFunctionArgs, unstable_RouterContextProvider } from 'react-router';
+import type { LoaderFunctionArgs } from 'react-router';
 import { href, Link , useLoaderData,useNavigate  } from 'react-router';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
@@ -21,7 +21,7 @@ export async function loader(
   const currentSearchTerm = query.get('search-term') ?? undefined;
   const page = Number(params.page ?? 1);
   const itemsPerPage = query.has('items-per-page') ? Number(query.get('items-per-page')) : undefined;
-  const sessionData = (context as unstable_RouterContextProvider).get(sessionContext);
+  const sessionData = context.get(sessionContext);
   const populateUsers = sessionData.role === 'admin' && !query.has('no-users');
   const servers = await serversService.getUserServers(sessionData.publicId, {
     populateUsers,

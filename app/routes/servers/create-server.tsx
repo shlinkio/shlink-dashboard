@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, unstable_RouterContextProvider } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { sessionContext } from '../../middleware/middleware.server';
@@ -9,7 +9,7 @@ export async function action(
   { request, context }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const session = (context as unstable_RouterContextProvider).get(sessionContext);
+  const session = context.get(sessionContext);
   const formData = await  request.formData();
 
   // TODO Handle error when creating a server
