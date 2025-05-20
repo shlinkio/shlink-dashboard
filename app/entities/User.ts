@@ -15,6 +15,7 @@ export class User extends BaseEntity {
   displayName!: string | null;
   createdAt!: Date;
   servers: Collection<Server>;
+  tempPassword!: boolean;
 
   constructor() {
     super();
@@ -40,6 +41,11 @@ export const UserSchema = new EntitySchema({
     },
     username: { type: 'string', unique: true },
     password: { type: 'string' },
+    tempPassword: {
+      type: 'boolean',
+      name: 'temp_password',
+      onCreate: () => false,
+    },
     role: {
       type: 'string',
       enum: true,

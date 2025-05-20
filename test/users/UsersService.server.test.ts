@@ -176,7 +176,7 @@ describe('UsersService', () => {
     });
 
     it('creates a user with a randomly generated password', async () => {
-      createUser.mockImplementation(async (firstArg) => firstArg);
+      createUser.mockImplementation(async (firstArg) => ({ ...firstArg, password: firstArg.tempPassword }));
 
       const data = {
         username: 'username',

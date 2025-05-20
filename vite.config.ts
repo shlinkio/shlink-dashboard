@@ -4,9 +4,6 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
-const DEFAULT_NODE_VERSION = 'v22.10.0';
-const nodeVersion = process.version ?? DEFAULT_NODE_VERSION;
-
 export default defineConfig({
   plugins: [
     // In a test env, load react plugin, not react router one
@@ -80,10 +77,8 @@ export default defineConfig({
     // be resolved for the main package and dependencies who have a peer dependency in react-router.
     // This ensures always the same version is resolved.
     // See https://github.com/remix-run/react-router/issues/12785 for details
-    alias: nodeVersion > DEFAULT_NODE_VERSION
-      ? {
-        'react-router': resolve(__dirname, 'node_modules/react-router/dist/development/index.mjs'),
-      }
-      : undefined,
+    alias: {
+      'react-router': resolve(__dirname, 'node_modules/react-router/dist/development/index.mjs'),
+    },
   },
 });
