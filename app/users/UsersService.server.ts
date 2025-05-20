@@ -66,10 +66,10 @@ export class UsersService {
 
   async createUser(data: FormData): Promise<[User, string]> {
     const userData = validateFormDataSchema(CREATE_USER_SCHEMA, data);
-    const [password, plainTextPassword] = await this.#generatePassword();
+    const [tempPassword, plainTextPassword] = await this.#generatePassword();
 
     try {
-      const user = await this.#usersRepository.createUser({ ...userData, password });
+      const user = await this.#usersRepository.createUser({ ...userData, tempPassword });
       return [user, plainTextPassword];
     } catch (e) {
       if (e instanceof UniqueConstraintViolationException) {
@@ -110,6 +110,9 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Changes the password for a user, and sets the new password as not temporary
+   */
   async editUserPassword(publicId: string, formData: FormData): Promise<User> {
     const passwords = validateFormDataSchema(CHANGE_PASSWORD_SCHEMA, formData);
     if (passwords.newPassword !== passwords.repeatPassword) {
@@ -123,6 +126,8 @@ export class UsersService {
     }
 
     user.password = await hashPassword(passwords.newPassword);
+    user.tempPassword = false;
+
     await this.#usersRepository.flush();
 
     return user;

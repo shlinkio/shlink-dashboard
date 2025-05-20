@@ -27,8 +27,17 @@ export class UsersRepository extends BaseEntityRepository<User> {
     );
   }
 
-  async createUser(userData: CreateUserData & { password: string }): Promise<User> {
-    const user = this.create({ ...userData, createdAt: new Date(), publicId: crypto.randomUUID() });
+  /**
+   * Create a user with a temporary password
+   */
+  async createUser({ tempPassword: password, ...userData }: CreateUserData & { tempPassword: string }): Promise<User> {
+    const user = this.create({
+      ...userData,
+      password,
+      tempPassword: true,
+      createdAt: new Date(),
+      publicId: crypto.randomUUID(),
+    });
     await this.em.persistAndFlush(user);
 
     return user;
