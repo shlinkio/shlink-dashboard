@@ -41,11 +41,17 @@ export class AuthHelper {
   }
 
   async getSession(request: Request): Promise<SessionData | undefined>;
-  async getSession(request: Request, redirectTo: string): Promise<SessionData>;
-  async getSession(request: Request, redirectTo?: string): Promise<SessionData | undefined> {
+  async getSession(request: Request, onMissingSessionRedirectTo: string): Promise<SessionData>;
+  async getSession(request: Request, onMissingSessionRedirectTo?: string): Promise<SessionData | undefined> {
     const [sessionData] = await this.sessionAndData(request);
-    if (redirectTo && !sessionData) {
-      throw redirect(redirectTo);
+    if (onMissingSessionRedirectTo && !sessionData) {
+      throw redirect(onMissingSessionRedirectTo);
+    }
+
+    // Redirect logged-in users with a temp password to the change-password form, unless that's already the active route
+    if (sessionData?.tempPassword && new URL(request.url).pathname !== '/change-password') {
+      // TODO Propagate redirectTo
+      throw redirect('/change-password');
     }
 
     return sessionData;
