@@ -6,6 +6,7 @@ export type SessionData = {
   displayName: string | null;
   username: string;
   role: Role;
+  tempPassword: boolean;
 };
 
 export type ShlinkSessionData = {
