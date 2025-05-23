@@ -1,6 +1,7 @@
 import { LabelledRevealablePasswordInput } from '@shlinkio/shlink-frontend-kit/tailwind';
 import type { FC } from 'react';
 import type { useFetcher } from 'react-router';
+import { ChangePasswordFields } from '../../users/components/ChangePasswordFields';
 import { CHANGE_PASSWORD_ACTION } from '../../users/user-profile-actions';
 import type { changePasswordAction } from './change-password-action.server';
 import { ProfileForm } from './ProfileForm';
@@ -17,19 +18,9 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = ({ fetcher }) => 
       name="currentPassword"
       error={fetcher.data?.invalidFields?.currentPassword}
     />
-    <LabelledRevealablePasswordInput
-      label="New password"
-      name="newPassword"
-      required
-      minLength={8}
-      error={fetcher.data?.invalidFields?.newPassword}
-    />
-    <LabelledRevealablePasswordInput
-      label="Repeat password"
-      name="repeatPassword"
-      required
-      minLength={8}
-      error={fetcher.data?.invalidFields?.repeatPassword}
+    <ChangePasswordFields
+      newPasswordError={fetcher.data?.invalidFields?.newPassword}
+      repeatPasswordError={fetcher.data?.invalidFields?.repeatPassword}
     />
   </ProfileForm>
 );

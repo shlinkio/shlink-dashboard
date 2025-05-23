@@ -6,9 +6,10 @@ import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server'
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
+import { NoTempPasswordError } from './NoTempPasswordError.server';
 import { PasswordMismatchError } from './PasswordMismatchError.server';
-import type { EditUserData } from './user-schemas.server';
-import { CHANGE_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
+import type { ChangeTempPassword, EditUserData  } from './user-schemas.server';
+import { CHANGE_PASSWORD_SCHEMA, CHANGE_TEMP_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -111,21 +112,44 @@ export class UsersService {
   }
 
   /**
-   * Changes the password for a user, and sets the new password as not temporary
+   * Update a user's non-temporary password
    */
   async editUserPassword(publicId: string, formData: FormData): Promise<User> {
     const passwords = validateFormDataSchema(CHANGE_PASSWORD_SCHEMA, formData);
-    if (passwords.newPassword !== passwords.repeatPassword) {
+    return this.#verifyUserPasswordsToEdit(publicId, passwords, async (user) => {
+      const currentPasswordMatches = await verifyPassword(passwords.currentPassword, user.password);
+      if (!currentPasswordMatches) {
+        throw new IncorrectPasswordError();
+      }
+    });
+  }
+
+  /**
+   * Updates a user's temporary password
+   */
+  async editUserTempPassword(publicId: string, formData: FormData): Promise<User> {
+    const passwords = validateFormDataSchema(CHANGE_TEMP_PASSWORD_SCHEMA, formData);
+    return this.#verifyUserPasswordsToEdit(publicId, passwords, async (user) => {
+      if (!user.tempPassword) {
+        throw new NoTempPasswordError();
+      }
+    });
+  }
+
+  async #verifyUserPasswordsToEdit<Passwords extends ChangeTempPassword>(
+    publicId: string,
+    passwords: Passwords,
+    validateUser: (user: User) => Promise<void>,
+  ): Promise<User> {
+    const { newPassword, repeatPassword } = passwords;
+    if (newPassword !== repeatPassword) {
       throw new PasswordMismatchError();
     }
 
     const user = await this.getUserById(publicId);
-    const currentPasswordMatches = await verifyPassword(passwords.currentPassword, user.password);
-    if (!currentPasswordMatches) {
-      throw new IncorrectPasswordError();
-    }
+    await validateUser(user);
 
-    user.password = await hashPassword(passwords.newPassword);
+    user.password = await hashPassword(newPassword);
     user.tempPassword = false;
 
     await this.#usersRepository.flush();
