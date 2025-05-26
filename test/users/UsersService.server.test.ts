@@ -175,6 +175,18 @@ describe('UsersService', () => {
       await expect(usersService.createUser(formData)).rejects.toThrowError(new DuplicatedEntryError('username'));
     });
 
+    it('re-throws unknown errors verbatim', async () => {
+      const error = new Error('Something failed');
+      createUser.mockRejectedValue(error);
+
+      const formData = createFormData({
+        username: 'username',
+        role: 'managed-user',
+      });
+
+      await expect(usersService.createUser(formData)).rejects.toThrowError(error);
+    });
+
     it('creates a user with a randomly generated password', async () => {
       createUser.mockImplementation(async (firstArg) => ({ ...firstArg, password: firstArg.tempPassword }));
 
@@ -359,6 +371,25 @@ describe('UsersService', () => {
       expect(await verifyPassword('Aa12345678!', result.password)).toEqual(true);
       expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
       expect(flush).toHaveBeenCalled();
+    });
+  });
+
+  describe('editUserTempPassword', () => {
+    it('throws error if current password is not temporary', async () => {
+      findOne.mockResolvedValue(fromPartial<User>({ tempPassword: false }));
+      const passwords = {
+        newPassword: 'Aa12345678!',
+        repeatPassword: 'Aa12345678!',
+      };
+
+      await expect(usersService.editUserTempPassword('abc123', createFormData(passwords))).rejects.toThrow(
+        expect.objectContaining({
+          name: 'NoTempPasswordError',
+          message: 'Current password is not temporary. Change your password from the profile',
+        }),
+      );
+      expect(findOne).toHaveBeenCalledWith({ publicId: 'abc123' });
+      expect(flush).not.toHaveBeenCalled();
     });
   });
 });
