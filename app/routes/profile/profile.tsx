@@ -34,7 +34,8 @@ export async function action(
         payload,
         sessionCookie ? {
           headers: { 'Set-Cookie': sessionCookie },
-        } : undefined);
+        } : undefined,
+      );
     }
     case CHANGE_PASSWORD_ACTION:
       return changePasswordAction(sessionData.publicId, formData, usersService);

@@ -24,7 +24,7 @@ export async function loader(
   const sessionData = await (isPublicRoute
     ? authHelper.getSession(request)
     // For non-public routes, redirect to login route
-    : authHelper.getSession(request, `/login?redirect-to=${encodeURIComponent(pathname)}`)
+    : authHelper.getSession(request, `/login?${new URLSearchParams({ 'redirect-to': pathname })}`)
   );
 
   const settings = sessionData && (await settingsService.userSettings(sessionData.publicId));

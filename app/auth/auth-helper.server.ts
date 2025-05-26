@@ -50,7 +50,6 @@ export class AuthHelper {
 
     // Redirect logged-in users with a temp password to the change-password form, unless that's already the active route
     if (sessionData?.tempPassword && new URL(request.url).pathname !== '/change-password') {
-      // TODO Propagate redirectTo
       throw redirect('/change-password');
     }
 
@@ -59,6 +58,7 @@ export class AuthHelper {
 
   /**
    * Refresh an active session expiration, to avoid expiring cookies for users which are active in the app
+   * @todo Return a response with the cookie already set, as login and logout methods do
    */
   async refreshSessionExpiration(request: Request): Promise<string | undefined> {
     return this.updateSession(request, {});
@@ -66,6 +66,7 @@ export class AuthHelper {
 
   /**
    * Update and commit current session, if any, with the changed information
+   * @todo Return a response with the cookie already set, as login and logout methods do
    */
   async updateSession(request: Request, newSessionData: Partial<SessionData>): Promise<string | undefined> {
     const [sessionData, session] = await this.sessionAndData(request);
