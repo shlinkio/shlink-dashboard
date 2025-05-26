@@ -159,7 +159,7 @@ export default function ListUsers() {
                 </Table.Row>
               )}
               {users.map((user) => (
-                <Table.Row key={user.id} className="tw:relative">
+                <Table.Row key={user.publicId} className="tw:relative">
                   <Table.Cell columnName="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
                   <Table.Cell columnName="Username:">{user.username}</Table.Cell>
                   <Table.Cell columnName="Display name:">{user.displayName ?? '-'}</Table.Cell>

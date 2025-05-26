@@ -23,7 +23,7 @@ export async function action(
   { request, context }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
-): Promise<ReturnType<typeof data> | { ok: false; error: string }> {
+): Promise<ReturnType<typeof data<{ ok: true }>> | { ok: false; error: string }> {
   const sessionData = context.get(sessionContext);
   const formData = await request.formData();
 
