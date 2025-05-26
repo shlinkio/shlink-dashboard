@@ -54,7 +54,7 @@ export const MainHeader: FC = () => {
               )}
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret tag="button" data-testid="display-name">
-                  <FontAwesomeIcon icon={faUser} fixedWidth /> {session.displayName ?? session.username}
+                  <FontAwesomeIcon icon={faUser} fixedWidth /> {session.displayName || session.username}
                 </DropdownToggle>
                 <DropdownMenu end>
                   <DropdownItem tag={Link} to="/profile" active={pathname === '/profile'}>

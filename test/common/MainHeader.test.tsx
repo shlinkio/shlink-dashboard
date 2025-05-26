@@ -23,11 +23,13 @@ describe('<MainHeader />', () => {
   it.each([
     [undefined],
     [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
+    [fromPartial<SessionData>({ displayName: '', username: 'john_doe' })],
+    [fromPartial<SessionData>({ username: 'john_doe' })],
   ])('shows user menu toggle only if session is set', (session) => {
     setUp(session);
 
     if (session) {
-      expect(screen.getByRole('button', { name: 'Jane Doe' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: session.displayName || session.username })).toBeInTheDocument();
     } else {
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     }

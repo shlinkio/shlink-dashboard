@@ -17,11 +17,11 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<Ses
       password: form.get('password'),
     });
 
-    const { publicId, displayName, role, username } = await usersService.getUserByCredentials(
+    const { publicId, displayName, role, username, tempPassword } = await usersService.getUserByCredentials(
       providedUsername,
       password,
     );
-    return { publicId, displayName, role, username };
+    return { publicId, displayName, role, username, tempPassword };
   }));
 
   // TODO Add other strategies, like oAuth for SSO
