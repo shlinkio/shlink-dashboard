@@ -75,7 +75,24 @@ describe('AuthHelper', () => {
 
       getSessionData.mockReturnValue(undefined);
 
-      await expect(() => authHelper.getSession(request, '/redirect-here')).rejects.toThrow();
+      await expect(() => authHelper.getSession(request, '/redirect-here')).rejects.toThrow(expect.objectContaining({
+        status: 302,
+      }));
+      expect(getSession).toHaveBeenCalled();
+      expect(destroySession).not.toHaveBeenCalled();
+      expect(commitSession).not.toHaveBeenCalled();
+      expect(authenticate).not.toHaveBeenCalled();
+    });
+
+    it('throws redirect to change-password when current password is temporary', async () => {
+      const authHelper = setUp();
+      const request = buildRequest('https://example.com/somewhere');
+
+      getSessionData.mockReturnValue({ ...defaultSessionData, tempPassword: true });
+
+      await expect(() => authHelper.getSession(request)).rejects.toThrow(expect.objectContaining({
+        status: 302,
+      }));
       expect(getSession).toHaveBeenCalled();
       expect(destroySession).not.toHaveBeenCalled();
       expect(commitSession).not.toHaveBeenCalled();
