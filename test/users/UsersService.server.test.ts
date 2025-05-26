@@ -290,6 +290,7 @@ describe('UsersService', () => {
       const [user, newPassword] = await usersService.resetUserPassword('abc123');
 
       expect(user.publicId).toEqual(expectedUser.publicId);
+      expect(user.tempPassword).toEqual(true);
       expect(await verifyPassword(newPassword, user.password)).toEqual(true);
       expect(flush).toHaveBeenCalled();
     });

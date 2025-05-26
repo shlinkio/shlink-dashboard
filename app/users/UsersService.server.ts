@@ -159,9 +159,11 @@ export class UsersService {
 
   async resetUserPassword(publicId: string): Promise<[User, string]> {
     const user = await this.getUserById(publicId);
-    const [password, plainTextPassword] = await this.#generatePassword();
+    const [tempPassword, plainTextPassword] = await this.#generatePassword();
 
-    user.password = password;
+    user.password = tempPassword;
+    user.tempPassword = true;
+
     await this.#usersRepository.flush();
 
     return [user, plainTextPassword];
