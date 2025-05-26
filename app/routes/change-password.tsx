@@ -49,7 +49,8 @@ export async function action(
 }
 
 export default function ChangePassword() {
-  const { Form, data } = useFetcher<typeof action>();
+  const { Form, data, state } = useFetcher<typeof action>();
+  const saving = state !== 'idle';
 
   return (
     <Layout>
@@ -68,13 +69,13 @@ export default function ChangePassword() {
             </div>
             <ChangePasswordFields />
             {(data && !data.ok) && (
-              <div className="tw:text-danger">
+              <div className="tw:text-danger" data-testid="error-container">
                 {data.error}
               </div>
             )}
           </Card.Body>
           <Card.Footer className="tw:flex tw:justify-end">
-            <Button type="submit">Save</Button>
+            <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
           </Card.Footer>
         </Form>
       </Card>
