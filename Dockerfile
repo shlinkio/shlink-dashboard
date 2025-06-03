@@ -14,6 +14,7 @@ ARG VERSION="latest"
 ENV VERSION=${VERSION}
 LABEL maintainer="Alejandro Celaya <alejandro@alejandrocelaya.com>"
 ENV NODE_ENV="production"
+ENV TINI_VERSION="v0.19.0"
 
 USER root
 COPY --from=builder /shlink-dashboard/build /shlink-dashboard
@@ -25,6 +26,9 @@ COPY README.md /shlink-dashboard/README.md
 WORKDIR /shlink-dashboard
 RUN npm ci --omit dev && npm cache clean --force
 RUN mkdir data && chown $UID:0 data
+
+# Install tini
+ADD --chmod=755 https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 
 # Expose default port
 EXPOSE 3005
