@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "react-router build && tsc --project tsconfig.build-server.json && cp -R app/db/migrations build/migrations",
+    "build": "react-router build && tsc --project tsconfig.build-server.json && cp -R app/db/migrations build/migrations && cp migrations.config.ts build/migrations.config.ts",
     "test": "vitest run",
     "test:ci": "npm run test -- --coverage",
     "lint": "eslint app scripts test server.ts *.config.{js,ts}",
@@ -15,9 +15,9 @@
     "types": "react-router typegen && tsc",
     "start": "tsx ./server.ts",
     "preview": "NODE_ENV=production tsx ./server.ts",
-    "migration:create": "tsx ./node_modules/.bin/mikro-orm-esm migration:create --config ./mikro-orm.config.ts",
-    "migration:run": "tsx ./node_modules/.bin/mikro-orm-esm migration:up --config ./mikro-orm.config.ts",
-    "migration:down": "tsx ./node_modules/.bin/mikro-orm-esm migration:down --config ./mikro-orm.config.ts",
+    "migration:create": "tsx ./node_modules/.bin/mikro-orm-esm migration:create --config ./migrations.config.ts",
+    "migration:run": "tsx ./node_modules/.bin/mikro-orm-esm migration:up --config ./migrations.config.ts",
+    "migration:down": "tsx ./node_modules/.bin/mikro-orm-esm migration:down --config ./migrations.config.ts",
     "password:hash": "tsx ./scripts/hash-password.ts"
   },
   "dependencies": {
