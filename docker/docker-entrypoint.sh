@@ -4,4 +4,5 @@ set -e
 # Run migrations
 node --run migration:run
 
-exec node server.js
+# Run server via tini, as it can handle signals
+exec /sbin/tini -- node server.js
