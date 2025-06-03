@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "react-router build && tsc --project tsconfig.build-server.json",
+    "build": "react-router build && tsc --project tsconfig.build-server.json && cp -R app/db/migrations build/migrations",
     "test": "vitest run",
     "test:ci": "npm run test -- --coverage",
     "lint": "eslint app scripts test server.ts *.config.{js,ts}",
@@ -15,9 +15,9 @@
     "types": "react-router typegen && tsc",
     "start": "tsx ./server.ts",
     "preview": "NODE_ENV=production tsx ./server.ts",
-    "migration:create": "tsx ./scripts/migration-create.ts",
-    "migration:run": "tsx ./scripts/migration-up.ts",
-    "migration:down": "tsx ./scripts/migration-down.ts",
+    "migration:create": "tsx ./node_modules/.bin/mikro-orm-esm migration:create --config ./mikro-orm.config.ts",
+    "migration:run": "tsx ./node_modules/.bin/mikro-orm-esm migration:up --config ./mikro-orm.config.ts",
+    "migration:down": "tsx ./node_modules/.bin/mikro-orm-esm migration:down --config ./mikro-orm.config.ts",
     "password:hash": "tsx ./scripts/hash-password.ts"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mikro-orm/cli": "^6.4.16",
     "@mikro-orm/core": "^6.4.16",
     "@mikro-orm/migrations": "^6.4.16",
     "@mikro-orm/postgresql": "^6.4.16",
@@ -47,6 +48,7 @@
     "reactstrap": "^9.2.3",
     "remix-auth": "^4.2.0",
     "remix-auth-form": "^3.0.0",
+    "tsx": "^4.19.4",
     "zod": "^3.25.42"
   },
   "devDependencies": {
@@ -82,7 +84,6 @@
     "libsql": "^0.5.12",
     "sass": "^1.89.1",
     "tailwindcss": "^4.0.1",
-    "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.0",
     "vite": "^6.3.5",

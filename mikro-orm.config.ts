@@ -21,15 +21,17 @@ const DRIVER_MAP: Record<Exclude<DbEngine, 'sqlite'>, () => Promise<Options['dri
   mssql: () => import('@mikro-orm/mssql').then(({ MsSqlDriver }) => MsSqlDriver),
 };
 
+const isProduction = isProd();
+
 async function resolveOptions(): Promise<Options> {
   const commonOptions: Options = {
     entities: [User, Settings, Server, Tag],
     migrations: {
-      path: 'app/db/migrations',
+      path: isProduction ? 'migrations' : 'app/db/migrations',
       snapshot: false,
     },
     extensions: [Migrator],
-    debug: !isProd(),
+    debug: !isProduction,
   };
 
   const type = env.SHLINK_DASHBOARD_DB_DRIVER ?? 'sqlite';

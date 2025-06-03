@@ -29,7 +29,9 @@ RUN mkdir data && chown $UID:0 data
 # Expose default port
 EXPOSE 3005
 
+COPY docker/docker-entrypoint.sh docker-entrypoint.sh
+
 # Switch to non-privileged UID as the last step
 USER $UID
 
-ENTRYPOINT ["node", "./server.js"]
+ENTRYPOINT ["/bin/sh", "./docker-entrypoint.sh"]
