@@ -58,7 +58,7 @@
     "@mikro-orm/mysql": "^6.4.16",
     "@react-router/dev": "^7.6.1",
     "@shlinkio/eslint-config-js-coding-standard": "~3.5.0",
-    "@stylistic/eslint-plugin": "^4.4.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@tailwindcss/vite": "^4.1.8",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -85,7 +85,7 @@
     "sass": "^1.89.1",
     "tailwindcss": "^4.0.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.0",
+    "typescript-eslint": "^8.33.1",
     "vite": "^6.3.5",
     "vitest": "^3.0.2"
   }
