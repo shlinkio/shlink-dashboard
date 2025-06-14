@@ -82,7 +82,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jsdom": "^26.1.0",
     "libsql": "^0.5.12",
-    "sass": "^1.89.1",
+    "sass": "^1.89.2",
     "tailwindcss": "^4.0.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.1",
