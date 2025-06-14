@@ -81,7 +81,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jsdom": "^26.1.0",
-    "libsql": "^0.5.12",
+    "libsql": "^0.5.13",
     "sass": "^1.89.2",
     "tailwindcss": "^4.0.1",
     "typescript": "^5.8.3",
