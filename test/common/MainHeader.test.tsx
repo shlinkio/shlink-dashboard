@@ -1,13 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
 import type { SessionData } from '../../app/auth/session-context';
 import { SessionProvider } from '../../app/auth/session-context';
 import { MainHeader } from '../../app/common/MainHeader';
 import { checkAccessibility } from '../__helpers__/accessibility';
+import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('<MainHeader />', () => {
-  const setUp = (session: SessionData | null = null) => render(
+  const setUp = (session: SessionData | null = null) => renderWithEvents(
     <SessionProvider value={session}>
       <MemoryRouter>
         <MainHeader />
@@ -29,9 +30,9 @@ describe('<MainHeader />', () => {
     setUp(session);
 
     if (session) {
-      expect(screen.getByRole('button', { name: session.displayName || session.username })).toBeInTheDocument();
+      expect(screen.getByTestId('user-menu')).toHaveTextContent(session.displayName || session.username);
     } else {
-      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('user-menu')).not.toBeInTheDocument();
     }
   });
 
@@ -51,10 +52,13 @@ describe('<MainHeader />', () => {
       shouldShowUsersMenu: false,
       shouldShowManageServers: false,
     },
-  ])('shows expected options depending on the user role', (
+  ])('shows expected options depending on the user role', async (
     { sessionData, shouldShowUsersMenu, shouldShowManageServers },
   ) => {
-    setUp(sessionData);
+    const { user } = setUp({ ...sessionData, displayName: 'Foo' });
+
+    // Open menu
+    await user.click(screen.getByRole('button', { name: 'Foo' }));
 
     if (shouldShowUsersMenu) {
       expect(screen.getByText('Manage users')).toBeInTheDocument();
