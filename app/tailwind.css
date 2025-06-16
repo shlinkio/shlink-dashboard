@@ -3,3 +3,10 @@
 @import '@shlinkio/shlink-web-component/tailwind.preset.css';
 @source '../node_modules/@shlinkio/shlink-frontend-kit';
 @source '../node_modules/@shlinkio/shlink-web-component';
+
+@layer base {
+    :root {
+        /* Temp alias fo header-height to tw-header-height, so that shlink-web-component uses the right value  */
+        --header-height: var(--tw-header-height);
+    }
+}
