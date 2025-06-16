@@ -33,7 +33,7 @@ export default defineConfig({
 
   test: {
     globals: true,
-    workspace: [
+    projects: [
       // Run tests for server-only files in node environment
       {
         extends: true,
