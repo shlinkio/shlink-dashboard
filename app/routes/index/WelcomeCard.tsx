@@ -1,4 +1,4 @@
-import { Card } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Card } from '@shlinkio/shlink-frontend-kit';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { ShlinkLogo } from '../../common/ShlinkLogo';
@@ -11,16 +11,16 @@ export type WelcomeCardProps = {
 };
 
 export const WelcomeCard: FC<WelcomeCardProps> = ({ servers }) => (
-  <Card className="tw:flex tw:justify-stretch">
+  <Card className="flex justify-stretch">
     <div className={clsx(
-      'tw:w-4/12 tw:hidden tw:md:flex tw:items-center p-3',
-      'tw:border-r tw:border-r-lm-border tw:dark:border-r-dm-border',
+      'w-4/12 hidden md:flex items-center p-3',
+      'border-r border-r-lm-border dark:border-r-dm-border',
     )}>
       <ShlinkLogo />
     </div>
-    <div className="tw:md:w-8/12 tw:w-full">
+    <div className="md:w-8/12 w-full">
       <h1
-        className="tw:px-5 tw:py-6 tw:mb-0 tw:text-center tw:border-b tw:border-b-lm-border tw:dark:border-b-dm-border"
+        className="px-5 py-6 mb-0 text-center border-b border-b-lm-border dark:border-b-dm-border"
       >
         Welcome!
       </h1>

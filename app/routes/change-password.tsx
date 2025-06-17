@@ -1,4 +1,4 @@
-import { Button, Card } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, Card } from '@shlinkio/shlink-frontend-kit';
 import { type ActionFunctionArgs, data, redirect, useFetcher } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { Layout } from '../common/Layout';
@@ -59,7 +59,7 @@ export default function ChangePassword() {
           <Card.Header>
             <h5>Set your password</h5>
           </Card.Header>
-          <Card.Body className="tw:flex tw:flex-col tw:gap-y-4">
+          <Card.Body className="flex flex-col gap-y-4">
             <div>
               <p>You need to change your temporary password before going forward.</p>
               <p>
@@ -69,12 +69,12 @@ export default function ChangePassword() {
             </div>
             <ChangePasswordFields />
             {(data && !data.ok) && (
-              <div className="tw:text-danger" data-testid="error-container">
+              <div className="text-danger" data-testid="error-container">
                 {data.error}
               </div>
             )}
           </Card.Body>
-          <Card.Footer className="tw:flex tw:justify-end">
+          <Card.Footer className="flex justify-end">
             <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
           </Card.Footer>
         </Form>

@@ -1,4 +1,4 @@
-import { CardModal } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { CardModal } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useFetcher } from 'react-router';

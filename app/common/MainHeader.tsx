@@ -6,7 +6,7 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Dropdown, NavBar } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Dropdown, NavBar } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useSession } from '../auth/session-context';
@@ -26,36 +26,36 @@ const NavBarMenuItems: FC = () => {
         <NavBar.MenuItem
           to="/manage-users/1"
           active={pathname.startsWith('/manage-users')}
-          className="tw:flex tw:items-center tw:gap-1.5"
+          className="flex items-center gap-1.5"
         >
           <FontAwesomeIcon icon={faUsers} />
-          <span className="tw:whitespace-nowrap">Manage users</span>
+          <span className="whitespace-nowrap">Manage users</span>
         </NavBar.MenuItem>
       )}
       <NavBar.Dropdown
         buttonContent={(
-          <span className="tw:flex tw:items-center tw:gap-1.5" data-testid="user-menu">
+          <span className="flex items-center gap-1.5" data-testid="user-menu">
             <FontAwesomeIcon icon={faUser} fixedWidth /> {session.displayName || session.username}
           </span>
         )}
       >
         <Dropdown.Item to="/profile" selected={pathname === '/profile'}>
-          <FontAwesomeIcon icon={faUser} fixedWidth className="tw:mr-0.5" /> My profile
+          <FontAwesomeIcon icon={faUser} fixedWidth className="mr-0.5" /> My profile
         </Dropdown.Item>
         <Dropdown.Item to="/settings" selected={pathname.startsWith('/settings')}>
-          <FontAwesomeIcon icon={faCogs} fixedWidth className="tw:mr-0.5" /> My settings
+          <FontAwesomeIcon icon={faCogs} fixedWidth className="mr-0.5" /> My settings
         </Dropdown.Item>
         {session.role !== 'managed-user' && (
           <>
             <Dropdown.Separator />
             <Dropdown.Item to="/manage-servers/1" selected={pathname.startsWith('/manage-servers')}>
-              <FontAwesomeIcon icon={faServer} fixedWidth className="tw:mr-0.5" /> Manage servers
+              <FontAwesomeIcon icon={faServer} fixedWidth className="mr-0.5" /> Manage servers
             </Dropdown.Item>
           </>
         )}
         <Dropdown.Separator />
         <Dropdown.Item to="/logout">
-          <FontAwesomeIcon icon={faLogout} fixedWidth className="tw:mr-0.5" /> Logout
+          <FontAwesomeIcon icon={faLogout} fixedWidth className="mr-0.5" /> Logout
         </Dropdown.Item>
       </NavBar.Dropdown>
     </>
@@ -65,10 +65,10 @@ const NavBarMenuItems: FC = () => {
 export const MainHeader: FC = () => {
   return (
     <NavBar
-      className="tw:[&]:fixed tw:top-0 tw:z-900"
+      className="[&]:fixed top-0 z-900"
       brand={(
-        <Link to="" className="tw:[&]:text-white tw:no-underline tw:flex tw:gap-2 tw:w-25">
-          <ShlinkLogo className="tw:w-[26px]" color="white" /> Shlink
+        <Link to="" className="[&]:text-white no-underline flex gap-2 w-25">
+          <ShlinkLogo className="w-[26px]" color="white" /> Shlink
         </Link>
       )}
     >

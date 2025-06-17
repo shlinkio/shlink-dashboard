@@ -1,4 +1,4 @@
-import { LabelledInput } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { LabelledInput } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import type { useFetcher } from 'react-router';
 import type { SessionData } from '../../auth/session-context';

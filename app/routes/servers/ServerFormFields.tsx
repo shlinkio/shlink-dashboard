@@ -3,7 +3,7 @@ import {
   LabelledInput,
   LabelledRevealablePasswordInput,
   SimpleCard,
-} from '@shlinkio/shlink-frontend-kit/tailwind';
+} from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import type { PlainServer } from '../../entities/Server';
 
@@ -17,8 +17,8 @@ export type ServerFormFieldsProps = {
 };
 
 export const ServerFormFields: FC<ServerFormFieldsProps> = ({ title, submitText, disabled, server }) => (
-  <div className="tw:flex tw:flex-col tw:gap-y-4">
-    <SimpleCard title={title} bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+  <div className="flex flex-col gap-y-4">
+    <SimpleCard title={title} bodyClassName="flex flex-col gap-y-4">
       <LabelledInput
         label="Name"
         name="name"
@@ -42,7 +42,7 @@ export const ServerFormFields: FC<ServerFormFieldsProps> = ({ title, submitText,
         required
       />
     </SimpleCard>
-    <div className="tw:flex tw:justify-end tw:gap-2">
+    <div className="flex justify-end gap-2">
       <Button variant="secondary" to="/manage-servers/1">Cancel</Button>
       <Button type="submit" disabled={disabled}>{submitText}</Button>
     </div>

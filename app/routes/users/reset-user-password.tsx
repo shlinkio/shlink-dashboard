@@ -1,7 +1,6 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useGoBack } from '@shlinkio/shlink-frontend-kit';
-import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SimpleCard,useGoBack  } from '@shlinkio/shlink-frontend-kit';
 import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
@@ -38,12 +37,12 @@ export default function ResetUserPassword() {
   const username = data?.user.username ?? user.username;
 
   return (
-    <SimpleCard title={`Reset "${username}" password`} bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+    <SimpleCard title={`Reset "${username}" password`} bodyClassName="flex flex-col gap-y-4">
       {!data ? (
         <>
-          <p className="tw:font-bold"><span className="tw:text-danger">Caution!</span> This action cannot be undone.</p>
+          <p className="font-bold"><span className="text-danger">Caution!</span> This action cannot be undone.</p>
           <p>Are you sure you want to reset <b>{user.username}</b> password?</p>
-          <div className="tw:flex tw:justify-end tw:gap-2">
+          <div className="flex justify-end gap-2">
             <Button variant="secondary" disabled={submitting} onClick={goBak}>Cancel</Button>
             <Button variant="danger" solid disabled={submitting} onClick={resetPassword}>
               {submitting ? 'Resetting...' : 'Reset password'}

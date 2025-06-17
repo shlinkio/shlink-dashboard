@@ -1,7 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useTimeoutToggle } from '@shlinkio/shlink-frontend-kit';
-import { Button } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button,useTimeoutToggle  } from '@shlinkio/shlink-frontend-kit';
 import type { FC, PropsWithChildren } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import type { useFetcher } from 'react-router';
@@ -32,11 +31,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({ fetcher, children, action })
   }, [data, state, toggleSaved]);
 
   return (
-    <Form method="post" action={formAction} className="tw:flex tw:flex-col tw:gap-y-4" ref={formRef}>
+    <Form method="post" action={formAction} className="flex flex-col gap-y-4" ref={formRef}>
       {children}
-      <div className="tw:flex tw:justify-end tw:items-center tw:gap-x-4">
+      <div className="flex justify-end items-center gap-x-4">
         {saved && <FontAwesomeIcon icon={faCheck} />}
-        <Button type="submit" className="tw:max-lg:w-full" disabled={savingProfile}>
+        <Button type="submit" className="max-lg:w-full" disabled={savingProfile}>
           {savingProfile ? 'Saving...' : 'Save'}
         </Button>
       </div>

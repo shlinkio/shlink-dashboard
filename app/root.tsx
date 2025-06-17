@@ -10,7 +10,6 @@ import { serverContainer } from './container/container.server';
 import { forkEmMiddleware } from './middleware/fork-em-middleware.server';
 import { SettingsService } from './settings/SettingsService.server';
 import './tailwind.css';
-import './index.scss';
 
 export const unstable_middleware = [forkEmMiddleware];
 
@@ -63,7 +62,7 @@ export default function App() {
       <body>
         <SessionProvider value={sessionData ?? null}>
           <MainHeader />
-          <div className="tw:pt-(--header-height)">
+          <div className="pt-(--header-height)">
             <Outlet />
           </div>
           <Scripts />

@@ -1,6 +1,6 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 import { CopyToClipboard } from '../../common/CopyToClipboard';
@@ -38,7 +38,7 @@ export default function CreateUser() {
   return (
     <>
       {data?.status === 'success' && (
-        <SimpleCard title="User created" bodyClassName="tw:flex tw:flex-col tw:gap-y-4" data-testid="success-message">
+        <SimpleCard title="User created" bodyClassName="flex flex-col gap-y-4" data-testid="success-message">
           <p>User <b>{data.user.username}</b> properly created.</p>
           <p>
             Their temporary password

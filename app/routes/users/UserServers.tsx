@@ -1,4 +1,4 @@
-import { CloseButton, SearchCombobox, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { CloseButton, SearchCombobox, Table } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import type { Server } from '../../entities/Server';
@@ -32,12 +32,12 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
   );
 
   return (
-    <div className="tw:flex tw:flex-col tw:gap-4">
+    <div className="flex flex-col gap-4">
       <SearchCombobox
         onSearch={onSearch}
         onSelectSearchResult={addServer}
         searchResults={searchResultsMap}
-        renderSearchResult={(server) => <><b className="tw:mr-2">{server.name}</b> {server.baseUrl}</>}
+        renderSearchResult={(server) => <><b className="mr-2">{server.name}</b> {server.baseUrl}</>}
         placeholder="Search servers to add..."
         aria-label="Search servers to add"
         loading={loading}
@@ -57,15 +57,15 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
       )}>
         {orderedServers.length === 0 && (
           <Table.Row>
-            <Table.Cell colSpan={3} className="tw:text-center">This user has no servers</Table.Cell>
+            <Table.Cell colSpan={3} className="text-center">This user has no servers</Table.Cell>
           </Table.Row>
         )}
         {orderedServers.map(({ name, publicId, baseUrl }) => (
           <Table.Row key={publicId}>
-            <Table.Cell className="tw:font-bold">{name}</Table.Cell>
+            <Table.Cell className="font-bold">{name}</Table.Cell>
             <Table.Cell>{baseUrl}</Table.Cell>
             <Table.Cell>
-              <div className="tw:text-danger tw:flex tw:flex-row-reverse" title={`Remove ${name}`}>
+              <div className="text-danger flex flex-row-reverse" title={`Remove ${name}`}>
                 <CloseButton label={`Remove ${name}`} onClick={() => removeServer(publicId)} />
               </div>
             </Table.Cell>

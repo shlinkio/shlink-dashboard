@@ -9,8 +9,8 @@ export type LayoutProps = PropsWithChildren<{
 export const Layout: FC<LayoutProps> = ({ children, flexColumn, className }) => (
   <div
     className={clsx(
-      'tw:container tw:lg:p-5 tw:p-3 tw:mx-auto tw:h-full',
-      { 'tw:flex tw:flex-col tw:gap-y-4': flexColumn },
+      'container lg:p-5 p-3 mx-auto h-full',
+      { 'flex flex-col gap-y-4': flexColumn },
       className,
     )}
   >

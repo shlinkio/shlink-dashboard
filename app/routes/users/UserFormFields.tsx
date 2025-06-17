@@ -1,4 +1,4 @@
-import { Button, LabelledInput, LabelledSelect, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, LabelledInput, LabelledSelect, SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import type { PlainUser } from '../../entities/User';
 
@@ -20,8 +20,8 @@ export const UserFormFields: FC<UserFormFieldsProps> = (
   const userIsReadonly = !!user;
 
   return (
-    <div className="tw:flex tw:flex-col tw:gap-y-4">
-      <SimpleCard title={title} bodyClassName="tw:flex tw:flex-col tw:gap-y-4">
+    <div className="flex flex-col gap-y-4">
+      <SimpleCard title={title} bodyClassName="flex flex-col gap-y-4">
         <LabelledInput
           label="Username"
           // When username is readonly, do not set a name, so that it is not sent with the rest of the form
@@ -43,7 +43,7 @@ export const UserFormFields: FC<UserFormFieldsProps> = (
           {roles.map((role) => <option value={role} key={role}>{role.replaceAll('-', ' ')}</option>)}
         </LabelledSelect>
       </SimpleCard>
-      <div className="tw:flex tw:justify-end tw:gap-2">
+      <div className="flex justify-end gap-2">
         <Button variant="secondary" to="/manage-users/1">Cancel</Button>
         <Button type="submit" disabled={disabled}>{submitText}</Button>
       </div>

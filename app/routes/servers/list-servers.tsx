@@ -1,6 +1,6 @@
 import { faPencil, faPlus, faTrashCan, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit';
 import clsx from 'clsx';
 import { useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -54,13 +54,13 @@ export default function ListServers() {
         defaultValue={currentSearchTerm}
         onChange={(searchTerm) => navigate(searchTerm ? `?search-term=${searchTerm}` : '?', { replace: true })}
       />
-      <div className="tw:flex tw:gap-4 tw:flex-col tw:lg:flex-row-reverse">
+      <div className="flex gap-4 flex-col lg:flex-row-reverse">
         <Button to="/manage-servers/create">
           <FontAwesomeIcon icon={faPlus} />
           Add a server
         </Button>
       </div>
-      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4" title="Shlink servers">
+      <SimpleCard bodyClassName="flex flex-col gap-y-4" title="Shlink servers">
         <Table
           header={
             <Table.Row>
@@ -72,35 +72,35 @@ export default function ListServers() {
           }
         >
           {servers.length === 0 && (
-            <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={4} className="tw:italic">No servers found</Table.Cell>
+            <Table.Row className="text-center">
+              <Table.Cell colSpan={4} className="italic">No servers found</Table.Cell>
             </Table.Row>
           )}
           {servers.map((server) => (
-            <Table.Row key={server.publicId} className="tw:relative">
+            <Table.Row key={server.publicId} className="relative">
               <Table.Cell columnName="Name:">
-                <Link className="tw:font-bold" to={href('/server/:serverId', { serverId: server.publicId })}>
+                <Link className="font-bold" to={href('/server/:serverId', { serverId: server.publicId })}>
                   {server.name}
                 </Link>
               </Table.Cell>
               <Table.Cell columnName="Base URL:">{server.baseUrl}</Table.Cell>
               {server.usersCount !== undefined && (
                 <Table.Cell columnName="Users:">
-                  <div className="tw:inline-flex tw:items-center tw:gap-x-1">
-                    <FontAwesomeIcon icon={faUsers} className="tw:max-lg:hidden" />
-                    <span className="tw:sr-only">This server has</span>
+                  <div className="inline-flex items-center gap-x-1">
+                    <FontAwesomeIcon icon={faUsers} className="max-lg:hidden" />
+                    <span className="sr-only">This server has</span>
                     <b data-testid={`users-count-${server.publicId}`}>{server.usersCount}</b>
-                    <span className="tw:sr-only">user{server.usersCount === 1 ? '' : 's'}, including yourself.</span>
+                    <span className="sr-only">user{server.usersCount === 1 ? '' : 's'}, including yourself.</span>
                   </div>
                 </Table.Cell>
               )}
               <Table.Cell
                 className={clsx(
-                  'tw:lg:[&]:border-b-1', // Big screens
-                  'tw:max-lg:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
+                  'lg:[&]:border-b-1', // Big screens
+                  'max-lg:absolute top-0 right-0 [&]:border-b-0', // Small screens
                 )}
               >
-                <div className="tw:flex tw:justify-end tw:gap-x-1">
+                <div className="flex justify-end gap-x-1">
                   <Button
                     inline
                     size="sm"

@@ -11,8 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
-import { determineOrder, orderToString , stringToOrder } from '@shlinkio/shlink-frontend-kit';
-import { Button, Paginator, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, determineOrder, orderToString , Paginator, SearchInput, SimpleCard, stringToOrder , Table } from '@shlinkio/shlink-frontend-kit';
 import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import { useCallback,useState  } from 'react';
@@ -46,11 +45,11 @@ export async function loader(
 function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: OrderDir; to: string }>) {
   return (
     <Table.Cell aria-sort={orderDir && (orderDir === 'ASC' ? 'ascending' : 'descending')}>
-      <Link className="tw:text-current" to={to}>
+      <Link className="text-current" to={to}>
         {children}
       </Link>
       {orderDir && (
-        <FontAwesomeIcon className="tw:ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />
+        <FontAwesomeIcon className="ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />
       )}
     </Table.Cell>
   );
@@ -105,7 +104,11 @@ export default function ListUsers() {
   }, [currentParams]);
   const headerUrl = useCallback((newField: UserOrderableFields, dirFallback?: OrderDir) => urlForParams({
     page: 1,
-    orderBy: determineOrder(field ?? newField, newField, dir ?? dirFallback),
+    orderBy: determineOrder({
+      newField,
+      currentField: field ?? newField,
+      currentOrderDir: dir ?? dirFallback,
+    }),
   }), [dir, field, urlForParams]);
 
   const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
@@ -118,13 +121,13 @@ export default function ListUsers() {
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
-      <div className="tw:flex tw:gap-4 tw:flex-col tw:lg:flex-row-reverse">
+      <div className="flex gap-4 flex-col lg:flex-row-reverse">
         <Button to="/manage-users/create">
           <FontAwesomeIcon icon={faPlus} />
           New user
         </Button>
       </div>
-      <SimpleCard bodyClassName="tw:flex tw:flex-col tw:gap-y-4" title="Manage users">
+      <SimpleCard bodyClassName="flex flex-col gap-y-4" title="Manage users">
         <Table
           header={
             <Table.Row>
@@ -148,30 +151,30 @@ export default function ListUsers() {
           }
         >
           {navigation.state === 'loading' ? (
-            <Table.Row className="tw:text-center">
-              <Table.Cell colSpan={5} className="tw:italic">Loading...</Table.Cell>
+            <Table.Row className="text-center">
+              <Table.Cell colSpan={5} className="italic">Loading...</Table.Cell>
             </Table.Row>
           ) : (
             <>
               {users.length === 0 && (
-                <Table.Row className="tw:text-center">
-                  <Table.Cell colSpan={4} className="tw:italic">No users found</Table.Cell>
+                <Table.Row className="text-center">
+                  <Table.Cell colSpan={4} className="italic">No users found</Table.Cell>
                 </Table.Row>
               )}
               {users.map((user) => (
-                <Table.Row key={user.publicId} className="tw:relative">
+                <Table.Row key={user.publicId} className="relative">
                   <Table.Cell columnName="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
                   <Table.Cell columnName="Username:">{user.username}</Table.Cell>
                   <Table.Cell columnName="Display name:">{user.displayName ?? '-'}</Table.Cell>
                   <Table.Cell columnName="Role:"><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell
                     className={clsx(
-                      'tw:lg:static tw:lg:[&]:border-b-1', // Big screens
-                      'tw:absolute tw:top-0 tw:right-0 tw:[&]:border-b-0', // Small screens
+                      'lg:static lg:[&]:border-b-1', // Big screens
+                      'absolute top-0 right-0 [&]:border-b-0', // Small screens
                     )}
                   >
                     {session?.username !== user.username && (
-                      <div className="tw:flex tw:justify-end tw:gap-x-1">
+                      <div className="flex justify-end gap-x-1">
                         {user.role === 'managed-user' && (
                           <UserButton
                             label={`Servers for ${user.username}`}
@@ -207,7 +210,7 @@ export default function ListUsers() {
           )}
         </Table>
         {totalPages >= 2 && (
-          <div className="tw:flex tw:justify-center">
+          <div className="flex justify-center">
             <Paginator
               pagesCount={totalPages}
               currentPage={currentParams.page}
