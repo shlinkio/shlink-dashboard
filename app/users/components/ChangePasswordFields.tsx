@@ -1,4 +1,4 @@
-import { LabelledRevealablePasswordInput } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { LabelledRevealablePasswordInput } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 
 export type ChangePasswordFieldsProps = {

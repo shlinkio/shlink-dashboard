@@ -1,4 +1,4 @@
-import { LabelledRevealablePasswordInput } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { LabelledRevealablePasswordInput } from '@shlinkio/shlink-frontend-kit';
 import type { FC } from 'react';
 import type { useFetcher } from 'react-router';
 import { ChangePasswordFields } from '../../users/components/ChangePasswordFields';

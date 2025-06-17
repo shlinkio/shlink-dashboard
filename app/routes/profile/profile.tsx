@@ -1,4 +1,4 @@
-import { SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs } from 'react-router';
 import { data , useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
@@ -48,11 +48,11 @@ export default function Profile() {
   const changePasswordFetcher = useFetcher<typeof changePasswordAction>();
 
   return (
-    <Layout className="tw:flex tw:max-lg:flex-col tw:gap-4">
-      <SimpleCard title="Edit profile" className="tw:flex-1">
+    <Layout className="flex max-lg:flex-col gap-4">
+      <SimpleCard title="Edit profile" className="flex-1">
         <EditProfileForm fetcher={profileFetcher} sessionData={sessionData} />
       </SimpleCard>
-      <SimpleCard title="Change password" className="tw:flex-1">
+      <SimpleCard title="Change password" className="flex-1">
         <ChangePasswordForm fetcher={changePasswordFetcher} />
       </SimpleCard>
     </Layout>

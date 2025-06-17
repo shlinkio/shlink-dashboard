@@ -10,10 +10,10 @@ export const RoleBadge: FC<RoleBadgeProps> = ({ role }) => {
   return (
     <div
       className={clsx(
-        'tw:rounded-sm tw:px-1 tw:inline-block tw:font-bold tw:whitespace-nowrap',
+        'rounded-sm px-1 inline-block font-bold whitespace-nowrap',
         {
-          'tw:bg-green-600 tw:text-white': role === 'admin',
-          'tw:bg-gray-500 tw:text-white': role !== 'admin',
+          'bg-green-600 text-white': role === 'admin',
+          'bg-gray-500 text-white': role !== 'admin',
         },
       )}
     >

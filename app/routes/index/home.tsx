@@ -22,8 +22,8 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="tw:md:flex tw:md:items-center tw:md:h-full tw:md:pb-0 tw:pb-3">
-        <div className="tw:mx-auto tw:xl:w-1/2 tw:lg:w-3/4 tw:w-full">
+      <div className="md:flex md:items-center md:h-full md:pb-0 pb-3">
+        <div className="mx-auto xl:w-1/2 lg:w-3/4 w-full">
           <WelcomeCard servers={servers} />
         </div>
       </div>

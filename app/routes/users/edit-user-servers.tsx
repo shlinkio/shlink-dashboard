@@ -1,5 +1,4 @@
-import { useGoBack } from '@shlinkio/shlink-frontend-kit';
-import { Button, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, SimpleCard,useGoBack  } from '@shlinkio/shlink-frontend-kit';
 import { useCallback, useMemo, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect, useFetcher, useLoaderData } from 'react-router';
@@ -70,7 +69,7 @@ export default function EditUserServers() {
   const isSaving = state !== 'idle';
 
   return (
-    <Form method="post" className="tw:flex tw:flex-col tw:gap-4">
+    <Form method="post" className="flex flex-col gap-4">
       <SimpleCard title={`Shlink servers for "${user.username}"`}>
         <UserServers
           initialServers={servers}
@@ -79,7 +78,7 @@ export default function EditUserServers() {
           loading={isSearching}
         />
       </SimpleCard>
-      <div className="tw:flex tw:justify-end tw:gap-2">
+      <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={goBack}>Cancel</Button>
         <Button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save servers'}</Button>
       </div>

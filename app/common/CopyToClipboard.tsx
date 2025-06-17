@@ -1,4 +1,4 @@
-import { CopyToClipboardButton } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { CopyToClipboardButton } from '@shlinkio/shlink-frontend-kit';
 import type { FC, PropsWithChildren } from 'react';
 
 export type CopyToClipboardProps = PropsWithChildren<{
@@ -12,7 +12,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = (
   { text, children = text },
 ) => {
   return (
-    <span className="tw:inline-flex tw:items-center tw:gap-x-1">
+    <span className="inline-flex items-center gap-x-1">
       {children}
       <CopyToClipboardButton text={text} size="sm" />
     </span>

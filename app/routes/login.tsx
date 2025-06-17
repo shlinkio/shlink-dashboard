@@ -1,4 +1,4 @@
-import { Button, LabelledInput, SimpleCard } from '@shlinkio/shlink-frontend-kit/tailwind';
+import { Button, LabelledInput, SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect,useFetcher  } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
@@ -36,9 +36,9 @@ export default function Login() {
   const isSaving = fetcher.state === 'submitting';
 
   return (
-    <div className="tw:mt-8 tw:mx-8 tw:lg:mx-auto tw:lg:w-[50%]">
+    <div className="mt-8 mx-8 lg:mx-auto lg:w-[50%]">
       <SimpleCard>
-        <fetcher.Form method="post" className="tw:flex tw:flex-col tw:gap-4">
+        <fetcher.Form method="post" className="flex flex-col gap-4">
           <LabelledInput label="Username:" name="username" hiddenRequired />
           <LabelledInput label="Password:" type="password" name="password" hiddenRequired />
           <Button solid type="submit" disabled={isSaving}>
