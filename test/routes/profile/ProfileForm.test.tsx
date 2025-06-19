@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { PropsWithChildren } from 'react';
-import { forwardRef,useState  } from 'react';
+import type { FC, PropsWithChildren, RefAttributes } from 'react';
+import { useState } from 'react';
 import type { ProfileFormProps } from '../../../app/routes/profile/ProfileForm';
 import { ProfileForm } from '../../../app/routes/profile/ProfileForm';
 import { PROFILE_ACTION } from '../../../app/users/user-profile-actions';
@@ -13,7 +13,9 @@ type SetUpOptions = Partial<Pick<Fetcher, 'state' | 'data'>> & {
   newStateAfterRender?: Fetcher['state'];
 };
 
-const Form = forwardRef<HTMLFormElement, PropsWithChildren>(({ children }, ref) => <form ref={ref}>{children}</form>);
+const Form: FC<PropsWithChildren<RefAttributes<HTMLFormElement>>> = ({ children, ref }) => (
+  <form ref={ref}>{children}</form>
+);
 
 function TestComponent({ newStateAfterRender, state: initialState, data }: SetUpOptions) {
   const [state, setState] = useState(initialState);

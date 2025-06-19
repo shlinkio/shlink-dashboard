@@ -1,12 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
-import { forwardRef, type PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren, RefAttributes } from 'react';
 import type { SessionData } from '../../../app/auth/session-context';
 import { EditProfileForm } from '../../../app/routes/profile/EditProfileForm';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<EditProfileForm />', () => {
-  const Form = forwardRef<HTMLFormElement, PropsWithChildren>(({ children }, ref) => <form ref={ref}>{children}</form>);
+  const Form: FC<PropsWithChildren<RefAttributes<HTMLFormElement>>> = ({ children, ref }) => (
+    <form ref={ref}>{children}</form>
+  );
   const setUp = (sessionData: SessionData | null = null) => render(
     <EditProfileForm sessionData={sessionData} fetcher={fromPartial({ Form })} />,
   );
