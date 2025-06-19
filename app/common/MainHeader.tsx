@@ -35,7 +35,8 @@ const NavBarMenuItems: FC = () => {
       <NavBar.Dropdown
         buttonContent={(
           <span className="flex items-center gap-1.5" data-testid="user-menu">
-            <FontAwesomeIcon icon={faUser} fixedWidth /> {session.displayName || session.username}
+            <FontAwesomeIcon icon={faUser} fixedWidth />
+            <span className="whitespace-nowrap">{session.displayName || session.username}</span>
           </span>
         )}
       >
