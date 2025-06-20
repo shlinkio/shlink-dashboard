@@ -5,7 +5,7 @@ export class Migration20240608073312 extends Migration {
     const knex = this.getKnex();
 
     await knex.schema.createTable('users', (table) => {
-      table.bigIncrements('id').primary();
+      table.increments('id').unsigned().primary();
       table.string('username').notNullable().unique();
       table.string('password').notNullable();
       table.string('role').notNullable();
@@ -14,8 +14,8 @@ export class Migration20240608073312 extends Migration {
     });
 
     await knex.schema.createTable('settings', (table) => {
-      table.bigIncrements('id').primary();
-      table.bigInteger('user_id').unsigned();
+      table.increments('id').unsigned().primary();
+      table.integer('user_id').unsigned();
       table.json('settings');
 
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
@@ -24,7 +24,7 @@ export class Migration20240608073312 extends Migration {
     });
 
     await knex.schema.createTable('servers', (table) => {
-      table.bigIncrements('id').primary();
+      table.increments('id').unsigned().primary();
       table.string('name').notNullable();
       table.string('base_url').notNullable();
       table.string('api_key').notNullable();
@@ -32,20 +32,20 @@ export class Migration20240608073312 extends Migration {
     });
 
     await knex.schema.createTable('user_has_servers', (table) => {
-      table.bigIncrements('id').primary();
-      table.bigInteger('user_id').unsigned();
-      table.bigInteger('server_id').unsigned();
+      table.increments('id').unsigned().primary();
+      table.integer('user_id').unsigned();
+      table.integer('server_id').unsigned();
 
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
       table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
     });
 
     await knex.schema.createTable('tags', (table) => {
-      table.bigIncrements('id').primary();
+      table.increments('id').unsigned().primary();
       table.string('tag').notNullable();
       table.string('color').notNullable();
-      table.bigInteger('user_id').unsigned();
-      table.bigInteger('server_id').unsigned();
+      table.integer('user_id').unsigned();
+      table.integer('server_id').unsigned();
 
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
       table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
