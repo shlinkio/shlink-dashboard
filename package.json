@@ -16,9 +16,9 @@
     "types": "react-router typegen && tsc",
     "start": "tsx ./server.ts",
     "preview": "NODE_ENV=production tsx ./server.ts",
-    "migration:create": "tsx ./node_modules/.bin/mikro-orm-esm migration:create --config ./migrations.config.ts",
-    "migration:run": "tsx ./node_modules/.bin/mikro-orm-esm migration:up --config ./migrations.config.ts",
-    "migration:down": "tsx ./node_modules/.bin/mikro-orm-esm migration:down --config ./migrations.config.ts",
+    "migration:create": "./node_modules/tsx/dist/cli.mjs ./node_modules/@mikro-orm/cli/esm migration:create --config ./migrations.config.ts",
+    "migration:run": "./node_modules/tsx/dist/cli.mjs ./node_modules/@mikro-orm/cli/esm migration:up --config ./migrations.config.ts",
+    "migration:down": "./node_modules/tsx/dist/cli.mjs ./node_modules/@mikro-orm/cli/esm migration:down --config ./migrations.config.ts",
     "password:hash": "tsx ./scripts/hash-password.ts"
   },
   "dependencies": {
