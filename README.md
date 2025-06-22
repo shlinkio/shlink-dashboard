@@ -14,6 +14,8 @@ Shlink Dashboard is the next generation web application for Shlink.
 
 It allows you to configure your users and their permissions, and then define how those users can interact with every individual Shlink server.
 
+https://github.com/user-attachments/assets/7473fc22-d3c3-4236-b88a-4bf218e1b018
+
 ## Capabilities
 
 Shlink Dashboard provides all the capabilities from [shlink-web-client](https://github.com/shlinkio/shlink-web-client?tab=readme-ov-file#shlink-web-client), but with the next differences:
