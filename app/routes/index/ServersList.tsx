@@ -1,6 +1,6 @@
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { FC } from 'react';
 import { Link } from 'react-router';
 import type { PlainServer } from '../../entities/Server';

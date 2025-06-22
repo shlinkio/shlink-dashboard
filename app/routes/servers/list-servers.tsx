@@ -1,7 +1,7 @@
 import { faPencil, faPlus, faTrashCan, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit';
-import clsx from 'clsx';
+import { Button, Dropdown, RowDropdown, SearchInput, SimpleCard, Table } from '@shlinkio/shlink-frontend-kit';
+import { clsx } from 'clsx';
 import { useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
 import { href, Link , useLoaderData,useNavigate  } from 'react-router';
@@ -96,33 +96,26 @@ export default function ListServers() {
               )}
               <Table.Cell
                 className={clsx(
-                  'lg:[&]:border-b-1', // Big screens
-                  'max-lg:absolute top-0 right-0 [&]:border-b-0', // Small screens
+                  'text-right lg:[&]:border-b-1', // Big screens
+                  'max-lg:absolute top-1.25 right-0 [&]:border-b-0 max-lg:py-0', // Small screens
                 )}
               >
-                <div className="flex justify-end gap-x-1">
-                  <Button
-                    inline
-                    size="sm"
-                    variant="secondary"
-                    aria-label={`Edit server ${server.name}`}
-                    to={href('/manage-servers/:serverPublicId/edit', { serverPublicId: server.publicId })}
-                  >
-                    <FontAwesomeIcon icon={faPencil} />
-                  </Button>
-                  <Button
-                    inline
-                    size="sm"
-                    variant="danger"
-                    aria-label={`Delete server ${server.name}`}
+                <RowDropdown menuAlignment="right" buttonLabel={`Options for ${server.name}`}>
+                  <Dropdown.Item to={href('/manage-servers/:serverPublicId/edit', { serverPublicId: server.publicId })}>
+                    <FontAwesomeIcon icon={faPencil} fixedWidth />
+                    Edit server
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="text-danger!"
                     onClick={() => {
                       setServerToDelete(server);
                       setDialogOpen(true);
                     }}
                   >
-                    <FontAwesomeIcon icon={faTrashCan} />
-                  </Button>
-                </div>
+                    <FontAwesomeIcon icon={faTrashCan} fixedWidth />
+                    Delete server
+                  </Dropdown.Item>
+                </RowDropdown>
               </Table.Cell>
             </Table.Row>
           ))}

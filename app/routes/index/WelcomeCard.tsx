@@ -1,5 +1,5 @@
 import { Card } from '@shlinkio/shlink-frontend-kit';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { FC } from 'react';
 import { ShlinkLogo } from '../../common/ShlinkLogo';
 import type { PlainServer } from '../../entities/Server';

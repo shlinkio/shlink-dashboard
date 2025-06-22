@@ -11,8 +11,19 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { mergeDeepRight } from '@shlinkio/data-manipulation';
 import type { OrderDir } from '@shlinkio/shlink-frontend-kit';
-import { Button, determineOrder, orderToString , Paginator, SearchInput, SimpleCard, stringToOrder , Table } from '@shlinkio/shlink-frontend-kit';
-import clsx from 'clsx';
+import {
+  Button,
+  determineOrder,
+  Menu,
+  orderToString,
+  Paginator,
+  RowDropdown,
+  SearchInput,
+  SimpleCard,
+  stringToOrder,
+  Table,
+} from '@shlinkio/shlink-frontend-kit';
+import { clsx } from 'clsx';
 import type { PropsWithChildren } from 'react';
 import { useCallback,useState  } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
@@ -55,26 +66,19 @@ function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: Or
   );
 }
 
-type UserButtonProps = {
-  label: string;
+type UserDropdownItemProps = PropsWithChildren<{
   icon: IconProp;
   to?: string;
   onClick?: () => void;
   danger?: boolean;
-};
+}>;
 
-function UserButton({ label, danger, icon, ...rest }: UserButtonProps) {
+function UserDropdownItem({ children, danger, icon, ...rest }: UserDropdownItemProps) {
   return (
-    <Button
-      inline
-      size="sm"
-      variant={danger ? 'danger' : 'secondary'}
-      aria-label={label}
-      title={label}
-      {...rest}
-    >
-      <FontAwesomeIcon icon={icon} />
-    </Button>
+    <Menu.Item className={clsx(danger && 'text-danger!')} {...rest}>
+      <FontAwesomeIcon icon={icon} fixedWidth />
+      {children}
+    </Menu.Item>
   );
 }
 
@@ -169,39 +173,44 @@ export default function ListUsers() {
                   <Table.Cell columnName="Role:"><RoleBadge role={user.role} /></Table.Cell>
                   <Table.Cell
                     className={clsx(
-                      'lg:static lg:[&]:border-b-1', // Big screens
-                      'absolute top-0 right-0 [&]:border-b-0', // Small screens
+                      'text-right lg:static lg:[&]:border-b-1', // Big screens
+                      'absolute top-1.25 right-0 [&]:border-b-0 max-lg:py-0', // Small screens
                     )}
                   >
                     {session?.username !== user.username && (
-                      <div className="flex justify-end gap-x-1">
+                      <RowDropdown menuAlignment="right" buttonLabel={`Options for ${user.username}`}>
                         {user.role === 'managed-user' && (
-                          <UserButton
-                            label={`Servers for ${user.username}`}
+                          <UserDropdownItem
                             icon={faServer}
                             to={href('/manage-users/:userPublicId/edit-servers', { userPublicId: user.publicId })}
-                          />
+                          >
+                            Servers
+                          </UserDropdownItem>
                         )}
-                        <UserButton
-                          label={`Reset ${user.username} password`}
+                        <UserDropdownItem
                           icon={faKey}
                           to={href('/manage-users/:userPublicId/reset-password', { userPublicId: user.publicId })}
-                        />
-                        <UserButton
-                          label={`Edit ${user.username}`}
+                        >
+                          Reset password
+                        </UserDropdownItem>
+                        <UserDropdownItem
                           icon={faPencil}
                           to={href('/manage-users/:userPublicId/edit', { userPublicId: user.publicId })}
-                        />
-                        <UserButton
+                        >
+                          Edit
+                        </UserDropdownItem>
+                        <Menu.Separator />
+                        <UserDropdownItem
                           danger
-                          label={`Delete ${user.username}`}
                           icon={faTrashCan}
                           onClick={() => {
                             setUserToDelete(user);
                             setDialogOpen(true);
                           }}
-                        />
-                      </div>
+                        >
+                          Delete
+                        </UserDropdownItem>
+                      </RowDropdown>
                     )}
                   </Table.Cell>
                 </Table.Row>

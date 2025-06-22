@@ -163,18 +163,23 @@ describe('list-servers', () => {
         baseUrl: `base_url_${id}`,
         usersCount: id,
       }));
-      await setUp({ servers });
+      const { user } = await setUp({ servers });
+      const openRowMenu = async (serverName: string) => await user.click(
+        screen.getByLabelText(`Options for ${serverName}`),
+      );
 
       // We add 1 for the header row
       expect(screen.getAllByRole('row')).toHaveLength(servers.length + 1);
 
-      servers.forEach((server) => {
+      await Promise.all(servers.map(async (server) => {
         expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
         expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
         expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
-        expect(screen.getByLabelText(`Edit server ${server.name}`)).toBeInTheDocument();
-        expect(screen.getByLabelText(`Delete server ${server.name}`)).toBeInTheDocument();
-      });
+
+        await openRowMenu(server.name);
+        expect(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
+      }));
     });
 
     it('has a link to go to server creation page', async () => {
