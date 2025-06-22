@@ -1,5 +1,6 @@
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { screen, waitFor } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
@@ -90,6 +91,10 @@ describe('list-users', () => {
       await screen.findByRole('table');
 
       return renderResult;
+    };
+
+    const openDropdown = async (user: UserEvent, username: string) => {
+      await user.click(screen.getByLabelText(`Options for ${username}`));
     };
 
     it.each([
@@ -214,31 +219,27 @@ describe('list-users', () => {
         mockUser({ username: 'current', displayName: 'John Doe', role: 'admin' }),
         mockUser({ username: 'baz', displayName: 'John Doe', role: 'managed-user' }),
       ];
-      await setUp({ currentUsername: 'current', users });
+      const { user } = await setUp({ currentUsername: 'current', users });
 
-      expect(screen.getAllByLabelText(/^Delete /)).toHaveLength(3);
-      expect(screen.getByLabelText('Delete foo')).toBeInTheDocument();
-      expect(screen.getByLabelText('Delete bar')).toBeInTheDocument();
-      expect(screen.getByLabelText('Delete baz')).toBeInTheDocument();
-      expect(screen.queryByLabelText('Delete current')).not.toBeInTheDocument();
+      await openDropdown(user, 'foo');
+      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
 
-      expect(screen.getAllByLabelText(/^Edit /)).toHaveLength(3);
-      expect(screen.getByLabelText('Edit foo')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit bar')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit baz')).toBeInTheDocument();
-      expect(screen.queryByLabelText('Edit current')).not.toBeInTheDocument();
+      await openDropdown(user, 'bar');
+      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
 
-      expect(screen.getAllByLabelText(/^Reset /)).toHaveLength(3);
-      expect(screen.getByLabelText('Reset foo password')).toBeInTheDocument();
-      expect(screen.getByLabelText('Reset bar password')).toBeInTheDocument();
-      expect(screen.getByLabelText('Reset baz password')).toBeInTheDocument();
-      expect(screen.queryByLabelText('Reset current password')).not.toBeInTheDocument();
+      await openDropdown(user, 'baz');
+      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'Servers' })).toBeInTheDocument();
 
-      expect(screen.getAllByLabelText(/^Servers for /)).toHaveLength(1);
-      expect(screen.queryByLabelText('Servers for foo')).not.toBeInTheDocument();
-      expect(screen.queryByLabelText('Servers for bar')).not.toBeInTheDocument();
-      expect(screen.queryByLabelText('Servers for current')).not.toBeInTheDocument();
-      expect(screen.getByLabelText('Servers for baz')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Options for current')).not.toBeInTheDocument();
     });
 
     it('shows information about the user to be deleted', async () => {
@@ -251,11 +252,13 @@ describe('list-users', () => {
 
       expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
 
-      await user.click(screen.getByLabelText('Delete foo'));
+      await openDropdown(user, 'foo');
+      await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
       expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
       await user.click(screen.getByText('Cancel'));
 
-      await user.click(screen.getByLabelText('Delete bar'));
+      await openDropdown(user, 'bar');
+      await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
       expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
     });
   });
