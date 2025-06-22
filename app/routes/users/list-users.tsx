@@ -23,7 +23,7 @@ import {
   stringToOrder,
   Table,
 } from '@shlinkio/shlink-frontend-kit';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import type { PropsWithChildren } from 'react';
 import { useCallback,useState  } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
