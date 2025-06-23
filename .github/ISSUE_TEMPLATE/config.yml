@@ -1,4 +1,4 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
   - name: Question - Support
     about: Do you need help setting up or using Shlink Dashboard?
