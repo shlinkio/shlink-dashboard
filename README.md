@@ -29,6 +29,9 @@ Shlink Dashboard provides all the capabilities from [shlink-web-client](https://
 - Storage of servers and settings is done in a database. Same database engines supported by Shlink can be used with Shlink Dashboard (except SQLite), so you can re-use the same database server if desired.
 - Since Shlink Dashboard requires a backend, no hosted version is provided. It needs to be self-hosted.
 
+> [!NOTE]
+> After installing Shlink Dashboard, an initial user is created, with username `admin` and password `admin`. You'll have to change the password on first login.
+
 ## Installation
 
 The easiest way to use Shlink Dashboard is by using the official docker image, but it is also possible to download a dist file and place it in the server of your choice with Node.JS >=22.0.
