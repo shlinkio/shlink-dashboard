@@ -1,0 +1,67 @@
+name: Bug report
+description: Something on Shlink Dashboard is broken or not working as documented?
+labels: ['bug']
+body:
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Shlink Dashboard version
+      placeholder: x.y.z
+  - type: input
+    attributes:
+      label: Shlink version
+      placeholder: x.y.z
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: How do you serve Shlink Dashboard
+      options:
+        - Docker image
+        - Node.JS server
+        - Other (explain in summary)
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: Database engine
+      options:
+        - MySQL
+        - MariaDB
+        - PostgreSQL
+        - MicrosoftSQL
+        - SQLite
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Database version
+      placeholder: x.y.z
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Current behavior
+      value: '<!-- Describe the issue you found -->'
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Expected behavior
+      value: '<!-- Describe how you expected Shlink Dashboard to behave -->'
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Minimum steps to reproduce
+      value: |
+        <!--
+        Simple but detailed way to reproduce the bug:
+        
+        * Avoid things like "create a kubernetes cluster", or anything related with cloud providers, as that is rarely the root cause.
+        * Avoid too vague steps or one-liners like "Update from v1 to v2".
+        * Providing the reproduction in the form of a self-contained docker-composer is possible.
+        
+        Failing in any of these will cause the issue to be closed as "not reproducible".
+        -->
