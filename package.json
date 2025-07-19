@@ -40,7 +40,7 @@
     "@shlinkio/shlink-frontend-kit": "^1.0.1",
     "@shlinkio/shlink-js-sdk": "^2.1.0",
     "@shlinkio/shlink-web-component": "^0.15.0",
-    "argon2": "^0.43.0",
+    "argon2": "^0.43.1",
     "bottlejs": "^2.0.1",
     "express": "^5.1.0",
     "isbot": "^5.1.28",
