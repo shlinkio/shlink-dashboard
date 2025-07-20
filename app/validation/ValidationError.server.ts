@@ -12,7 +12,7 @@ export class ValidationError extends Error {
 
   static fromZodError(error: ZodError): ValidationError {
     const invalidFields: Record<string, string> = {};
-    error.errors.forEach((error) => {
+    error.issues.forEach((error) => {
       invalidFields[error.path.join('.')] = error.message;
     });
 
