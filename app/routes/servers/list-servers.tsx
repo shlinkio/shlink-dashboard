@@ -56,7 +56,7 @@ export default function ListServers() {
       />
       <div className="flex gap-4 flex-col lg:flex-row-reverse">
         <Button to="/manage-servers/create">
-          <FontAwesomeIcon icon={faPlus} />
+          <FontAwesomeIcon icon={faPlus} widthAuto />
           Add a server
         </Button>
       </div>
@@ -102,7 +102,7 @@ export default function ListServers() {
               >
                 <RowDropdown menuAlignment="right" buttonLabel={`Options for ${server.name}`}>
                   <Dropdown.Item to={href('/manage-servers/:serverPublicId/edit', { serverPublicId: server.publicId })}>
-                    <FontAwesomeIcon icon={faPencil} fixedWidth />
+                    <FontAwesomeIcon icon={faPencil} />
                     Edit server
                   </Dropdown.Item>
                   <Dropdown.Item
@@ -112,7 +112,7 @@ export default function ListServers() {
                       setDialogOpen(true);
                     }}
                   >
-                    <FontAwesomeIcon icon={faTrashCan} fixedWidth />
+                    <FontAwesomeIcon icon={faTrashCan} />
                     Delete server
                   </Dropdown.Item>
                 </RowDropdown>
