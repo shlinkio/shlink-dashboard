@@ -76,7 +76,7 @@ type UserDropdownItemProps = PropsWithChildren<{
 function UserDropdownItem({ children, danger, icon, ...rest }: UserDropdownItemProps) {
   return (
     <Menu.Item className={clsx(danger && 'text-danger!')} {...rest}>
-      <FontAwesomeIcon icon={icon} fixedWidth />
+      <FontAwesomeIcon icon={icon} />
       {children}
     </Menu.Item>
   );
@@ -127,7 +127,7 @@ export default function ListUsers() {
       />
       <div className="flex gap-4 flex-col lg:flex-row-reverse">
         <Button to="/manage-users/create">
-          <FontAwesomeIcon icon={faPlus} />
+          <FontAwesomeIcon icon={faPlus} widthAuto />
           New user
         </Button>
       </div>

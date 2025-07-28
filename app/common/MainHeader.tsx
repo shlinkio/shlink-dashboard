@@ -35,28 +35,28 @@ const NavBarMenuItems: FC = () => {
       <NavBar.Dropdown
         buttonContent={(
           <span className="flex items-center gap-1.5" data-testid="user-menu">
-            <FontAwesomeIcon icon={faUser} fixedWidth />
+            <FontAwesomeIcon icon={faUser} />
             <span className="whitespace-nowrap">{session.displayName || session.username}</span>
           </span>
         )}
       >
         <Dropdown.Item to="/profile" selected={pathname === '/profile'}>
-          <FontAwesomeIcon icon={faUser} fixedWidth className="mr-0.5" /> My profile
+          <FontAwesomeIcon icon={faUser} className="mr-0.5" /> My profile
         </Dropdown.Item>
         <Dropdown.Item to="/settings" selected={pathname.startsWith('/settings')}>
-          <FontAwesomeIcon icon={faCogs} fixedWidth className="mr-0.5" /> My settings
+          <FontAwesomeIcon icon={faCogs} className="mr-0.5" /> My settings
         </Dropdown.Item>
         {session.role !== 'managed-user' && (
           <>
             <Dropdown.Separator />
             <Dropdown.Item to="/manage-servers/1" selected={pathname.startsWith('/manage-servers')}>
-              <FontAwesomeIcon icon={faServer} fixedWidth className="mr-0.5" /> Manage servers
+              <FontAwesomeIcon icon={faServer} className="mr-0.5" /> Manage servers
             </Dropdown.Item>
           </>
         )}
         <Dropdown.Separator />
         <Dropdown.Item to="/logout">
-          <FontAwesomeIcon icon={faLogout} fixedWidth className="mr-0.5" /> Logout
+          <FontAwesomeIcon icon={faLogout} className="mr-0.5" /> Logout
         </Dropdown.Item>
       </NavBar.Dropdown>
     </>
