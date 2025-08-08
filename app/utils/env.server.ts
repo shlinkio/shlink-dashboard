@@ -14,6 +14,7 @@ const envVariables = z.object({
   SHLINK_DASHBOARD_DB_USER: z.string().optional(),
   SHLINK_DASHBOARD_DB_PASSWORD: z.string().optional(),
   SHLINK_DASHBOARD_DB_NAME: z.string().optional(),
+  SHLINK_DASHBOARD_DB_USE_ENCRYPTION: z.stringbool({ truthy: ['true'] }).optional(),
 
   // Sessions
   SHLINK_DASHBOARD_SESSION_SECRETS: z.string().transform(
