@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
-* *Nothing*
+* [#663](https://github.com/shlinkio/shlink-dashboard/issues/663) Add new `SHLINK_DASHBOARD_DB_USE_ENCRYPTION` env var to allow enabling encrypted database connections
 
 ### Changed
 * Update to FontAwesome 7
