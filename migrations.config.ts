@@ -1,4 +1,4 @@
-import type { Options } from '@mikro-orm/core';
+import type { Dictionary, Options } from '@mikro-orm/core';
 import { Migrator } from '@mikro-orm/migrations';
 
 /*
@@ -23,6 +23,14 @@ const DRIVER_MAP: Record<DbEngine, () => Promise<Options['driver']>> = {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+function resolveDriverOptions(): Dictionary {
+  if (process.env.SHLINK_DASHBOARD_DB_USE_ENCRYPTION === 'true') {
+    return { connection: { ssl: true } };
+  }
+
+  return {};
+}
+
 async function resolveOptions(): Promise<Options> {
   const commonOptions: Options = {
     migrations: {
@@ -33,6 +41,7 @@ async function resolveOptions(): Promise<Options> {
     discovery: {
       warnWhenNoEntities: false, // We don't need entities just to run migrations
     },
+    driverOptions: resolveDriverOptions(),
   };
 
   const type = (process.env.SHLINK_DASHBOARD_DB_DRIVER ?? 'sqlite') as DbEngine | 'sqlite';
