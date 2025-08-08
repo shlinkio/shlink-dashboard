@@ -133,8 +133,8 @@ describe('UsersService', () => {
       {
         data: {},
         expectedFields: {
-          username: 'Required',
-          role: 'Required',
+          username: 'Invalid input: expected string, received undefined',
+          role: 'Invalid option: expected one of "admin"|"advanced-user"|"managed-user"',
         },
       },
       {
@@ -143,7 +143,7 @@ describe('UsersService', () => {
           role: 'invalid',
         },
         expectedFields: {
-          role: 'Invalid enum value. Expected \'admin\' | \'advanced-user\' | \'managed-user\', received \'invalid\'',
+          role: 'Invalid option: expected one of "admin"|"advanced-user"|"managed-user"',
         },
       },
       {
@@ -151,7 +151,7 @@ describe('UsersService', () => {
           role: 'admin',
         },
         expectedFields: {
-          'username': 'Required',
+          'username': 'Invalid input: expected string, received undefined',
         },
       },
     ])('throws error if provided data is invalid', async ({ data, expectedFields }) => {

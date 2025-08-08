@@ -51,15 +51,19 @@ export default function ShlinkWebComponentContainer() {
       // client only
       import('@shlinkio/shlink-web-component'),
       apiClient.health(),
-    ]).then(([{ ShlinkWebComponent }, { version }]) => {
+    ]).then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
       setComponent(
-        <ShlinkWebComponent
-          serverVersion={version as any}
-          apiClient={apiClient}
-          routesPrefix={prefix}
-          settings={settings}
-          tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
-        />,
+        <ShlinkSidebarVisibilityProvider>
+          <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
+          <ShlinkWebComponent
+            serverVersion={version as any}
+            apiClient={apiClient}
+            routesPrefix={prefix}
+            settings={settings}
+            tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
+            autoSidebarToggle={false}
+          />
+        </ShlinkSidebarVisibilityProvider>,
       );
     });
   }, [prefix, serverId, settings, tagColors]);

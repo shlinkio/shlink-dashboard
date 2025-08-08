@@ -69,6 +69,7 @@ Configuration is provided via env vars. These are the ones currently supported:
     - `SHLINK_DASHBOARD_DB_USER`: Username credential for the database server connection.
     - `SHLINK_DASHBOARD_DB_PASSWORD`: Password credential for the database server connection.
     - `SHLINK_DASHBOARD_DB_NAME`: Database name. Defaults to `shlink_dashboard`.
+    - `SHLINK_DASHBOARD_DB_USE_ENCRYPTION`: Enable or disable encrypted database connections. Defaults to `false`.
 2. Other
     - `SHLINK_DASHBOARD_SESSION_SECRETS`: A comma separated list of secrets used to sign session tokens. Make sure to provide something as complex and hard to guess as possible. Ideally long auto-generated random strings.
 
