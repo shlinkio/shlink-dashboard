@@ -32,7 +32,7 @@ describe('home', () => {
     it.todo('redirects to login if session is not set');
   });
 
-  describe('<Index />', () => {
+  describe('<Home />', () => {
     const setUp = (servers: Server[] = []) => {
       const Stub = createRoutesStub([
         {
