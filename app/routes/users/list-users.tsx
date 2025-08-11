@@ -121,7 +121,7 @@ export default function ListUsers() {
   return (
     <>
       <SearchInput
-        placeholder="Seacrh users..."
+        placeholder="Search users..."
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
