@@ -123,7 +123,7 @@ export default function ListUsers({ loaderData }: RouteComponentProps<Route.Comp
   return (
     <>
       <SearchInput
-        placeholder="Seacrh users..."
+        placeholder="Search users..."
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />
