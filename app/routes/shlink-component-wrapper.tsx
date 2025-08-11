@@ -2,13 +2,15 @@ import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { useLoaderData, useLocation, useParams } from 'react-router';
+import { useLocation } from 'react-router';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';
 import { TagsStorage } from '../tags/TagsStorage.client';
+import type { Route } from './+types/shlink-component-wrapper';
+import type { RouteComponentProps } from './types';
 
 export async function loader(
   { request, params }: LoaderFunctionArgs,
@@ -26,10 +28,9 @@ export async function loader(
   return { settings, tagColors };
 }
 
-export default function ShlinkWebComponentContainer() {
+export default function ShlinkWebComponentContainer({ params, loaderData }: RouteComponentProps<Route.ComponentProps>) {
   const [component, setComponent] = useState<ReactNode>(null);
-  const { settings, tagColors } = useLoaderData<typeof loader>();
-  const params = useParams();
+  const { settings, tagColors } = loaderData;
   const { serverId } = params;
   const { pathname } = useLocation();
   const prefix = useMemo(() => {

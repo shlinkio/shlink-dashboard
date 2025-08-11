@@ -9,6 +9,7 @@ import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import type { Route } from './+types/settings';
+import type { RouteComponentProps } from './types';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -32,7 +33,7 @@ export async function action(
   return {};
 }
 
-export default function Settings({ loaderData: settings }: Pick<Route.ComponentProps, 'loaderData'>) {
+export default function Settings({ loaderData: settings }: RouteComponentProps<Route.ComponentProps>) {
   const fetcher = useFetcher();
   // TODO Add some deferring
   const submitSettings = useCallback((newSettings: AppSettings) => fetcher.submit(newSettings, {
