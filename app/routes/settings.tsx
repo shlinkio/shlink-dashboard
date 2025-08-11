@@ -2,12 +2,13 @@ import type { Settings as AppSettings } from '@shlinkio/shlink-web-component/set
 import { ShlinkWebSettings } from '@shlinkio/shlink-web-component/settings';
 import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { Route, Routes , useFetcher, useLoaderData } from 'react-router';
+import { Route as RouteComp, Routes, useFetcher } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { ClientOnly } from '../common/ClientOnly';
 import { Layout } from '../common/Layout';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
+import type { Route } from './+types/settings';
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -31,8 +32,7 @@ export async function action(
   return {};
 }
 
-export default function Settings() {
-  const settings = useLoaderData<typeof loader>();
+export default function Settings({ loaderData: settings }: Pick<Route.ComponentProps, 'loaderData'>) {
   const fetcher = useFetcher();
   // TODO Add some deferring
   const submitSettings = useCallback((newSettings: AppSettings) => fetcher.submit(newSettings, {
@@ -44,7 +44,7 @@ export default function Settings() {
     <Layout>
       <ClientOnly>
         <Routes>
-          <Route
+          <RouteComp
             path="*"
             element={(
               <ShlinkWebSettings
