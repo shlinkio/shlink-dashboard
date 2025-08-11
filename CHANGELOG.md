@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+### Added
+- *Nothing*
+
+### Changed
+- [#558](https://github.com/shlinkio/shlink-dashboard/issues/558) Migrated away from `useLoaderData` hook in route components, and use `loaderData` prop instead.
+
+### Deprecated
+- *Nothing*
+
+### Removed
+- *Nothing*
+
+### Fixed
+- *Nothing*
+
+
 ## [0.1.1] - 2025-08-08
 ### Added
 - [#663](https://github.com/shlinkio/shlink-dashboard/issues/663) Add new `SHLINK_DASHBOARD_DB_USE_ENCRYPTION` env var to allow enabling encrypted database connections

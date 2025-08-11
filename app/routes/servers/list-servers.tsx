@@ -4,13 +4,15 @@ import { Button, Dropdown, RowDropdown, SearchInput, SimpleCard, Table } from '@
 import { clsx } from 'clsx';
 import { useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { href, Link , useLoaderData,useNavigate  } from 'react-router';
+import { href, Link, useNavigate } from 'react-router';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import type { PlainServer } from '../../entities/Server';
 import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { requestQueryParams } from '../../utils/request.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/list-servers';
 import { DeleteServerModal } from './DeleteServerModal';
 
 export async function loader(
@@ -39,10 +41,10 @@ export async function loader(
   };
 }
 
-export default function ListServers() {
+export default function ListServers({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
   const session = useSession();
   const navigate = useNavigate();
-  const { servers, currentSearchTerm } = useLoaderData<typeof loader>();
+  const { servers, currentSearchTerm } = loaderData;
 
   const [serverToDelete, setServerToDelete] = useState<PlainServer>();
   const [dialogOpen, setDialogOpen] = useState(false);

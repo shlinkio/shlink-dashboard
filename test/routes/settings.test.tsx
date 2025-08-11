@@ -58,11 +58,11 @@ describe('settings', () => {
   });
 
   // FIXME Skipping for now, as the test always resolves a 404
-  describe.skip('<Settings />', () => {
+  describe('<Settings />', () => {
     const setUp = () => {
       const Stub = createRoutesStub([
         {
-          path: '/settings/general',
+          path: '/settings/*',
           Component: SettingsComp,
           HydrateFallback: () => null,
           loader: () => ({}),

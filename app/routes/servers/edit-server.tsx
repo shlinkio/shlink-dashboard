@@ -1,10 +1,12 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { redirect , useFetcher,useLoaderData  } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { notFound } from '../../utils/response.server';
 import { NotFoundError } from '../../validation/NotFoundError.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/edit-server';
 import { ServerFormFields } from './ServerFormFields';
 
 export async function loader(
@@ -39,8 +41,8 @@ export async function action(
   return redirect('/manage-servers/1');
 }
 
-export default function EditServer() {
-  const { server } = useLoaderData<typeof loader>();
+export default function EditServer({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
+  const { server } = loaderData;
   const { Form, state } = useFetcher();
   const isSaving = state !== 'idle';
 

@@ -1,11 +1,13 @@
 import { Button, SimpleCard,useGoBack  } from '@shlinkio/shlink-frontend-kit';
 import { useCallback, useMemo, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { redirect, useFetcher, useLoaderData } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import { UsersService } from '../../users/UsersService.server';
 import { badRequest } from '../../utils/response.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/edit-user-servers';
 import { UserServers } from './UserServers';
 
 export async function loader(
@@ -39,8 +41,8 @@ export async function action(
   return redirect('/manage-users/1');
 }
 
-export default function EditUserServers() {
-  const { servers, user } = useLoaderData<typeof loader>();
+export default function EditUserServers({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
+  const { servers, user } = loaderData;
 
   const searchServersFetcher = useFetcher<typeof loader>();
   const [shouldShowResults, setShouldShowResults] = useState(false);

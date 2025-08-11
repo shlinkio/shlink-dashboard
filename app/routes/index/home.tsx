@@ -1,9 +1,10 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { useLoaderData } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { Layout } from '../../common/Layout';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/home';
 import { WelcomeCard } from './WelcomeCard';
 
 export async function loader(
@@ -17,8 +18,8 @@ export async function loader(
   return { servers };
 }
 
-export default function Home() {
-  const { servers } = useLoaderData<typeof loader>();
+export default function Home({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
+  const { servers } = loaderData;
 
   return (
     <Layout>
