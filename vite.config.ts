@@ -13,6 +13,16 @@ export default defineConfig({
 
   build: {
     target: 'esnext',
+    rollupOptions: {
+      // @shlinkio/dashboard-server (src) is bundled separately as its own package
+      external: ['@shlinkio/dashboard-server', '@shlinkio/dashboard-server/*'],
+    },
+  },
+
+  resolve: {
+    alias: {
+      '@shlinkio/dashboard-server': resolve(__dirname, 'src'),
+    },
   },
 
   server: {
