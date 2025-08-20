@@ -15,7 +15,7 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       // @shlinkio/dashboard-server (src) is bundled separately as its own package
-      external: ['@shlinkio/dashboard-server', '@shlinkio/dashboard-server/*'],
+      external: [/^@shlinkio\/dashboard-server(\/.*)?$/],
     },
   },
 
