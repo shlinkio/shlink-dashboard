@@ -1,5 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { unstable_RouterContextProvider } from 'react-router';
+import type { RouterContextProvider } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
 import type { SessionData } from '../../app/auth/session-context';
 import type { Role } from '../../app/entities/User';
@@ -12,7 +12,7 @@ import {
 describe('middleware', () => {
   const next = vi.fn().mockResolvedValue(new Response('Success', { status: 200 }));
   const set = vi.fn();
-  const createContext = (role?: Role) => fromPartial<unstable_RouterContextProvider>({
+  const createContext = (role?: Role) => fromPartial<RouterContextProvider>({
     get: vi.fn().mockReturnValue({ role }),
     set,
   });
