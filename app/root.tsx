@@ -13,7 +13,7 @@ import type { RouteComponentProps } from './routes/types';
 import { SettingsService } from './settings/SettingsService.server';
 import './tailwind.css';
 
-export const unstable_middleware = [forkEmMiddleware];
+export const middleware = [forkEmMiddleware];
 
 export async function loader(
   { request }: LoaderFunctionArgs,

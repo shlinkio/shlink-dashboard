@@ -14,7 +14,7 @@ import { ChangePasswordForm } from './ChangePasswordForm';
 import { editProfileAction } from './edit-profile-action.server';
 import { EditProfileForm } from './EditProfileForm';
 
-export const unstable_middleware = [authMiddleware];
+export const middleware = [authMiddleware];
 
 export async function action(
   { request, context }: ActionFunctionArgs,
