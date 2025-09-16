@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.1.2] - 2025-09-16
 ### Added
 - *Nothing*
 
@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - *Nothing*
 
 ### Fixed
-- *Nothing*
+- [#726](https://github.com/shlinkio/shlink-dashboard/issues/726) Fix tini downloaded with the wrong architecture in the ARM docker image.
 
 
 ## [0.1.1] - 2025-08-08
