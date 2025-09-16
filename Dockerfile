@@ -1,4 +1,4 @@
-FROM node:23.11-slim AS builder
+FROM node:24.8-slim AS builder
 ARG VERSION="latest"
 ENV VERSION=${VERSION}
 
@@ -8,7 +8,7 @@ WORKDIR /shlink-dashboard
 RUN npm ci && node --run build
 
 
-FROM node:23.11-slim
+FROM node:24.8-slim
 ARG UID=101
 ARG VERSION="latest"
 ENV VERSION=${VERSION}
