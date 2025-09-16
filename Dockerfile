@@ -14,6 +14,10 @@ ARG VERSION="latest"
 ENV VERSION=${VERSION}
 LABEL maintainer="Alejandro Celaya <alejandro@alejandrocelaya.com>"
 ENV NODE_ENV="production"
+
+# This is set by Docker BuildKit based on the value passed to `--platform`
+ARG TARGETARCH
+ENV TINI_NAME="tini-${TARGETARCH}"
 ENV TINI_VERSION="v0.19.0"
 
 USER root
@@ -28,7 +32,7 @@ RUN npm ci --omit dev && npm cache clean --force
 RUN mkdir data && chown $UID:0 data
 
 # Install tini
-ADD --chmod=755 https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
+ADD --chmod=755 https://github.com/krallin/tini/releases/download/${TINI_VERSION}/${TINI_NAME} /sbin/tini
 
 # Expose default port
 EXPOSE 3005
