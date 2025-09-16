@@ -3,10 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, SimpleCard,useGoBack  } from '@shlinkio/shlink-frontend-kit';
 import { useCallback } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { useFetcher, useLoaderData } from 'react-router';
+import { useFetcher } from 'react-router';
 import { CopyToClipboard } from '../../common/CopyToClipboard';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/reset-user-password';
 
 export async function loader(
   { params }: LoaderFunctionArgs,
@@ -28,9 +30,9 @@ export async function action(
   return { user, plainTextPassword };
 }
 
-export default function ResetUserPassword() {
+export default function ResetUserPassword({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
   const goBak = useGoBack();
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = loaderData;
   const { state, data, submit } = useFetcher<typeof action>();
   const submitting = state === 'submitting';
   const resetPassword = useCallback(() => submit({}, { method: 'POST' }), [submit]);

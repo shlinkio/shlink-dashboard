@@ -1,9 +1,11 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { redirect, useFetcher, useLoaderData } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
 import { notFound } from '../../utils/response.server';
 import { NotFoundError } from '../../validation/NotFoundError.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/edit-user';
 import { UserFormFields } from './UserFormFields';
 
 export async function loader(
@@ -36,8 +38,8 @@ export async function action(
   return redirect('/manage-users/1');
 }
 
-export default function EditUser() {
-  const { user } = useLoaderData<typeof loader>();
+export default function EditUser({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
+  const { user } = loaderData;
   const { Form, state } = useFetcher<typeof action>();
   const isSubmitting = state === 'submitting';
 

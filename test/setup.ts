@@ -32,3 +32,5 @@ HTMLDialogElement.prototype.close = function() {
   this.dispatchEvent(new CloseEvent('close'));
   this.dispatchEvent(new CloseEvent('cancel'));
 };
+
+window.matchMedia = () => ({ matches: false }) as any;

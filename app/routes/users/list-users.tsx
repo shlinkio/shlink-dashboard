@@ -25,14 +25,16 @@ import {
 } from '@shlinkio/shlink-frontend-kit';
 import { clsx } from 'clsx';
 import type { PropsWithChildren } from 'react';
-import { useCallback,useState  } from 'react';
+import { useCallback, useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router';
-import { href, Link , useLoaderData, useNavigate,useNavigation  } from 'react-router';
+import { href, Link, useNavigate, useNavigation } from 'react-router';
 import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
 import { requestQueryParams } from '../../utils/request.server';
+import type { RouteComponentProps } from '../types';
+import type { Route } from './+types/list-users';
 import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
 
@@ -82,11 +84,11 @@ function UserDropdownItem({ children, danger, icon, ...rest }: UserDropdownItemP
   );
 }
 
-export default function ListUsers() {
+export default function ListUsers({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
   const session = useSession();
   const navigation = useNavigation();
   const navigate = useNavigate();
-  const { users, totalPages, currentParams } = useLoaderData<typeof loader>();
+  const { users, totalPages, currentParams } = loaderData;
   const { field, dir } = currentParams.orderBy;
 
   const urlForParams = useCallback((newParams: ListUsersOptions) => {
@@ -121,7 +123,7 @@ export default function ListUsers() {
   return (
     <>
       <SearchInput
-        placeholder="Seacrh users..."
+        placeholder="Search users..."
         defaultValue={currentParams.searchTerm}
         onChange={(searchTerm) => navigate(urlForParams({ page: 1, searchTerm }), { replace: true })}
       />

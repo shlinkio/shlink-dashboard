@@ -10,7 +10,7 @@ import { UsersService } from '../users/UsersService.server';
 import { ValidationError } from '../validation/ValidationError.server';
 import { INVALID_PASSWORD_FORMAT } from './profile/change-password-action.server';
 
-export const unstable_middleware = [authMiddleware];
+export const middleware = [authMiddleware];
 
 export async function loader({ context }: ActionFunctionArgs) {
   const sessionData = context.get(sessionContext);

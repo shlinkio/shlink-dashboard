@@ -1,17 +1,19 @@
 import type { Theme } from '@shlinkio/shlink-frontend-kit';
-import { BRAND_COLOR_LM , getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
+import { BRAND_COLOR_LM, getSystemPreferredTheme } from '@shlinkio/shlink-frontend-kit';
 import { useEffect, useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from 'react-router';
-import { data , Links, Meta, Outlet, Scripts, useLoaderData } from 'react-router';
+import { data, Links, Meta, Outlet, Scripts } from 'react-router';
+import type { Route } from './+types/root';
 import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
 import { serverContainer } from './container/container.server';
 import { forkEmMiddleware } from './middleware/fork-em-middleware.server';
+import type { RouteComponentProps } from './routes/types';
 import { SettingsService } from './settings/SettingsService.server';
 import './tailwind.css';
 
-export const unstable_middleware = [forkEmMiddleware];
+export const middleware = [forkEmMiddleware];
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -37,8 +39,8 @@ export async function loader(
   );
 }
 
-export default function App() {
-  const { sessionData, settings } = useLoaderData<typeof loader>();
+export default function App({ loaderData }: RouteComponentProps<Route.ComponentProps>) {
+  const { sessionData, settings } = loaderData;
   const [systemPreferredTheme, setSystemPreferredTheme] = useState<Theme>('light');
 
   useEffect(() => {
