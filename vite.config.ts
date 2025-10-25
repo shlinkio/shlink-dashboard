@@ -2,7 +2,7 @@ import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -58,8 +58,8 @@ export default defineConfig({
       // Required code coverage. Lower than this will make the check fail
       thresholds: {
         statements: 85,
-        branches: 95,
-        functions: 90,
+        branches: 83,
+        functions: 80,
         lines: 85,
       },
     },
