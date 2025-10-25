@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../app/auth/auth-helper.server';
@@ -121,7 +121,7 @@ describe('change-password', () => {
       await user.click(screen.getByRole('button', { name: 'Save' }));
 
       if (error) {
-        expect(screen.getByTestId('error-container')).toHaveTextContent(error);
+        await waitFor(() => expect(screen.getByTestId('error-container')).toHaveTextContent(error));
       } else {
         expect(screen.queryByTestId('error-container')).not.toBeInTheDocument();
       }
