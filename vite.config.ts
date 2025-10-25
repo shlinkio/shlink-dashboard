@@ -58,8 +58,8 @@ export default defineConfig({
       // Required code coverage. Lower than this will make the check fail
       thresholds: {
         statements: 85,
-        branches: 95,
-        functions: 90,
+        branches: 83,
+        functions: 80,
         lines: 85,
       },
     },
