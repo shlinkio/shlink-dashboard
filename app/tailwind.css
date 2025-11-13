@@ -6,6 +6,7 @@
 
 @layer base {
     :root {
-        --header-height: 52px;
+        --footer-height: 2.3rem;
+        --footer-margin: .8rem;
     }
 }

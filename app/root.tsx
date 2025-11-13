@@ -58,7 +58,7 @@ export default function App({ loaderData }: RouteComponentProps<Route.ComponentP
       <body>
         <SessionProvider value={sessionData ?? null}>
           <MainHeader />
-          <div className="pt-(--header-height)">
+          <div className="h-full pt-(--header-height)">
             <Outlet />
           </div>
           <Scripts />
