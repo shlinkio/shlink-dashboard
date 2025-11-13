@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * [shlink-web-component#784](https://github.com/shlinkio/shlink-web-component/issues/784) Add optional `long-url` query parameter to short URL creation to prefill the long URL programmatically.
 
 ### Changed
-* *Nothing*
+* [#675](https://github.com/shlinkio/shlink-dashboard/issues/675) Vertically center home and login page content.
 
 ### Deprecated
 * *Nothing*

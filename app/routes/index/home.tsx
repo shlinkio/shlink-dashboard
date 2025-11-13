@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
-import { Layout } from '../../common/Layout';
+import { CenteredContentLayout } from '../../common/CenteredContentLayout';
 import { serverContainer } from '../../container/container.server';
 import { ServersService } from '../../servers/ServersService.server';
 import type { RouteComponentProps } from '../types';
@@ -22,12 +22,8 @@ export default function Home({ loaderData }: RouteComponentProps<Route.Component
   const { servers } = loaderData;
 
   return (
-    <Layout>
-      <div className="md:flex md:items-center md:h-full md:pb-0 pb-3">
-        <div className="mx-auto xl:w-1/2 lg:w-3/4 w-full">
-          <WelcomeCard servers={servers} />
-        </div>
-      </div>
-    </Layout>
+    <CenteredContentLayout>
+      <WelcomeCard servers={servers} />
+    </CenteredContentLayout>
   );
 }
