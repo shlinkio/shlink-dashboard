@@ -7,7 +7,6 @@ import type { Route } from './+types/root';
 import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
-import { ShlinkVersionsContainer } from './common/ShlinkVersionsContainer';
 import { serverContainer } from './container/container.server';
 import { forkEmMiddleware } from './middleware/fork-em-middleware.server';
 import type { RouteComponentProps } from './routes/types';
