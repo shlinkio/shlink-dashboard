@@ -16,7 +16,7 @@ import './tailwind.css';
 export const middleware = [forkEmMiddleware];
 
 export async function loader(
-  { request, params }: LoaderFunctionArgs,
+  { request }: LoaderFunctionArgs,
   settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
@@ -30,8 +30,6 @@ export async function loader(
 
   const settings = sessionData && (await settingsService.userSettings(sessionData.publicId));
   const sessionCookie = await authHelper.refreshSessionExpiration(request);
-
-  console.log(params);
 
   return data(
     { sessionData, settings },
