@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "react-router build && tsc --project tsconfig.build-server.json && cp -R app/db/migrations build/migrations && cp migrations.config.ts build/migrations.config.ts",
+    "build": "react-router build && tsc --project tsconfig.build-server.json && cp -R app/db/migrations build/migrations && cp migrations.config.ts build/migrations.config.ts && tsx scripts/replace-version.ts",
     "build:dist": "node --run build && tsx ./scripts/create-dist-file.ts",
     "test": "vitest run",
     "test:ci": "npm run test -- --coverage",

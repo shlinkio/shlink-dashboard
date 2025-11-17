@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * [shlink-web-component#839](https://github.com/shlinkio/shlink-web-component/issues/839) Allow filtering short URLs by excluded tags when using Shlink >=4.6.0
 * [shlink-web-component#838](https://github.com/shlinkio/shlink-web-component/issues/838) Allow filtering tag, orphan and non-orphan visits by domain, when using Shlink >=4.6.0
 * [shlink-web-component#784](https://github.com/shlinkio/shlink-web-component/issues/784) Add optional `long-url` query parameter to short URL creation to prefill the long URL programmatically.
+* [#679](https://github.com/shlinkio/shlink-dashboard/issues/679) Add footer with the version of the dashboard and selected server (if any).
 
 ### Changed
 * [#675](https://github.com/shlinkio/shlink-dashboard/issues/675) Vertically center home and login page content.
