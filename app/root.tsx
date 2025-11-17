@@ -7,6 +7,7 @@ import type { Route } from './+types/root';
 import { AuthHelper } from './auth/auth-helper.server';
 import { SessionProvider } from './auth/session-context';
 import { MainHeader } from './common/MainHeader';
+import { ShlinkVersionsContainer } from './common/ShlinkVersionsContainer';
 import { serverContainer } from './container/container.server';
 import { forkEmMiddleware } from './middleware/fork-em-middleware.server';
 import type { RouteComponentProps } from './routes/types';
@@ -58,8 +59,9 @@ export default function App({ loaderData }: RouteComponentProps<Route.ComponentP
       <body>
         <SessionProvider value={sessionData ?? null}>
           <MainHeader />
-          <div className="h-full pt-(--header-height)">
+          <div className="min-h-screen flex flex-col pt-(--header-height)">
             <Outlet />
+            <ShlinkVersionsContainer />
           </div>
           <Scripts />
         </SessionProvider>
