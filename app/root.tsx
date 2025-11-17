@@ -17,7 +17,7 @@ import './tailwind.css';
 export const middleware = [forkEmMiddleware];
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, params }: LoaderFunctionArgs,
   settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
@@ -31,6 +31,8 @@ export async function loader(
 
   const settings = sessionData && (await settingsService.userSettings(sessionData.publicId));
   const sessionCookie = await authHelper.refreshSessionExpiration(request);
+
+  console.log(params);
 
   return data(
     { sessionData, settings },
@@ -61,7 +63,6 @@ export default function App({ loaderData }: RouteComponentProps<Route.ComponentP
           <MainHeader />
           <div className="min-h-screen flex flex-col pt-(--header-height)">
             <Outlet />
-            <ShlinkVersionsContainer />
           </div>
           <Scripts />
         </SessionProvider>

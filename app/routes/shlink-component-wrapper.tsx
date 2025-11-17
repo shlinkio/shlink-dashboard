@@ -5,6 +5,7 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { useLocation } from 'react-router';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
 import { AuthHelper } from '../auth/auth-helper.server';
+import { ShlinkVersionsContainer } from '../common/ShlinkVersionsContainer';
 import { serverContainer } from '../container/container.server';
 import { SettingsService } from '../settings/SettingsService.server';
 import { TagsService } from '../tags/TagsService.server';
@@ -39,6 +40,7 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
 
     return pathPrefix.endsWith('/') ? pathPrefix.slice(0, -1) : pathPrefix;
   }, [params, pathname]);
+  const [serverVersion, setServerVersion] = useState<string>();
 
   useEffect(() => {
     if (!serverId) {
@@ -53,6 +55,7 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
       import('@shlinkio/shlink-web-component'),
       apiClient.health(),
     ]).then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
+      setServerVersion(version);
       setComponent(
         <ShlinkSidebarVisibilityProvider>
           <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
@@ -69,5 +72,10 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
     });
   }, [prefix, serverId, settings, tagColors]);
 
-  return component;
+  return (
+    <>
+      <div className="grow">{component}</div>
+      <ShlinkVersionsContainer serverVersion={serverVersion} />
+    </>
+  );
 }
