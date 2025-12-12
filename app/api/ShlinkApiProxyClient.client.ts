@@ -22,6 +22,7 @@ import type {
   ShlinkVisitsList,
   ShlinkVisitsOverview,
   ShlinkVisitsParams,
+  ShlinkWithDomainVisitsParams,
 } from '@shlinkio/shlink-js-sdk/api-contract';
 
 type Fetch = typeof globalThis.fetch;
@@ -76,7 +77,7 @@ export class ShlinkApiProxyClient implements ShlinkApiClient {
     return this.#performRequest('getDomainVisits', signal, domain, params);
   }
 
-  getNonOrphanVisits({ signal, ...params }: ShlinkVisitsParams & Abortable = {}): Promise<ShlinkVisitsList> {
+  getNonOrphanVisits({ signal, ...params }: ShlinkWithDomainVisitsParams & Abortable = {}): Promise<ShlinkVisitsList> {
     return this.#performRequest('getNonOrphanVisits', signal, params);
   }
 
@@ -102,7 +103,10 @@ export class ShlinkApiProxyClient implements ShlinkApiClient {
     return this.#performRequest('getShortUrlVisits', signal, shortUrlId, params);
   }
 
-  getTagVisits(tag: string, { signal, ...params }: ShlinkVisitsParams & Abortable = {}): Promise<ShlinkVisitsList> {
+  getTagVisits(
+    tag: string,
+    { signal, ...params }: ShlinkWithDomainVisitsParams & Abortable = {},
+  ): Promise<ShlinkVisitsList> {
     return this.#performRequest('getTagVisits', signal, tag, params);
   }
 

@@ -3,9 +3,3 @@
 @import '@shlinkio/shlink-web-component/tailwind.preset.css';
 @source '../node_modules/@shlinkio/shlink-frontend-kit';
 @source '../node_modules/@shlinkio/shlink-web-component';
-
-@layer base {
-    :root {
-        --header-height: 52px;
-    }
-}

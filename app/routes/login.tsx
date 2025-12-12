@@ -2,6 +2,7 @@ import { Button, LabelledInput, SimpleCard } from '@shlinkio/shlink-frontend-kit
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect,useFetcher  } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
+import { CenteredContentLayout } from '../common/CenteredContentLayout';
 import { serverContainer } from '../container/container.server';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
@@ -36,7 +37,7 @@ export default function Login() {
   const isSaving = fetcher.state === 'submitting';
 
   return (
-    <div className="mt-8 mx-8 lg:mx-auto lg:w-[50%]">
+    <CenteredContentLayout>
       <SimpleCard>
         <fetcher.Form method="post" className="flex flex-col gap-4">
           <LabelledInput label="Username:" name="username" hiddenRequired />
@@ -49,6 +50,6 @@ export default function Login() {
           )}
         </fetcher.Form>
       </SimpleCard>
-    </div>
+    </CenteredContentLayout>
   );
 }
