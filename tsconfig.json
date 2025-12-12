@@ -8,6 +8,11 @@
     "**/.client/**/*.tsx"
   ],
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shlinkio/dashboard-server": ["src"],
+      "@shlinkio/dashboard-server/*": ["src/*"]
+    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["@react-router/node", "vite/client", "vitest/globals"],
     "rootDirs": [".", "./.react-router/types"],
