@@ -29,6 +29,9 @@ try {
   // Install prod dependencies inside build dir
   execSync('npm ci --omit=dev', { cwd: './build' });
 
+  // Move bundled src to node_modules, so that it is treated as an external package
+  fs.renameSync('./build/src', './build/node_modules/@shlinkio/dashboard-server');
+
   zip.addLocalFolder('./build', fileBaseName);
   zip.writeZip(versionFileName);
   console.log(chalk.green('Dist file properly generated'));

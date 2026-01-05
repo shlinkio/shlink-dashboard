@@ -29,6 +29,7 @@ COPY README.md /shlink-dashboard/README.md
 
 WORKDIR /shlink-dashboard
 RUN npm ci --omit dev && npm cache clean --force
+RUN mv src node_modules/@shlinkio/dashboard-server
 RUN mkdir data && chown $UID:0 data
 
 # Install tini
