@@ -35,8 +35,8 @@
     "@mikro-orm/mssql": "^6.6.3",
     "@mikro-orm/mysql": "^6.6.3",
     "@mikro-orm/postgresql": "^6.6.3",
-    "@react-router/express": "^7.11.0",
-    "@react-router/node": "^7.11.0",
+    "@react-router/express": "^7.12.0",
+    "@react-router/node": "^7.12.0",
     "@shlinkio/shlink-frontend-kit": "^1.4.0",
     "@shlinkio/shlink-js-sdk": "^3.0.1",
     "@shlinkio/shlink-web-component": "^0.17.1",
@@ -56,7 +56,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.11.0",
+    "@react-router/dev": "^7.12.0",
     "@shlinkio/eslint-config-js-coding-standard": "~3.7.0",
     "@stylistic/eslint-plugin": "^5.6.1",
     "@tailwindcss/vite": "^4.1.18",
