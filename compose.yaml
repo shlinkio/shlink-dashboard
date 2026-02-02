@@ -1,6 +1,7 @@
 services:
   shlink-dashboard:
     image: shlink-dashboard-oidc:latest
+    pull_policy: never
     container_name: shlink-dashboard
     restart: unless-stopped
     ports:
