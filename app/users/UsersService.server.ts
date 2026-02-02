@@ -1,7 +1,9 @@
 import { UniqueConstraintViolationException } from '@mikro-orm/core';
+import type { OidcClaims } from '../auth/oidc.server';
+import { mapGroupsToRole } from '../auth/oidc.server';
 import { generatePassword, hashPassword, verifyPassword } from '../auth/passwords.server';
 import { paginationToLimitAndOffset } from '../db/utils.server';
-import type { User } from '../entities/User';
+import type { Role, User } from '../entities/User';
 import { DuplicatedEntryError } from '../validation/DuplicatedEntryError.server';
 import { NotFoundError } from '../validation/NotFoundError.server';
 import { validateFormDataSchema } from '../validation/validator.server';
@@ -178,5 +180,66 @@ export class UsersService {
 
   async deleteUser(publicId: string): Promise<void> {
     await this.#usersRepository.nativeDelete({ publicId });
+  }
+
+  /**
+   * Find a user by their OIDC subject identifier
+   */
+  async findByOidcSubject(oidcSubject: string): Promise<User | null> {
+    return this.#usersRepository.findOne({ oidcSubject });
+  }
+
+  /**
+   * Find or create a user from OIDC claims
+   * If user exists, update their role based on current groups
+   * If user doesn't exist, create them
+   */
+  async findOrCreateFromOidcClaims(claims: OidcClaims): Promise<User> {
+    const existingUser = await this.findByOidcSubject(claims.sub);
+    const role = mapGroupsToRole(claims.groups ?? []);
+
+    if (existingUser) {
+      // Update role if groups have changed
+      if (existingUser.role !== role) {
+        existingUser.role = role;
+        await this.#usersRepository.flush();
+      }
+      return existingUser;
+    }
+
+    // Create new user from OIDC claims
+    return this.#createOidcUser(claims, role);
+  }
+
+  async #createOidcUser(claims: OidcClaims, role: Role): Promise<User> {
+    // Use preferred_username, fall back to email, fall back to subject
+    let username = claims.preferred_username ?? claims.email ?? claims.sub;
+    const displayName = claims.name ?? null;
+
+    // Generate a random password hash - OIDC users won't use it but the field is required
+    const randomPassword = await hashPassword(generatePassword(32));
+
+    try {
+      return await this.#usersRepository.createOidcUser({
+        username,
+        displayName,
+        role,
+        oidcSubject: claims.sub,
+        password: randomPassword,
+      });
+    } catch (e) {
+      if (e instanceof UniqueConstraintViolationException) {
+        // Username conflict - append part of sub to make it unique
+        username = `${username}_${claims.sub.slice(0, 8)}`;
+        return await this.#usersRepository.createOidcUser({
+          username,
+          displayName,
+          role,
+          oidcSubject: claims.sub,
+          password: randomPassword,
+        });
+      }
+      throw e;
+    }
   }
 }

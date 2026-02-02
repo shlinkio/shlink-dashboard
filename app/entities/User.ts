@@ -16,6 +16,7 @@ export class User extends BaseEntity {
   createdAt!: Date;
   servers: Collection<Server>;
   tempPassword!: boolean;
+  oidcSubject!: string | null;
 
   constructor() {
     super();
@@ -68,6 +69,12 @@ export const UserSchema = new EntitySchema({
       joinColumn: 'user_id',
       inverseJoinColumn: 'server_id',
       mappedBy: 'users',
+    },
+    oidcSubject: {
+      name: 'oidc_subject',
+      type: 'string',
+      nullable: true,
+      unique: true,
     },
   },
 });

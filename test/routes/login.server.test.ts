@@ -7,10 +7,23 @@ describe('login', () => {
   const isAuthenticated = vi.fn().mockResolvedValue(undefined);
   const authHelper = fromPartial<AuthHelper>({ login, isAuthenticated });
 
+  const createMockRequest = (formData: FormData = new FormData()) => {
+    const request = fromPartial<Request>({
+      clone: () => fromPartial<Request>({
+        formData: () => Promise.resolve(formData),
+      }),
+    });
+    return request;
+  };
+
   describe('action', () => {
-    it('authenticates user', () => {
-      const request = fromPartial<Request>({});
-      action(fromPartial({ request }), authHelper);
+    it('authenticates user with local auth', async () => {
+      const formData = new FormData();
+      formData.set('username', 'testuser');
+      formData.set('password', 'testpass');
+      const request = createMockRequest(formData);
+
+      await action(fromPartial({ request }), authHelper);
 
       expect(login).toHaveBeenCalledWith(request);
     });
@@ -21,7 +34,8 @@ describe('login', () => {
     ])('returns json response when credentials are incorrect', async ({ message }) => {
       login.mockRejectedValue(new Error(message));
 
-      const request = fromPartial<Request>({});
+      const formData = new FormData();
+      const request = createMockRequest(formData);
       const response = await action(fromPartial({ request }), authHelper);
 
       expect(response).toEqual({ error: true });
@@ -29,7 +43,8 @@ describe('login', () => {
 
     it('re-throws unknown errors', async () => {
       const e = new Error('Unknown error');
-      const request = fromPartial<Request>({});
+      const formData = new FormData();
+      const request = createMockRequest(formData);
 
       login.mockRejectedValue(e);
 
@@ -47,13 +62,14 @@ describe('login', () => {
       expect(response).instanceof(Response);
     });
 
-    it('returns empty if user is not authenticated', async () => {
+    it('returns auth config if user is not authenticated', async () => {
       isAuthenticated.mockResolvedValue(false);
 
       const request = fromPartial<Request>({});
       const response = await loader(fromPartial({ request }), authHelper);
 
-      expect(response).toEqual({});
+      // When OIDC is not enabled, returns local auth enabled status
+      expect(response).toEqual({ oidcEnabled: false, localAuthEnabled: true, oidcProviderName: 'SSO' });
     });
   });
 });

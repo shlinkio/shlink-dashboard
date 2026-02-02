@@ -2,9 +2,18 @@ import type { EntityManager } from '@mikro-orm/core';
 import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { BaseEntityRepository } from '../db/BaseEntityRepository.server';
 import { expandSearchTerm } from '../db/utils.server';
+import type { Role } from '../entities/User';
 import { User } from '../entities/User';
 import type { CreateUserData } from './user-schemas.server';
 import type { UserOrderableFields } from './UsersService.server';
+
+export type CreateOidcUserData = {
+  username: string;
+  displayName: string | null;
+  role: Role;
+  oidcSubject: string;
+  password: string;
+};
 
 export type FindAndCountUsersOptions = {
   limit: number;
@@ -35,6 +44,21 @@ export class UsersRepository extends BaseEntityRepository<User> {
       ...userData,
       password,
       tempPassword: true,
+      createdAt: new Date(),
+      publicId: crypto.randomUUID(),
+    });
+    await this.em.persist(user).flush();
+
+    return user;
+  }
+
+  /**
+   * Create a user from OIDC claims (no temporary password)
+   */
+  async createOidcUser(userData: CreateOidcUserData): Promise<User> {
+    const user = this.create({
+      ...userData,
+      tempPassword: false,
       createdAt: new Date(),
       publicId: crypto.randomUUID(),
     });

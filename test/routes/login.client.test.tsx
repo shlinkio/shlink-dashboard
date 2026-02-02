@@ -5,11 +5,12 @@ import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('login', () => {
   describe('<Login />', () => {
-    const setUp = (error: boolean = false) => {
+    const setUp = (error: boolean = false, oidcEnabled: boolean = false, localAuthEnabled: boolean = true) => {
       const Stub = createRoutesStub([
         {
           path: '/',
           Component: Login,
+          loader: () => ({ oidcEnabled, localAuthEnabled, oidcProviderName: 'SSO' }),
           action: () => ({ error }),
         },
       ]);
