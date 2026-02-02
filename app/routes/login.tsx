@@ -5,11 +5,16 @@ import { AuthHelper } from '../auth/auth-helper.server';
 import { buildAuthorizationUrl, generateOidcState, isOidcEnabled } from '../auth/oidc.server';
 import { CenteredContentLayout } from '../common/CenteredContentLayout';
 import { serverContainer } from '../container/container.server';
-import { getOidcProviderName, isLocalAuthEnabled } from '../utils/env.server';
+import { getOidcProviderName, isLocalAuthEnabled, isProd } from '../utils/env.server';
 import { requestQueryParam } from '../utils/request.server';
 
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
 const OIDC_STATE_COOKIE = 'oidc_state';
+
+function buildOidcStateCookie(stateCookie: string): string {
+  const secureFlag = isProd() ? 'Secure; ' : '';
+  return `${OIDC_STATE_COOKIE}=${encodeURIComponent(stateCookie)}; Path=/; ${secureFlag}HttpOnly; SameSite=Lax; Max-Age=600`;
+}
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -40,7 +45,7 @@ export async function loader(
 
     return redirect(authUrl, {
       headers: {
-        'Set-Cookie': `${OIDC_STATE_COOKIE}=${encodeURIComponent(stateCookie)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=600`,
+        'Set-Cookie': buildOidcStateCookie(stateCookie),
       },
     });
   }
@@ -75,7 +80,7 @@ export async function action(
 
     return redirect(authUrl, {
       headers: {
-        'Set-Cookie': `${OIDC_STATE_COOKIE}=${encodeURIComponent(stateCookie)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=600`,
+        'Set-Cookie': buildOidcStateCookie(stateCookie),
       },
     });
   }

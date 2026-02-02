@@ -5,11 +5,17 @@ import { AuthHelper } from '../../auth/auth-helper.server';
 import { exchangeCodeForTokens, isOidcEnabled } from '../../auth/oidc.server';
 import { serverContainer } from '../../container/container.server';
 import { UsersService } from '../../users/UsersService.server';
+import { isProd } from '../../utils/env.server';
 
 const OIDC_STATE_COOKIE = 'oidc_state';
 
 // Generic error message to prevent information disclosure
 const GENERIC_AUTH_ERROR = 'Authentication failed. Please try again.';
+
+function buildClearOidcStateCookie(): string {
+  const secureFlag = isProd() ? 'Secure; ' : '';
+  return `${OIDC_STATE_COOKIE}=; Path=/; ${secureFlag}HttpOnly; SameSite=Lax; Max-Age=0`;
+}
 
 export async function loader(
   { request }: LoaderFunctionArgs,
@@ -72,7 +78,7 @@ export async function loader(
     const response = await authHelper.loginWithOidc(request, user, oidcState.redirectTo);
 
     // Clear the OIDC state cookie
-    response.headers.append('Set-Cookie', `${OIDC_STATE_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
+    response.headers.append('Set-Cookie', buildClearOidcStateCookie());
 
     return response;
   } catch (e: any) {

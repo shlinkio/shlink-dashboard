@@ -10,7 +10,7 @@ import type { SessionData, ShlinkSessionData } from './session-context';
  * Validate redirect URL to prevent open redirect attacks.
  * Only allows relative paths starting with / and not containing protocol handlers.
  */
-function isValidRedirectUrl(url: string | undefined): url is string {
+function isValidRedirectUrl(url: string | null | undefined): url is string {
   if (!url) {
     return false;
   }
@@ -33,7 +33,7 @@ function isValidRedirectUrl(url: string | undefined): url is string {
   return true;
 }
 
-function getSafeRedirectUrl(url: string | undefined): string {
+function getSafeRedirectUrl(url: string | null | undefined): string {
   return isValidRedirectUrl(url) ? url : '/';
 }
 
