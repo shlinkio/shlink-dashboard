@@ -1,11 +1,8 @@
-import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { UNSAFE_DataWithResponseInit } from 'react-router';
-import { createRoutesStub } from 'react-router';
 import type { AuthHelper } from '../../../app/auth/auth-helper.server';
-import { SessionProvider } from '../../../app/auth/session-context';
 import type { User } from '../../../app/entities/User';
-import Profile, { action } from '../../../app/routes/profile/profile';
+import { action } from '../../../app/routes/profile/profile';
 import { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from '../../../app/users/user-profile-actions';
 import type { UsersService } from '../../../app/users/UsersService.server';
 
@@ -47,30 +44,6 @@ describe('profile', () => {
 
       const response = await runAction(PROFILE_ACTION);
       expect((response as UNSAFE_DataWithResponseInit<any>).init?.headers).toEqual({ 'Set-Cookie': 'the_cookie' });
-    });
-  });
-
-  describe('<Profile />', () => {
-    const setUp = () => {
-      const path = '/profile';
-      const Stub = createRoutesStub([{
-        path,
-        Component: Profile,
-        HydrateFallback: () => null,
-      }]);
-
-      return render(
-        <SessionProvider value={fromPartial({})}>
-          <Stub initialEntries={[path]} />
-        </SessionProvider>,
-      );
-    };
-
-    it('renders both forms', async () => {
-      setUp();
-
-      expect(screen.getByText('Edit profile')).toBeInTheDocument();
-      expect(screen.getByText('Change password')).toBeInTheDocument();
     });
   });
 });

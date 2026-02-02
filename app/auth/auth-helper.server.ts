@@ -1,9 +1,41 @@
 import type { Session, SessionStorage } from 'react-router';
 import { redirect } from 'react-router';
 import type { Authenticator } from 'remix-auth';
+import type { User } from '../entities/User';
 import { requestQueryParam } from '../utils/request.server';
 import { CREDENTIALS_STRATEGY } from './auth.server';
 import type { SessionData, ShlinkSessionData } from './session-context';
+
+/**
+ * Validate redirect URL to prevent open redirect attacks.
+ * Only allows relative paths starting with / and not containing protocol handlers.
+ */
+function isValidRedirectUrl(url: string | null | undefined): url is string {
+  if (!url) {
+    return false;
+  }
+
+  // Must start with a single forward slash (not //)
+  if (!url.startsWith('/') || url.startsWith('//')) {
+    return false;
+  }
+
+  // Must not contain protocol handlers
+  if (url.includes(':')) {
+    return false;
+  }
+
+  // Must not contain backslashes (path traversal)
+  if (url.includes('\\')) {
+    return false;
+  }
+
+  return true;
+}
+
+function getSafeRedirectUrl(url: string | null | undefined): string {
+  return isValidRedirectUrl(url) ? url : '/';
+}
 
 /**
  * Wraps a SessionStorage and Authenticator to perform common authentication and session checking/commiting/destroying
@@ -26,7 +58,28 @@ export class AuthHelper {
     session.set('sessionData', sessionData);
 
     const redirectTo = requestQueryParam(request, 'redirect-to');
-    const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
+    const successRedirect = getSafeRedirectUrl(redirectTo);
+
+    return redirect(successRedirect, {
+      headers: { 'Set-Cookie': await this.#sessionStorage.commitSession(session) },
+    });
+  }
+
+  /**
+   * Create a session for a user authenticated via OIDC
+   */
+  async loginWithOidc(request: Request, user: User, redirectTo?: string): Promise<Response> {
+    const session = await this.sessionFromRequest(request);
+    const sessionData: SessionData = {
+      publicId: user.publicId,
+      displayName: user.displayName,
+      username: user.username,
+      role: user.role,
+      tempPassword: false, // OIDC users never have temp passwords
+    };
+    session.set('sessionData', sessionData);
+
+    const successRedirect = getSafeRedirectUrl(redirectTo);
 
     return redirect(successRedirect, {
       headers: { 'Set-Cookie': await this.#sessionStorage.commitSession(session) },

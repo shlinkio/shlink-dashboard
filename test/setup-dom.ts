@@ -1,9 +1,5 @@
-import '@testing-library/jest-dom/vitest';
+import './setup-node';
 import axe from 'axe-core';
-import { URLSearchParams } from 'node:url';
-
-// @ts-expect-error Workaround for https://github.com/vitest-dev/vitest/issues/7906
-globalThis.URLSearchParams = URLSearchParams;
 
 axe.configure({
   checks: [
@@ -15,15 +11,7 @@ axe.configure({
   ],
 });
 
-// Clears all mocks after every test
-afterEach(() => {
-  vi.clearAllMocks();
-});
-
-if (typeof HTMLCanvasElement !== 'undefined') {
-  HTMLCanvasElement.prototype.getContext = (() => {}) as any;
-}
-
+HTMLCanvasElement.prototype.getContext = (() => {}) as any;
 HTMLDialogElement.prototype.showModal = function() {
   this.setAttribute('open', '');
 };

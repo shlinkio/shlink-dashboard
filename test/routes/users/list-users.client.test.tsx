@@ -2,12 +2,11 @@ import type { Order } from '@shlinkio/shlink-frontend-kit';
 import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
-import type { LoaderFunctionArgs } from 'react-router';
 import { createRoutesStub } from 'react-router';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { User } from '../../../app/entities/User';
-import ListUsers, { loader } from '../../../app/routes/users/list-users';
-import type { UserOrderableFields, UsersService } from '../../../app/users/UsersService.server';
+import ListUsers from '../../../app/routes/users/list-users';
+import type { UserOrderableFields } from '../../../app/users/UsersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
@@ -21,38 +20,21 @@ vi.mock('react-router', async () => {
   };
 });
 
+type SetUpOptions = {
+  users?: User[];
+  totalPages?: number;
+  orderBy?: Order<UserOrderableFields>;
+  searchTerm?: string;
+  currentUsername?: string;
+};
+
 describe('list-users', () => {
-  const listUsers = vi.fn();
-  const usersService: UsersService = fromPartial({ listUsers });
-  const mockUser = (userData: Partial<Omit<User, 'publicId'>>): User => fromPartial({
-    createdAt: new Date(),
-    ...userData,
-    publicId: crypto.randomUUID(),
-  });
-
-  describe('loader', () => {
-    const runLoader = (args: Partial<LoaderFunctionArgs> = {}) => loader(fromPartial(args), usersService);
-
-    it('returns list of users with page if logged-in user is an admin', async () => {
-      listUsers.mockResolvedValue(fromPartial({}));
-
-      await runLoader({
-        request: fromPartial({ url: 'https://example.com' }),
-        params: { page: '5' },
-      });
-
-      expect(listUsers).toHaveBeenCalledWith(expect.objectContaining({ page: 5 }));
-    });
-  });
-
   describe('<ListUsers />', () => {
-    type SetUpOptions = {
-      users?: User[];
-      totalPages?: number;
-      orderBy?: Order<UserOrderableFields>;
-      searchTerm?: string;
-      currentUsername?: string;
-    };
+    const mockUser = (userData: Partial<Omit<User, 'publicId'>>): User => fromPartial({
+      createdAt: new Date(),
+      ...userData,
+      publicId: crypto.randomUUID(),
+    });
 
     const setUp = async (
       { users = [], totalPages = 1, orderBy = {}, searchTerm, currentUsername }: SetUpOptions = {},
