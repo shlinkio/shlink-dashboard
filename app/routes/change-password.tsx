@@ -14,7 +14,8 @@ export const middleware = [authMiddleware];
 
 export async function loader({ context }: ActionFunctionArgs) {
   const sessionData = context.get(sessionContext);
-  if (!sessionData.tempPassword) {
+  // OIDC users don't have local passwords, redirect them away
+  if (!sessionData.tempPassword || sessionData.isOidcUser) {
     return redirect('/');
   }
 }

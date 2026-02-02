@@ -38,14 +38,27 @@ describe('auth', () => {
     });
 
     it('tries to find user with credentials', async () => {
-      getUserByCredentials.mockResolvedValue({ publicId: '123' });
+      getUserByCredentials.mockResolvedValue({
+        publicId: '123',
+        displayName: 'Test User',
+        role: 'admin',
+        username: 'foo',
+        tempPassword: false,
+      });
 
       const result = await authenticator.authenticate(
         CREDENTIALS_STRATEGY,
         requestWithBody('username=foo&password=bar'),
       );
 
-      expect(result).toEqual({ publicId: '123' });
+      expect(result).toEqual({
+        publicId: '123',
+        displayName: 'Test User',
+        role: 'admin',
+        username: 'foo',
+        tempPassword: false,
+        isOidcUser: false,
+      });
       expect(getUserByCredentials).toHaveBeenCalledWith('foo', 'bar');
     });
   });

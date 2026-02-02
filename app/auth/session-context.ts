@@ -7,6 +7,7 @@ export type SessionData = {
   username: string;
   role: Role;
   tempPassword: boolean;
+  isOidcUser: boolean;
 };
 
 export type ShlinkSessionData = {

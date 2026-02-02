@@ -21,7 +21,7 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<Ses
       providedUsername,
       password,
     );
-    return { publicId, displayName, role, username, tempPassword };
+    return { publicId, displayName, role, username, tempPassword, isOidcUser: false };
   }));
 
   // TODO Add other strategies, like oAuth for SSO

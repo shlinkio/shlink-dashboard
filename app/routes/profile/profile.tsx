@@ -46,6 +46,26 @@ export default function Profile() {
   const sessionData = useSession();
   const profileFetcher = useFetcher<typeof editProfileAction>();
   const changePasswordFetcher = useFetcher<typeof changePasswordAction>();
+  const isOidcUser = sessionData?.isOidcUser ?? false;
+
+  // OIDC users have their profile managed by the identity provider
+  if (isOidcUser) {
+    return (
+      <Layout className="flex max-lg:flex-col gap-4">
+        <SimpleCard title="Profile" className="flex-1">
+          <div className="flex flex-col gap-4">
+            <p><strong>Display name:</strong> {sessionData?.displayName || 'Not set'}</p>
+            <p><strong>Username:</strong> {sessionData?.username}</p>
+            <p><strong>Role:</strong> {sessionData?.role}</p>
+            <p className="text-muted text-sm mt-4">
+              Your profile is managed by your identity provider.
+              To change your profile information or password, please use your SSO provider.
+            </p>
+          </div>
+        </SimpleCard>
+      </Layout>
+    );
+  }
 
   return (
     <Layout className="flex max-lg:flex-col gap-4">

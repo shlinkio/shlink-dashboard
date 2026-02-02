@@ -76,6 +76,7 @@ export class AuthHelper {
       username: user.username,
       role: user.role,
       tempPassword: false, // OIDC users never have temp passwords
+      isOidcUser: true,
     };
     session.set('sessionData', sessionData);
 
