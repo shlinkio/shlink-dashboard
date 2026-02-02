@@ -1,0 +1,45 @@
+services:
+  shlink-dashboard:
+    image: shlink-dashboard-oidc:latest
+    container_name: shlink-dashboard
+    restart: unless-stopped
+    ports:
+      - "3005:3005"
+    environment:
+      # Database configuration
+      SHLINK_DASHBOARD_DB_DRIVER: ${SHLINK_DASHBOARD_DB_DRIVER:-better-sqlite3}
+      SHLINK_DASHBOARD_DB_HOST: ${SHLINK_DASHBOARD_DB_HOST:-}
+      SHLINK_DASHBOARD_DB_PORT: ${SHLINK_DASHBOARD_DB_PORT:-}
+      SHLINK_DASHBOARD_DB_NAME: ${SHLINK_DASHBOARD_DB_NAME:-}
+      SHLINK_DASHBOARD_DB_USER: ${SHLINK_DASHBOARD_DB_USER:-}
+      SHLINK_DASHBOARD_DB_PASSWORD: ${SHLINK_DASHBOARD_DB_PASSWORD:-}
+
+      # Server configuration
+      SHLINK_DASHBOARD_PORT: ${SHLINK_DASHBOARD_PORT:-3005}
+      NODE_ENV: production
+
+      # OIDC configuration
+      SHLINK_DASHBOARD_OIDC_ENABLED: ${SHLINK_DASHBOARD_OIDC_ENABLED:-false}
+      SHLINK_DASHBOARD_OIDC_ISSUER_URL: ${SHLINK_DASHBOARD_OIDC_ISSUER_URL:-}
+      SHLINK_DASHBOARD_OIDC_CLIENT_ID: ${SHLINK_DASHBOARD_OIDC_CLIENT_ID:-}
+      SHLINK_DASHBOARD_OIDC_CLIENT_SECRET: ${SHLINK_DASHBOARD_OIDC_CLIENT_SECRET:-}
+      SHLINK_DASHBOARD_OIDC_REDIRECT_URI: ${SHLINK_DASHBOARD_OIDC_REDIRECT_URI:-}
+      SHLINK_DASHBOARD_OIDC_SCOPES: ${SHLINK_DASHBOARD_OIDC_SCOPES:-openid profile email groups}
+      SHLINK_DASHBOARD_OIDC_ADMIN_GROUP: ${SHLINK_DASHBOARD_OIDC_ADMIN_GROUP:-}
+      SHLINK_DASHBOARD_OIDC_ADVANCED_GROUP: ${SHLINK_DASHBOARD_OIDC_ADVANCED_GROUP:-}
+      SHLINK_DASHBOARD_OIDC_DEFAULT_ROLE: ${SHLINK_DASHBOARD_OIDC_DEFAULT_ROLE:-managed-user}
+      SHLINK_DASHBOARD_OIDC_PROVIDER_NAME: ${SHLINK_DASHBOARD_OIDC_PROVIDER_NAME:-SSO}
+
+      # Local auth (can be disabled when using OIDC only)
+      SHLINK_DASHBOARD_LOCAL_AUTH_ENABLED: ${SHLINK_DASHBOARD_LOCAL_AUTH_ENABLED:-true}
+    volumes:
+      - shlink-dashboard-data:/shlink-dashboard/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  shlink-dashboard-data:
