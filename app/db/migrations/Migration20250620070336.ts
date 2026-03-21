@@ -5,20 +5,28 @@ import { Migration } from '@mikro-orm/migrations';
  */
 export class Migration20250620070336 extends Migration {
   override async up(): Promise<void> {
-    const knex = this.getKnex();
-    await knex('users').insert({
-      username: 'admin',
-      // Hash for 'admin'
-      password: '$argon2id$v=19$m=65536,t=3,p=4$AKRD5JP/xCa70Cwm67ZkEA$eA0dVlWkcUr4LuEsVG/wfuEdKJQkNjAD4oW2zk4a3Jg',
-      role: 'admin',
-      public_id: crypto.randomUUID(),
-      created_at: new Date(),
-      temp_password: true,
-    });
+    const kysley = this.getEntityManager().getKysely<{ users: never }>();
+    await kysley
+      .insertInto('users')
+      .values({
+        username: 'admin',
+        // Hash for 'admin'
+        password: '$argon2id$v=19$m=65536,t=3,p=4$AKRD5JP/xCa70Cwm67ZkEA$eA0dVlWkcUr4LuEsVG/wfuEdKJQkNjAD4oW2zk4a3Jg',
+        role: 'admin',
+        public_id: crypto.randomUUID(),
+        created_at: new Date(),
+        temp_password: true,
+      })
+      .execute();
   }
 
   override async down(): Promise<void> {
-    const knex = this.getKnex();
-    await knex('users').where({ username: 'admin' }).limit(1).delete();
+    const kysley = this.getEntityManager().getKysely<{ users: never }>();
+    await kysley
+      .deleteFrom('users')
+      // @ts-expect-error Foo
+      .where({ username: 'admin' })
+      .limit(1)
+      .execute();
   }
 }
