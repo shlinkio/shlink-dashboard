@@ -25,14 +25,14 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 function resolveDriverOptions(): Dictionary {
   if (process.env.SHLINK_DASHBOARD_DB_USE_ENCRYPTION === 'true') {
-    return { connection: { ssl: true } };
+    return { ssl: true };
   }
 
   return {};
 }
 
-async function resolveOptions(): Promise<Options> {
-  const commonOptions: Options = {
+async function resolveOptions(): Promise<Partial<Options>> {
+  const commonOptions: Partial<Options> = {
     migrations: {
       path: isProduction ? 'migrations' : 'app/db/migrations',
       snapshot: false,
@@ -48,7 +48,7 @@ async function resolveOptions(): Promise<Options> {
   if (type === 'sqlite') {
     return {
       ...commonOptions,
-      driver: await import('@mikro-orm/better-sqlite').then(({ BetterSqliteDriver }) => BetterSqliteDriver),
+      driver: await import('@mikro-orm/sqlite').then(({ SqliteDriver }) => SqliteDriver),
       dbName: 'data/database.sqlite',
     };
   }

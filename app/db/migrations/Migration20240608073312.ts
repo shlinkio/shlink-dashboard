@@ -2,65 +2,64 @@ import { Migration } from '@mikro-orm/migrations';
 
 export class Migration20240608073312 extends Migration {
   async up(): Promise<void> {
-    const knex = this.getKnex();
+    const kysley = this.getEntityManager().getKysely();
 
-    await knex.schema.createTable('users', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('username').notNullable().unique();
-      table.string('password').notNullable();
-      table.string('role').notNullable();
-      table.string('display_name');
-      table.dateTime('created_at');
-    });
+    await kysley.schema
+      .createTable('users')
+      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('username', 'varchar(255)', (column) => column.notNull().unique())
+      .addColumn('password', 'varchar(255)', (column) => column.notNull())
+      .addColumn('role', 'varchar(255)', (column) => column.notNull())
+      .addColumn('display_name', 'varchar(255)')
+      .addColumn('created_at', 'datetime')
+      .execute();
 
-    await knex.schema.createTable('settings', (table) => {
-      table.increments('id').unsigned().primary();
-      table.integer('user_id').unsigned();
-      table.json('settings');
+    await kysley.schema
+      .createTable('settings')
+      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addUniqueConstraint('IDX_user_settings', ['user_id'])
+      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .execute();
 
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
+    await kysley.schema
+      .createTable('servers')
+      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('name', 'varchar(255)', (column) => column.notNull())
+      .addColumn('base_url', 'varchar(255)', (column) => column.notNull())
+      .addColumn('api_key', 'varchar(255)', (column) => column.notNull())
+      .addColumn('public_id', 'varchar(255)', (column) => column.notNull().unique())
+      .execute();
 
-      table.unique('user_id', { indexName: 'IDX_user_settings' });
-    });
+    await kysley.schema
+      .createTable('user_has_servers')
+      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addColumn('server_id', 'integer', (column) => column.unsigned())
+      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .execute();
 
-    await knex.schema.createTable('servers', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('name').notNullable();
-      table.string('base_url').notNullable();
-      table.string('api_key').notNullable();
-      table.string('public_id').notNullable().unique();
-    });
-
-    await knex.schema.createTable('user_has_servers', (table) => {
-      table.increments('id').unsigned().primary();
-      table.integer('user_id').unsigned();
-      table.integer('server_id').unsigned();
-
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
-      table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
-    });
-
-    await knex.schema.createTable('tags', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('tag').notNullable();
-      table.string('color').notNullable();
-      table.integer('user_id').unsigned();
-      table.integer('server_id').unsigned();
-
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
-      table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
-
-      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' });
-    });
+    await kysley.schema
+      .createTable('tags')
+      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('tag', 'varchar(255)', (column) => column.notNull())
+      .addColumn('color', 'varchar(255)', (column) => column.notNull())
+      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addColumn('server_id', 'integer', (column) => column.unsigned())
+      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addUniqueConstraint('IDX_tag_user_server', ['tag', 'user_id', 'server_id'])
+      .execute();
   }
 
   async down(): Promise<void> {
-    const knex = this.getKnex();
+    const kysley = this.getEntityManager().getKysely();
 
-    await knex.schema.dropTable('tags');
-    await knex.schema.dropTable('settings');
-    await knex.schema.dropTable('user_has_servers');
-    await knex.schema.dropTable('servers');
-    await knex.schema.dropTable('users');
+    await kysley.schema.dropTable('tags').execute();
+    await kysley.schema.dropTable('settings').execute();
+    await kysley.schema.dropTable('user_has_servers').execute();
+    await kysley.schema.dropTable('servers').execute();
+    await kysley.schema.dropTable('users').execute();
   }
 }
