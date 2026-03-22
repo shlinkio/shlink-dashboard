@@ -2,11 +2,11 @@ import { Migration } from '@mikro-orm/migrations';
 
 export class Migration20240608073312 extends Migration {
   async up(): Promise<void> {
-    const kysley = this.getEntityManager().getKysely();
+    const kysely = this.getEntityManager().getKysely();
 
-    await kysley.schema
+    await kysely.schema
       .createTable('users')
-      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
       .addColumn('username', 'varchar(255)', (column) => column.notNull().unique())
       .addColumn('password', 'varchar(255)', (column) => column.notNull())
       .addColumn('role', 'varchar(255)', (column) => column.notNull())
@@ -14,27 +14,27 @@ export class Migration20240608073312 extends Migration {
       .addColumn('created_at', 'datetime')
       .execute();
 
-    await kysley.schema
+    await kysely.schema
       .createTable('settings')
-      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
-      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
+      .addColumn('user_id', 'bigint')
       .addUniqueConstraint('IDX_user_settings', ['user_id'])
       .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
       .execute();
 
-    await kysley.schema
+    await kysely.schema
       .createTable('servers')
-      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
       .addColumn('name', 'varchar(255)', (column) => column.notNull())
       .addColumn('base_url', 'varchar(255)', (column) => column.notNull())
       .addColumn('api_key', 'varchar(255)', (column) => column.notNull())
       .addColumn('public_id', 'varchar(255)', (column) => column.notNull().unique())
       .execute();
 
-    await kysley.schema
+    await kysely.schema
       .createTable('user_has_servers')
-      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
-      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
+      .addColumn('user_id', 'bigint')
       .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
       .addColumn('server_id', 'integer', (column) => column.unsigned())
       .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
@@ -42,12 +42,12 @@ export class Migration20240608073312 extends Migration {
       )
       .execute();
 
-    await kysley.schema
+    await kysely.schema
       .createTable('tags')
-      .addColumn('id', 'integer', (column) => column.autoIncrement().unsigned().primaryKey())
+      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
       .addColumn('tag', 'varchar(255)', (column) => column.notNull())
       .addColumn('color', 'varchar(255)', (column) => column.notNull())
-      .addColumn('user_id', 'integer', (column) => column.unsigned())
+      .addColumn('user_id', 'bigint')
       .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
       .addColumn('server_id', 'integer', (column) => column.unsigned())
       .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
@@ -58,12 +58,12 @@ export class Migration20240608073312 extends Migration {
   }
 
   async down(): Promise<void> {
-    const kysley = this.getEntityManager().getKysely();
+    const kysely = this.getEntityManager().getKysely();
 
-    await kysley.schema.dropTable('tags').execute();
-    await kysley.schema.dropTable('settings').execute();
-    await kysley.schema.dropTable('user_has_servers').execute();
-    await kysley.schema.dropTable('servers').execute();
-    await kysley.schema.dropTable('users').execute();
+    await kysely.schema.dropTable('tags').execute();
+    await kysely.schema.dropTable('settings').execute();
+    await kysely.schema.dropTable('user_has_servers').execute();
+    await kysely.schema.dropTable('servers').execute();
+    await kysely.schema.dropTable('users').execute();
   }
 }
