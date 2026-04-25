@@ -88,7 +88,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.54.0",
     "unplugin-strip-exports": "^0.1.9",
-    "vite": "^8.0.8",
+    "vite": "^8.0.10",
     "vitest": "^4.0.17"
   }
 }
