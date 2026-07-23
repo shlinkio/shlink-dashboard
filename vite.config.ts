@@ -2,7 +2,6 @@ import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
-import { resolve } from 'path';
 import stripExports from 'unplugin-strip-exports/vite';
 import { defineConfig } from 'vitest/config';
 
@@ -84,14 +83,6 @@ export default defineConfig({
         functions: 65,
         lines: 85,
       },
-    },
-
-    // Workaround for bug in react-router (or vitest module resolution) which causes different react-router versions to
-    // be resolved for the main package and dependencies who have a peer dependency in react-router.
-    // This ensures always the same version is resolved.
-    // See https://github.com/remix-run/react-router/issues/12785 for details
-    alias: {
-      'react-router': resolve(__dirname, 'node_modules/react-router/dist/development/index.mjs'),
     },
   },
 });
