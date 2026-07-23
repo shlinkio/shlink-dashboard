@@ -14,7 +14,7 @@
     "lint": "eslint app scripts test server.ts *.config.{js,ts}",
     "lint:fix": "npm run lint -- --fix",
     "types": "react-router typegen && tsc",
-    "start": "tsx ./server.ts",
+    "start": "NODE_OPTIONS=\"--conditions=development\" tsx ./server.ts",
     "preview": "NODE_ENV=production tsx ./server.ts",
     "migration:create": "./node_modules/tsx/dist/cli.mjs ./node_modules/@mikro-orm/cli/cli.js migration:create --config ./migrations.config.ts",
     "migration:run": "./node_modules/tsx/dist/cli.mjs ./node_modules/@mikro-orm/cli/cli.js migration:up --config ./migrations.config.ts",
