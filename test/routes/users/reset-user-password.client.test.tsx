@@ -46,9 +46,7 @@ describe('reset-user-password', () => {
       const clickPromise = user.click(screen.getByRole('button', { name: 'Reset password' }));
 
       // Transitions to loading state first
-      await waitFor(
-        () => expect(screen.getByRole('button', { name: 'Resetting...', hidden: true })).toBeDisabled(),
-      );
+      await waitFor(() => expect(screen.getByRole('button', { name: 'Resetting...', hidden: true })).toBeDisabled());
       expect(screen.getByRole('button', { name: 'Cancel', hidden: true })).toBeDisabled();
 
       // Eventually loads new section

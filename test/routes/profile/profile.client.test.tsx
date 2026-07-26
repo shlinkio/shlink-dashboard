@@ -8,11 +8,13 @@ describe('profile', () => {
   describe('<Profile />', () => {
     const setUp = () => {
       const path = '/profile';
-      const Stub = createRoutesStub([{
-        path,
-        Component: Profile,
-        HydrateFallback: () => null,
-      }]);
+      const Stub = createRoutesStub([
+        {
+          path,
+          Component: Profile,
+          HydrateFallback: () => null,
+        },
+      ]);
 
       return render(
         <SessionProvider value={fromPartial({})}>

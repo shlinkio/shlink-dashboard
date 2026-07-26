@@ -22,12 +22,10 @@ function TestComponent({ newStateAfterRender, state: initialState, data }: SetUp
 
   return (
     <>
-      <ProfileForm
-        action={PROFILE_ACTION}
-        fetcher={fromPartial({ Form, state, data })}
-      />
+      <ProfileForm action={PROFILE_ACTION} fetcher={fromPartial({ Form, state, data })} />
       <button
         style={{ visibility: 'hidden' }}
+        // oxlint-disable-next-line jsx-a11y/no-aria-hidden-on-focusable - Used just for the test
         aria-hidden
         data-testid="update-state"
         onClick={() => newStateAfterRender && setState(newStateAfterRender)}

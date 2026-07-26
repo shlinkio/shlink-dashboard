@@ -75,7 +75,9 @@ export default function ListServers({ loaderData }: RouteComponentProps<Route.Co
         >
           {servers.length === 0 && (
             <Table.Row className="text-center">
-              <Table.Cell colSpan={4} className="italic">No servers found</Table.Cell>
+              <Table.Cell colSpan={4} className="italic">
+                No servers found
+              </Table.Cell>
             </Table.Row>
           )}
           {servers.map((server) => (
@@ -124,11 +126,7 @@ export default function ListServers({ loaderData }: RouteComponentProps<Route.Co
         </Table>
       </SimpleCard>
 
-      <DeleteServerModal
-        serverToDelete={serverToDelete}
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
+      <DeleteServerModal serverToDelete={serverToDelete} open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );
 }

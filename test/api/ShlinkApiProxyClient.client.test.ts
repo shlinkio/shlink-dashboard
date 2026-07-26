@@ -38,15 +38,18 @@ describe('ShlinkApiProxyClient', () => {
     ['listShortUrls', [{}]],
     ['listTags', []],
     ['mercureInfo', []],
-    ['setShortUrlRedirectRules', [
-      fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }),
-      fromPartial<ShlinkSetRedirectRulesData>({ redirectRules: [] }),
-    ]],
+    [
+      'setShortUrlRedirectRules',
+      [
+        fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }),
+        fromPartial<ShlinkSetRedirectRulesData>({ redirectRules: [] }),
+      ],
+    ],
     ['tagsStats', []],
-    ['updateShortUrl', [
-      fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }),
-      fromPartial<ShlinkEditShortUrlData>({}),
-    ]],
+    [
+      'updateShortUrl',
+      [fromPartial<ShlinkShortUrlIdentifier>({ shortCode: 'foo' }), fromPartial<ShlinkEditShortUrlData>({})],
+    ],
   ])('passes function name and args to fetch via RPC call', async (method, args) => {
     // @ts-expect-error Hard to type in a generic way all args for every method
     await proxyClient[method](...args);

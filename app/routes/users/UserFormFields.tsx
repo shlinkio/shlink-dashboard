@@ -14,9 +14,13 @@ export type UserFormFieldsProps = {
 
 const roles = ['managed-user', 'advanced-user', 'admin'];
 
-export const UserFormFields: FC<UserFormFieldsProps> = (
-  { title, submitText, disabled = false, usernameError, user },
-) => {
+export const UserFormFields: FC<UserFormFieldsProps> = ({
+  title,
+  submitText,
+  disabled = false,
+  usernameError,
+  user,
+}) => {
   const userIsReadonly = !!user;
 
   return (
@@ -40,12 +44,20 @@ export const UserFormFields: FC<UserFormFieldsProps> = (
           maxLength={255}
         />
         <LabelledSelect label="Role" name="role" required disabled={disabled} defaultValue={user?.role}>
-          {roles.map((role) => <option value={role} key={role}>{role.replaceAll('-', ' ')}</option>)}
+          {roles.map((role) => (
+            <option value={role} key={role}>
+              {role.replaceAll('-', ' ')}
+            </option>
+          ))}
         </LabelledSelect>
       </SimpleCard>
       <div className="flex justify-end gap-2">
-        <Button variant="secondary" to="/manage-users/1">Cancel</Button>
-        <Button type="submit" disabled={disabled}>{submitText}</Button>
+        <Button variant="secondary" to="/manage-users/1">
+          Cancel
+        </Button>
+        <Button type="submit" disabled={disabled}>
+          {submitText}
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Authenticator } from 'remix-auth';
-import type { Strategy } from 'remix-auth/strategy';
 import { FormStrategy } from 'remix-auth-form';
+import type { Strategy } from 'remix-auth/strategy';
 import type { UsersService } from '../users/UsersService.server';
 import { credentialsSchema } from './credentials-schema.server';
 import type { SessionData } from './session-context';
@@ -11,18 +11,21 @@ function getAuthStrategies(usersService: UsersService): Map<string, Strategy<Ses
   const strategies = new Map<string, Strategy<SessionData, any>>();
 
   // Add strategy to login via credentials form
-  strategies.set(CREDENTIALS_STRATEGY, new FormStrategy(async ({ form }): Promise<SessionData> => {
-    const { username: providedUsername, password } = credentialsSchema.parse({
-      username: form.get('username'),
-      password: form.get('password'),
-    });
+  strategies.set(
+    CREDENTIALS_STRATEGY,
+    new FormStrategy(async ({ form }): Promise<SessionData> => {
+      const { username: providedUsername, password } = credentialsSchema.parse({
+        username: form.get('username'),
+        password: form.get('password'),
+      });
 
-    const { publicId, displayName, role, username, tempPassword } = await usersService.getUserByCredentials(
-      providedUsername,
-      password,
-    );
-    return { publicId, displayName, role, username, tempPassword };
-  }));
+      const { publicId, displayName, role, username, tempPassword } = await usersService.getUserByCredentials(
+        providedUsername,
+        password,
+      );
+      return { publicId, displayName, role, username, tempPassword };
+    }),
+  );
 
   // TODO Add other strategies, like oAuth for SSO
 

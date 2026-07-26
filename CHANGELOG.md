@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 * [#559](https://github.com/shlinkio/shlink-dashboard/issues/559) Run client tests in an actual browser with vitest browser mode.
+* Migrate from ESLint to Oxlint and Oxfmt
 
 ### Deprecated
 * *Nothing*

@@ -8,18 +8,19 @@ import { checkAccessibility } from '../__helpers__/accessibility';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('<MainHeader />', () => {
-  const setUp = (session: SessionData | null = null) => renderWithEvents(
-    <SessionProvider value={session}>
-      <MemoryRouter>
-        <MainHeader />
-      </MemoryRouter>
-    </SessionProvider>,
-  );
+  const setUp = (session: SessionData | null = null) =>
+    renderWithEvents(
+      <SessionProvider value={session}>
+        <MemoryRouter>
+          <MainHeader />
+        </MemoryRouter>
+      </SessionProvider>,
+    );
 
-  it.each([
-    [fromPartial<SessionData>({ displayName: 'Jane' })],
-    [fromPartial<SessionData>({ username: 'jane' })],
-  ])('passes a11y checks', (session) => checkAccessibility(setUp(session)));
+  it.each([[fromPartial<SessionData>({ displayName: 'Jane' })], [fromPartial<SessionData>({ username: 'jane' })]])(
+    'passes a11y checks',
+    (session) => checkAccessibility(setUp(session)),
+  );
 
   it.each([
     [undefined],
@@ -52,24 +53,25 @@ describe('<MainHeader />', () => {
       shouldShowUsersMenu: false,
       shouldShowManageServers: false,
     },
-  ])('shows expected options depending on the user role', async (
-    { sessionData, shouldShowUsersMenu, shouldShowManageServers },
-  ) => {
-    const { user } = setUp({ ...sessionData, displayName: 'Foo' });
+  ])(
+    'shows expected options depending on the user role',
+    async ({ sessionData, shouldShowUsersMenu, shouldShowManageServers }) => {
+      const { user } = setUp({ ...sessionData, displayName: 'Foo' });
 
-    // Open menu
-    await user.click(screen.getByRole('button', { name: 'Foo' }));
+      // Open menu
+      await user.click(screen.getByRole('button', { name: 'Foo' }));
 
-    if (shouldShowUsersMenu) {
-      expect(screen.getByText('Manage users')).toBeInTheDocument();
-    } else {
-      expect(screen.queryByText('Manage users')).not.toBeInTheDocument();
-    }
+      if (shouldShowUsersMenu) {
+        expect(screen.getByText('Manage users')).toBeInTheDocument();
+      } else {
+        expect(screen.queryByText('Manage users')).not.toBeInTheDocument();
+      }
 
-    if (shouldShowManageServers) {
-      expect(screen.getByText('Manage servers')).toBeInTheDocument();
-    } else {
-      expect(screen.queryByText('Manage servers')).not.toBeInTheDocument();
-    }
-  });
+      if (shouldShowManageServers) {
+        expect(screen.getByText('Manage servers')).toBeInTheDocument();
+      } else {
+        expect(screen.queryByText('Manage servers')).not.toBeInTheDocument();
+      }
+    },
+  );
 });

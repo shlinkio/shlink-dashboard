@@ -9,9 +9,8 @@ describe('<EditProfileForm />', () => {
   const Form: FC<PropsWithChildren<RefAttributes<HTMLFormElement>>> = ({ children, ref }) => (
     <form ref={ref}>{children}</form>
   );
-  const setUp = (sessionData: SessionData | null = null) => render(
-    <EditProfileForm sessionData={sessionData} fetcher={fromPartial({ Form })} />,
-  );
+  const setUp = (sessionData: SessionData | null = null) =>
+    render(<EditProfileForm sessionData={sessionData} fetcher={fromPartial({ Form })} />);
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 

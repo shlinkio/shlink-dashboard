@@ -21,13 +21,8 @@ describe('shlink-api-rpc-proxy', () => {
   const getSession = vi.fn();
   const authHelper = fromPartial<AuthHelper>({ getSession });
 
-  const setUp = () => (args: ActionFunctionArgs) => action(
-    args,
-    serversService,
-    createApiClient,
-    authHelper,
-    fromPartial({ error: vi.fn() }),
-  );
+  const setUp = () => (args: ActionFunctionArgs) =>
+    action(args, serversService, createApiClient, authHelper, fromPartial({ error: vi.fn() }));
 
   it('returns error when user is not authenticated', async () => {
     getSession.mockResolvedValue(undefined);
@@ -103,10 +98,12 @@ describe('shlink-api-rpc-proxy', () => {
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
-    const resp = await action(fromPartial({
-      request: fromPartial({ json: vi.fn().mockResolvedValue({ args }) }),
-      params: { serverId: 'abc123', method },
-    }));
+    const resp = await action(
+      fromPartial({
+        request: fromPartial({ json: vi.fn().mockResolvedValue({ args }) }),
+        params: { serverId: 'abc123', method },
+      }),
+    );
     const respPayload = await resp.json();
 
     expect(resp.status).toEqual(400);
@@ -128,10 +125,12 @@ describe('shlink-api-rpc-proxy', () => {
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
-    const resp = await action(fromPartial({
-      request: fromPartial({ json: vi.fn().mockResolvedValue({ args: ['throw-error'] }) }),
-      params: { serverId: 'abc123', method: 'getShortUrl' },
-    }));
+    const resp = await action(
+      fromPartial({
+        request: fromPartial({ json: vi.fn().mockResolvedValue({ args: ['throw-error'] }) }),
+        params: { serverId: 'abc123', method: 'getShortUrl' },
+      }),
+    );
     const respPayload = await resp.json();
 
     expect(resp.status).toEqual(500);
@@ -154,10 +153,12 @@ describe('shlink-api-rpc-proxy', () => {
     getByPublicIdAndUser.mockResolvedValue({});
     const action = setUp();
 
-    const resp = await action(fromPartial({
-      request: fromPartial({ json: vi.fn().mockResolvedValue({ args }) }),
-      params: { serverId: 'abc123', method },
-    }));
+    const resp = await action(
+      fromPartial({
+        request: fromPartial({ json: vi.fn().mockResolvedValue({ args }) }),
+        params: { serverId: 'abc123', method },
+      }),
+    );
     const respPayload = await resp.json();
 
     expect(respPayload).toEqual(expectedResponse);

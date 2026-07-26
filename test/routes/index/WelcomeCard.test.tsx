@@ -6,11 +6,12 @@ import { WelcomeCard } from '../../../app/routes/index/WelcomeCard';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<WelcomeCard />', () => {
-  const setUp = (servers: Server[]) => render(
-    <MemoryRouter>
-      <WelcomeCard servers={servers} />
-    </MemoryRouter>,
-  );
+  const setUp = (servers: Server[]) =>
+    render(
+      <MemoryRouter>
+        <WelcomeCard servers={servers} />
+      </MemoryRouter>,
+    );
 
   it('passes a11y checks', () => checkAccessibility(setUp([])));
 

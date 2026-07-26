@@ -54,22 +54,24 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
       // client only
       import('@shlinkio/shlink-web-component'),
       apiClient.health(),
-    ]).then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
-      setServerVersion(version);
-      setComponent(
-        <ShlinkSidebarVisibilityProvider>
-          <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
-          <ShlinkWebComponent
-            serverVersion={version as any}
-            apiClient={apiClient}
-            routesPrefix={prefix}
-            settings={settings}
-            tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
-            autoSidebarToggle={false}
-          />
-        </ShlinkSidebarVisibilityProvider>,
-      );
-    });
+    ])
+      .then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
+        setServerVersion(version);
+        setComponent(
+          <ShlinkSidebarVisibilityProvider>
+            <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
+            <ShlinkWebComponent
+              serverVersion={version as any}
+              apiClient={apiClient}
+              routesPrefix={prefix}
+              settings={settings}
+              tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
+              autoSidebarToggle={false}
+            />
+          </ShlinkSidebarVisibilityProvider>,
+        );
+      })
+      .catch(() => {});
   }, [prefix, serverId, settings, tagColors]);
 
   return (

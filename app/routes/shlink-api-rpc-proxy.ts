@@ -87,7 +87,7 @@ export async function action(
   }
 
   try {
-    const response = await apiMethod.bind(client)(...args as Parameters<typeof apiMethod>);
+    const response = await apiMethod.bind(client)(...(args as Parameters<typeof apiMethod>));
     return Response.json(response);
   } catch (e) {
     console_.error(e);

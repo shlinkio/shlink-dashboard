@@ -54,12 +54,16 @@ export class TagsService {
     //   Object.entries(colors).map(([tag, color]) => ({ tag, color, user, server })),
     //   { onConflictFields: ['tag', 'user', 'server'] },
     // ));
-    await this.#em.transactional((em) => Promise.all(Object.entries(colors).map(([tag, color]) => {
-      const tagObj: Partial<TagEntity> = { tag, color, user, server };
-      return em.upsert(TagEntity, tagObj, {
-        onConflictFields: ['tag', 'user', 'server'],
-      });
-    })));
+    await this.#em.transactional((em) =>
+      Promise.all(
+        Object.entries(colors).map(([tag, color]) => {
+          const tagObj: Partial<TagEntity> = { tag, color, user, server };
+          return em.upsert(TagEntity, tagObj, {
+            onConflictFields: ['tag', 'user', 'server'],
+          });
+        }),
+      ),
+    );
   }
 
   private async resolveServerAndUser({ userPublicId, serverPublicId }: FindTagsParam): Promise<ServerAndUserResult> {

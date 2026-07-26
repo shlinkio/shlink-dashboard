@@ -30,9 +30,7 @@ describe('SettingsService', () => {
 
     it('returns no settings when user does not have any', async () => {
       const user = fromPartial<User>({});
-      findOne
-        .mockResolvedValueOnce(user)
-        .mockResolvedValueOnce(null);
+      findOne.mockResolvedValueOnce(user).mockResolvedValueOnce(null);
 
       const settings = await settingsService.userSettings('1');
 
@@ -49,9 +47,7 @@ describe('SettingsService', () => {
         tags: { defaultOrdering: {} },
         shortUrlCreation: { tagFilteringMode: 'includes' },
       });
-      findOne
-        .mockResolvedValueOnce(user)
-        .mockResolvedValueOnce(fromPartial<Settings>({ settings }));
+      findOne.mockResolvedValueOnce(user).mockResolvedValueOnce(fromPartial<Settings>({ settings }));
 
       const result = await settingsService.userSettings('1');
 

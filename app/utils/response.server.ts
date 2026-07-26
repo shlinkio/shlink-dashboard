@@ -6,7 +6,5 @@ export const notFound = (body: BodyInit = 'Not found') => new Response(body, { s
 
 export const badRequest = (body: BodyInit = 'Bad request') => new Response(body, { status: 400 });
 
-export const problemDetails = (errorPayload: ProblemDetailsError) => Response.json(
-  errorPayload,
-  { status: errorPayload.status },
-);
+export const problemDetails = (errorPayload: ProblemDetailsError) =>
+  Response.json(errorPayload, { status: errorPayload.status });

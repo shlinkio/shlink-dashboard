@@ -28,10 +28,7 @@ describe('auth', () => {
     };
 
     it('throws error when credentials are invalid', async () => {
-      const callback = () => authenticator.authenticate(
-        CREDENTIALS_STRATEGY,
-        requestWithBody(),
-      );
+      const callback = () => authenticator.authenticate(CREDENTIALS_STRATEGY, requestWithBody());
 
       await expect(callback).rejects.toThrow();
       expect(getUserByCredentials).not.toHaveBeenCalled();

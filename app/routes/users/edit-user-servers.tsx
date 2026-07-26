@@ -1,4 +1,4 @@
-import { Button, SimpleCard,useGoBack  } from '@shlinkio/shlink-frontend-kit';
+import { Button, SimpleCard, useGoBack } from '@shlinkio/shlink-frontend-kit';
 import { useCallback, useMemo, useState } from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
@@ -46,23 +46,26 @@ export default function EditUserServers({ loaderData }: RouteComponentProps<Rout
 
   const searchServersFetcher = useFetcher<typeof loader>();
   const [shouldShowResults, setShouldShowResults] = useState(false);
-  const searchServers = useCallback(async (searchTerm: string) => {
-    setShouldShowResults(false);
-    if (!searchTerm) {
-      return;
-    }
+  const searchServers = useCallback(
+    async (searchTerm: string) => {
+      setShouldShowResults(false);
+      if (!searchTerm) {
+        return;
+      }
 
-    const query = new URLSearchParams();
-    query.set('search-term', searchTerm);
-    query.set('no-users', '');
-    query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
+      const query = new URLSearchParams();
+      query.set('search-term', searchTerm);
+      query.set('no-users', '');
+      query.set('items-per-page', '10'); // Limit to a maximum of 10 matching servers
 
-    await searchServersFetcher.load(`/manage-servers/1?${query.toString()}`);
-    setShouldShowResults(true);
-  }, [searchServersFetcher]);
+      await searchServersFetcher.load(`/manage-servers/1?${query.toString()}`);
+      setShouldShowResults(true);
+    },
+    [searchServersFetcher],
+  );
   const isSearching = searchServersFetcher.state === 'loading';
   const searchResults = useMemo(
-    () => !shouldShowResults ? undefined : searchServersFetcher.data?.servers,
+    () => (!shouldShowResults ? undefined : searchServersFetcher.data?.servers),
     [shouldShowResults, searchServersFetcher.data?.servers],
   );
 
@@ -81,8 +84,12 @@ export default function EditUserServers({ loaderData }: RouteComponentProps<Rout
         />
       </SimpleCard>
       <div className="flex justify-end gap-2">
-        <Button variant="secondary" onClick={goBack}>Cancel</Button>
-        <Button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save servers'}</Button>
+        <Button variant="secondary" onClick={goBack}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSaving}>
+          {isSaving ? 'Saving...' : 'Save servers'}
+        </Button>
       </div>
     </Form>
   );

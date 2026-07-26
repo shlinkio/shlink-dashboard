@@ -15,17 +15,17 @@ describe('login', () => {
       expect(login).toHaveBeenCalledWith(request);
     });
 
-    it.each([
-      { message: 'Incorrect password' },
-      { message: 'User not found' },
-    ])('returns json response when credentials are incorrect', async ({ message }) => {
-      login.mockRejectedValue(new Error(message));
+    it.each([{ message: 'Incorrect password' }, { message: 'User not found' }])(
+      'returns json response when credentials are incorrect',
+      async ({ message }) => {
+        login.mockRejectedValue(new Error(message));
 
-      const request = fromPartial<Request>({});
-      const response = await action(fromPartial({ request }), authHelper);
+        const request = fromPartial<Request>({});
+        const response = await action(fromPartial({ request }), authHelper);
 
-      expect(response).toEqual({ error: true });
-    });
+        expect(response).toEqual({ error: true });
+      },
+    );
 
     it('re-throws unknown errors', async () => {
       const e = new Error('Unknown error');

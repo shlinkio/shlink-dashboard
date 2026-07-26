@@ -8,9 +8,8 @@ describe('<ChangePasswordForm />', () => {
   const Form: FC<PropsWithChildren<RefAttributes<HTMLFormElement>>> = ({ children, ref }) => (
     <form ref={ref}>{children}</form>
   );
-  const setUp = (invalidFields?: Record<string, string>) => render(
-    <ChangePasswordForm fetcher={fromPartial({ Form, data: { invalidFields } })} />,
-  );
+  const setUp = (invalidFields?: Record<string, string>) =>
+    render(<ChangePasswordForm fetcher={fromPartial({ Form, data: { invalidFields } })} />);
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 

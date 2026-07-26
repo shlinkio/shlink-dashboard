@@ -1,6 +1,6 @@
 import { SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs } from 'react-router';
-import { data , useFetcher } from 'react-router';
+import { data, useFetcher } from 'react-router';
 import { AuthHelper } from '../../auth/auth-helper.server';
 import { useSession } from '../../auth/session-context';
 import { Layout } from '../../common/Layout';
@@ -32,9 +32,11 @@ export async function action(
 
       return data(
         payload,
-        sessionCookie ? {
-          headers: { 'Set-Cookie': sessionCookie },
-        } : undefined,
+        sessionCookie
+          ? {
+              headers: { 'Set-Cookie': sessionCookie },
+            }
+          : undefined,
       );
     }
     case CHANGE_PASSWORD_ACTION:
