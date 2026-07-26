@@ -36,10 +36,14 @@ export async function action(
 export default function Settings({ loaderData: settings }: RouteComponentProps<Route.ComponentProps>) {
   const fetcher = useFetcher();
   // TODO Add some deferring
-  const submitSettings = useCallback((newSettings: AppSettings) => fetcher.submit(newSettings, {
-    method: 'POST',
-    encType: 'application/json',
-  }), [fetcher]);
+  const submitSettings = useCallback(
+    (newSettings: AppSettings) =>
+      fetcher.submit(newSettings, {
+        method: 'POST',
+        encType: 'application/json',
+      }),
+    [fetcher],
+  );
 
   return (
     <Layout>
@@ -47,13 +51,13 @@ export default function Settings({ loaderData: settings }: RouteComponentProps<R
         <Routes>
           <RouteComp
             path="*"
-            element={(
+            element={
               <ShlinkWebSettings
                 settings={settings}
                 onUpdateSettings={submitSettings}
                 defaultShortUrlsListOrdering={{}}
               />
-            )}
+            }
           />
         </Routes>
       </ClientOnly>

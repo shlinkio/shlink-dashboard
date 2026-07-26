@@ -53,20 +53,20 @@ describe('list-servers', () => {
       return result;
     };
 
-    it.each([
-      'admin' as const,
-      'advanced-user' as const,
-    ])('displays amount of users when logged-in user is an admin', async (role) => {
-      await setUp({ role });
+    it.each(['admin' as const, 'advanced-user' as const])(
+      'displays amount of users when logged-in user is an admin',
+      async (role) => {
+        await setUp({ role });
 
-      if (role === 'admin') {
-        expect(screen.getAllByRole('columnheader')).toHaveLength(3);
-        expect(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
-      } else {
-        expect(screen.getAllByRole('columnheader')).toHaveLength(2);
-        expect(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
-      }
-    });
+        if (role === 'admin') {
+          expect(screen.getAllByRole('columnheader')).toHaveLength(3);
+          expect(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
+        } else {
+          expect(screen.getAllByRole('columnheader')).toHaveLength(2);
+          expect(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
+        }
+      },
+    );
 
     it('displays fallback message when there are no servers', async () => {
       await setUp();
@@ -74,29 +74,32 @@ describe('list-servers', () => {
     });
 
     it('shows list of servers', async () => {
-      const servers = [1, 2].map((id) => fromPartial<ServerItem>({
-        name: `Server ${id}`,
-        publicId: `public_id_${id}`,
-        baseUrl: `base_url_${id}`,
-        usersCount: id,
-      }));
-      const { user } = await setUp({ servers });
-      const openRowMenu = async (serverName: string) => await user.click(
-        screen.getByLabelText(`Options for ${serverName}`),
+      const servers = [1, 2].map((id) =>
+        fromPartial<ServerItem>({
+          name: `Server ${id}`,
+          publicId: `public_id_${id}`,
+          baseUrl: `base_url_${id}`,
+          usersCount: id,
+        }),
       );
+      const { user } = await setUp({ servers });
+      const openRowMenu = async (serverName: string) =>
+        await user.click(screen.getByLabelText(`Options for ${serverName}`));
 
       // We add 1 for the header row
       expect(screen.getAllByRole('row')).toHaveLength(servers.length + 1);
 
-      await Promise.all(servers.map(async (server) => {
-        expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
-        expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
-        expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
+      await Promise.all(
+        servers.map(async (server) => {
+          expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
+          expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
+          expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
 
-        await openRowMenu(server.name);
-        expect(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
-      }));
+          await openRowMenu(server.name);
+          expect(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
+          expect(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
+        }),
+      );
     });
 
     it('has a link to go to server creation page', async () => {
@@ -116,8 +119,8 @@ describe('list-servers', () => {
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // Search is deferred. It should eventually navigate to the URL with the search term
-      await waitFor(
-        () => expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
+      await waitFor(() =>
+        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
       );
     });
   });

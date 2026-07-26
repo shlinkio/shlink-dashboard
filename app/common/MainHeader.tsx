@@ -33,12 +33,12 @@ const NavBarMenuItems: FC = () => {
         </NavBar.MenuItem>
       )}
       <NavBar.Dropdown
-        buttonContent={(
+        buttonContent={
           <span className="flex items-center gap-1.5" data-testid="user-menu">
             <FontAwesomeIcon icon={faUser} />
             <span className="whitespace-nowrap">{session.displayName || session.username}</span>
           </span>
-        )}
+        }
       >
         <Dropdown.Item to="/profile" selected={pathname === '/profile'}>
           <FontAwesomeIcon icon={faUser} className="mr-0.5" /> My profile
@@ -67,11 +67,11 @@ export const MainHeader: FC = () => {
   return (
     <NavBar
       className="[&]:fixed top-0 z-900"
-      brand={(
+      brand={
         <Link to="" className="[&]:text-white no-underline flex gap-2 w-25">
           <ShlinkLogo className="w-[26px]" color="white" /> Shlink
         </Link>
-      )}
+      }
     >
       <NavBarMenuItems />
     </NavBar>

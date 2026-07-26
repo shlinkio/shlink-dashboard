@@ -17,22 +17,28 @@ export default [
   ]),
 
   // Users management
-  layout('routes/users/manage-users.tsx', prefix('/manage-users', [
-    route('create', './routes/users/create-user.tsx'),
-    route('delete', './routes/users/delete-user.ts'),
-    ...prefix(':userPublicId', [
-      route('edit', './routes/users/edit-user.tsx'),
-      route('edit-servers', './routes/users/edit-user-servers.tsx'),
-      route('reset-password', './routes/users/reset-user-password.tsx'),
+  layout(
+    'routes/users/manage-users.tsx',
+    prefix('/manage-users', [
+      route('create', './routes/users/create-user.tsx'),
+      route('delete', './routes/users/delete-user.ts'),
+      ...prefix(':userPublicId', [
+        route('edit', './routes/users/edit-user.tsx'),
+        route('edit-servers', './routes/users/edit-user-servers.tsx'),
+        route('reset-password', './routes/users/reset-user-password.tsx'),
+      ]),
+      route(':page', './routes/users/list-users.tsx'),
     ]),
-    route(':page', './routes/users/list-users.tsx'),
-  ])),
+  ),
 
   // Server management
-  layout('./routes/servers/manage-servers.tsx', prefix('/manage-servers', [
-    route('create', './routes/servers/create-server.tsx'),
-    route('delete', './routes/servers/delete-server.ts'),
-    route(':serverPublicId/edit', './routes/servers/edit-server.tsx'),
-    route(':page', './routes/servers/list-servers.tsx'),
-  ])),
+  layout(
+    './routes/servers/manage-servers.tsx',
+    prefix('/manage-servers', [
+      route('create', './routes/servers/create-server.tsx'),
+      route('delete', './routes/servers/delete-server.ts'),
+      route(':serverPublicId/edit', './routes/servers/edit-server.tsx'),
+      route(':page', './routes/servers/list-servers.tsx'),
+    ]),
+  ),
 ] satisfies RouteConfig;

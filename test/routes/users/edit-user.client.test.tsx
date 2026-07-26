@@ -26,9 +26,10 @@ describe('edit-user', () => {
       return result;
     };
 
-    it('passes a11y checks', () => checkAccessibility(setUp(
-      fromPartial<User>({ id: 'def', username: 'bar', displayName: 'Jane Doe', role: 'admin' }),
-    )));
+    it('passes a11y checks', () =>
+      checkAccessibility(
+        setUp(fromPartial<User>({ id: 'def', username: 'bar', displayName: 'Jane Doe', role: 'admin' })),
+      ));
 
     it.each([
       [fromPartial<User>({ id: 'abc', username: 'foo', displayName: 'Foo Bar', role: 'advanced-user' })],

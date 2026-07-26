@@ -37,7 +37,9 @@ export class Migration20240608073312 extends Migration {
       .addColumn('user_id', 'integer', (column) => column.unsigned())
       .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
       .addColumn('server_id', 'integer', (column) => column.unsigned())
-      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
       .execute();
 
     await kysley.schema
@@ -48,7 +50,9 @@ export class Migration20240608073312 extends Migration {
       .addColumn('user_id', 'integer', (column) => column.unsigned())
       .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
       .addColumn('server_id', 'integer', (column) => column.unsigned())
-      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
       .addUniqueConstraint('IDX_tag_user_server', ['tag', 'user_id', 'server_id'])
       .execute();
   }

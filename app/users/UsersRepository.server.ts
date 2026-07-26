@@ -15,16 +15,13 @@ export type FindAndCountUsersOptions = {
 
 export class UsersRepository extends BaseEntityRepository<User> {
   findAndCountUsers({ searchTerm, limit, offset, orderBy }: FindAndCountUsersOptions): Promise<[User[], number]> {
-    return this.findAndCount(
-      expandSearchTerm<User>(searchTerm, { searchableFields: ['displayName', 'username'] }),
-      {
-        limit,
-        offset,
-        orderBy: {
-          [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'DESC',
-        },
+    return this.findAndCount(expandSearchTerm<User>(searchTerm, { searchableFields: ['displayName', 'username'] }), {
+      limit,
+      offset,
+      orderBy: {
+        [orderBy?.field ?? 'createdAt']: orderBy?.dir ?? 'DESC',
       },
-    );
+    });
   }
 
   /**

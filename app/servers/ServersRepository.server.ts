@@ -64,7 +64,7 @@ export class ServersRepository extends BaseEntityRepository<Server> {
   async setServersForUser(userPublicId: string, { servers: serverPublicIds }: UserServers): Promise<void> {
     const [user, servers] = await Promise.all([
       this.em.findOne(User, { publicId: userPublicId }, { populate: ['servers'] }),
-      serverPublicIds.length > 0 ? this.find({ publicId: { '$in': serverPublicIds } }) : Promise.resolve([]),
+      serverPublicIds.length > 0 ? this.find({ publicId: { $in: serverPublicIds } }) : Promise.resolve([]),
     ]);
 
     if (!user) {

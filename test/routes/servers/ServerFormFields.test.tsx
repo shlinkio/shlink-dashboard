@@ -6,11 +6,12 @@ import { ServerFormFields } from '../../../app/routes/servers/ServerFormFields';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<ServerFormFields />', () => {
-  const setUp = (props: Partial<ServerFormFieldsProps> = {}) => render(
-    <MemoryRouter>
-      <ServerFormFields title="The title" submitText="Save" {...props} />
-    </MemoryRouter>,
-  );
+  const setUp = (props: Partial<ServerFormFieldsProps> = {}) =>
+    render(
+      <MemoryRouter>
+        <ServerFormFields title="The title" submitText="Save" {...props} />
+      </MemoryRouter>,
+    );
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
@@ -23,20 +24,12 @@ describe('<ServerFormFields />', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
 
-  it.each([
-    'Hello world',
-    'Do something',
-    'Cool title',
-  ])('can customize title', (title) => {
+  it.each(['Hello world', 'Do something', 'Cool title'])('can customize title', (title) => {
     setUp({ title });
     expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
   });
 
-  it.each([
-    'Save',
-    'Foo bar',
-    'Create',
-  ])('can submit text', (submitText) => {
+  it.each(['Save', 'Foo bar', 'Create'])('can submit text', (submitText) => {
     setUp({ submitText });
     expect(screen.getByRole('button', { name: submitText })).toBeInTheDocument();
   });

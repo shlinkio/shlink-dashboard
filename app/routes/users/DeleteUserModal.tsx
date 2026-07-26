@@ -25,11 +25,14 @@ export const DeleteUserModal: FC<DeleteUserModalProps> = ({ userToDelete, onClos
       return;
     }
 
-    await submit({ userPublicId }, {
-      method: 'POST',
-      action: '/manage-users/delete',
-      encType: 'application/json',
-    });
+    await submit(
+      { userPublicId },
+      {
+        method: 'POST',
+        action: '/manage-users/delete',
+        encType: 'application/json',
+      },
+    );
     onClose();
   }, [onClose, submit, userToDelete?.publicId]);
 

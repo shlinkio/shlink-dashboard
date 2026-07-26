@@ -25,11 +25,14 @@ export const DeleteServerModal: FC<DeleteServerModalProps> = ({ serverToDelete, 
       return;
     }
 
-    await submit({ serverPublicId }, {
-      method: 'POST',
-      action: '/manage-servers/delete',
-      encType: 'application/json',
-    });
+    await submit(
+      { serverPublicId },
+      {
+        method: 'POST',
+        action: '/manage-servers/delete',
+        encType: 'application/json',
+      },
+    );
     onClose();
   }, [onClose, submit, serverToDelete?.publicId]);
 

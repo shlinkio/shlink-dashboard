@@ -1,5 +1,5 @@
-import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
+import * as argon2 from 'argon2';
 
 export const hashPassword = async (plainTextPassword: string) => argon2.hash(plainTextPassword);
 

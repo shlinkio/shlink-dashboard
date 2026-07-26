@@ -36,9 +36,7 @@ describe('UsersService', () => {
     it('throws if password does not match', async () => {
       findOne.mockResolvedValue(fromPartial<User>({ password: await hashPassword('the right one') }));
 
-      await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(
-        new IncorrectPasswordError('foo'),
-      );
+      await expect(usersService.getUserByCredentials('foo', 'bar')).rejects.toEqual(new IncorrectPasswordError('foo'));
       expect(findOne).toHaveBeenCalledWith({ username: 'foo' });
     });
 
@@ -110,18 +108,16 @@ describe('UsersService', () => {
         expectedTotalPages: 6,
       },
     ])('returns users list and totals', async ({ totalUsers, page, expectedOffset, expectedTotalPages }) => {
-      const users: User[] = [
-        fromPartial({}),
-        fromPartial({}),
-        fromPartial({}),
-      ];
+      const users: User[] = [fromPartial({}), fromPartial({}), fromPartial({})];
       findAndCountUsers.mockResolvedValue([users, totalUsers]);
 
       const result = await usersService.listUsers({ page });
 
-      expect(findAndCountUsers).toHaveBeenCalledWith(expect.objectContaining({
-        offset: expectedOffset,
-      }));
+      expect(findAndCountUsers).toHaveBeenCalledWith(
+        expect.objectContaining({
+          offset: expectedOffset,
+        }),
+      );
       expect(result.users).toEqual(users);
       expect(result.totalUsers).toEqual(totalUsers);
       expect(result.totalPages).toEqual(expectedTotalPages);
@@ -151,16 +147,18 @@ describe('UsersService', () => {
           role: 'admin',
         },
         expectedFields: {
-          'username': 'Invalid input: expected string, received undefined',
+          username: 'Invalid input: expected string, received undefined',
         },
       },
     ])('throws error if provided data is invalid', async ({ data, expectedFields }) => {
       const formData = createFormData(data);
 
-      await expect(usersService.createUser(formData)).rejects.toThrowError(expect.objectContaining({
-        message: 'Provided data is invalid',
-        invalidFields: expectedFields,
-      }));
+      await expect(usersService.createUser(formData)).rejects.toThrowError(
+        expect.objectContaining({
+          message: 'Provided data is invalid',
+          invalidFields: expectedFields,
+        }),
+      );
       expect(createUser).not.toHaveBeenCalled();
     });
 
@@ -230,9 +228,11 @@ describe('UsersService', () => {
         expectedResult: { displayName: 'another name', role: 'managed-user' },
       },
     ])('updates the user with provided data', async ({ providedData, expectedResult }) => {
-      const expectedUser = fromPartial<User>(
-        { publicId: 'abc123', displayName: 'initial_display_name', role: 'admin' },
-      );
+      const expectedUser = fromPartial<User>({
+        publicId: 'abc123',
+        displayName: 'initial_display_name',
+        role: 'admin',
+      });
       findOne.mockResolvedValue(expectedUser);
 
       const user = await usersService.editUser('abc123', providedData);
@@ -268,11 +268,13 @@ describe('UsersService', () => {
         expectedNewRole: 'managed-user',
       },
     ])('skips props not defined in the allowlist', async ({ allowList, expectedNewDisplayName, expectedNewRole }) => {
-      findOne.mockResolvedValue(fromPartial<User>({
-        publicId: 'abc123',
-        displayName: 'initial_display_name',
-        role: 'admin',
-      }));
+      findOne.mockResolvedValue(
+        fromPartial<User>({
+          publicId: 'abc123',
+          displayName: 'initial_display_name',
+          role: 'admin',
+        }),
+      );
 
       const newData = createFormData({ displayName: 'new display name', role: 'managed-user' });
       const user = await usersService.editUser('abc123', newData, allowList);
@@ -338,9 +340,11 @@ describe('UsersService', () => {
     });
 
     it('throws error if current password does not match logged-in user', async () => {
-      findOne.mockResolvedValue(fromPartial<User>({
-        password: await hashPassword('old_password'),
-      }));
+      findOne.mockResolvedValue(
+        fromPartial<User>({
+          password: await hashPassword('old_password'),
+        }),
+      );
       const passwords = {
         currentPassword: 'not_the_right_one',
         newPassword: 'Aa12345678!',
@@ -358,9 +362,11 @@ describe('UsersService', () => {
     });
 
     it('updates user password if provided data is correct', async () => {
-      findOne.mockResolvedValue(fromPartial<User>({
-        password: await hashPassword('old_password'),
-      }));
+      findOne.mockResolvedValue(
+        fromPartial<User>({
+          password: await hashPassword('old_password'),
+        }),
+      );
       const passwords = {
         currentPassword: 'old_password',
         newPassword: 'Aa12345678!',

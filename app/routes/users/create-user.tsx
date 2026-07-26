@@ -24,7 +24,8 @@ export async function action(
     if (e instanceof DuplicatedEntryError) {
       messages.username = 'Username is already in use.';
     } else if (e instanceof ValidationError && e.invalidFields.username) {
-      messages.username = 'Username can only contain letters and numbers. Underscore (_) and dot (.) can also be used anywhere except at the beginning or end.';
+      messages.username =
+        'Username can only contain letters and numbers. Underscore (_) and dot (.) can also be used anywhere except at the beginning or end.';
     }
 
     return { status: 'error', messages } as const;
@@ -39,14 +40,20 @@ export default function CreateUser() {
     <>
       {data?.status === 'success' && (
         <SimpleCard title="User created" bodyClassName="flex flex-col gap-y-4" data-testid="success-message">
-          <p>User <b>{data.user.username}</b> properly created.</p>
           <p>
-            Their temporary password
-            is <CopyToClipboard text={data.plainTextPassword}><b>{data.plainTextPassword}</b></CopyToClipboard>. The
-            user will have to change it the first time they log in.
+            User <b>{data.user.username}</b> properly created.
+          </p>
+          <p>
+            Their temporary password is{' '}
+            <CopyToClipboard text={data.plainTextPassword}>
+              <b>{data.plainTextPassword}</b>
+            </CopyToClipboard>
+            . The user will have to change it the first time they log in.
           </p>
           <div>
-            <Button inline to="/manage-users/1"><FontAwesomeIcon icon={faArrowLeft} /> Manage users</Button>
+            <Button inline to="/manage-users/1">
+              <FontAwesomeIcon icon={faArrowLeft} /> Manage users
+            </Button>
           </div>
         </SimpleCard>
       )}
@@ -62,4 +69,4 @@ export default function CreateUser() {
       )}
     </>
   );
-};
+}

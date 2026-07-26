@@ -37,7 +37,8 @@ describe('create-user', () => {
       {
         error: new ValidationError({ username: 'an error' }),
         expectedMessages: {
-          username: 'Username can only contain letters and numbers. Underscore (_) and dot (.) can also be used anywhere except at the beginning or end.',
+          username:
+            'Username can only contain letters and numbers. Underscore (_) and dot (.) can also be used anywhere except at the beginning or end.',
         },
       },
       {

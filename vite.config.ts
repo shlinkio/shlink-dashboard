@@ -67,13 +67,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',
-      include: [
-        'app/**/*.ts',
-        'app/**/*.tsx',
-        '!app/db/**/*.ts',
-        '!app/entities/*.ts',
-        '!app/routes.ts',
-      ],
+      include: ['app/**/*.ts', 'app/**/*.tsx', '!app/db/**/*.ts', '!app/entities/*.ts', '!app/routes.ts'],
       reporter: ['text', 'text-summary', 'clover', 'html'],
 
       // Required code coverage. Lower than this will make the check fail

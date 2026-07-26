@@ -8,8 +8,6 @@ import { Layout } from './Layout';
  */
 export const CenteredContentLayout: FC<PropsWithChildren> = ({ children }) => (
   <Layout className="flex items-center justify-center">
-    <div className="m-auto w-full xl:w-3/5 lg:w-3/4">
-      {children}
-    </div>
+    <div className="m-auto w-full xl:w-3/5 lg:w-3/4">{children}</div>
   </Layout>
 );

@@ -26,10 +26,7 @@ describe('<DeleteServerModal />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
-  it.each([
-    { open: true },
-    { open: false },
-  ])('opens modal if open is true', ({ open }) => {
+  it.each([{ open: true }, { open: false }])('opens modal if open is true', ({ open }) => {
     setUp(open);
 
     if (open) {
@@ -39,16 +36,16 @@ describe('<DeleteServerModal />', () => {
     }
   });
 
-  it.each([
-    { buttonText: 'Close dialog' },
-    { buttonText: 'Cancel' },
-  ])('closes modal when cancel or close are clicked', async ({ buttonText }) => {
-    const { user } = setUp();
+  it.each([{ buttonText: 'Close dialog' }, { buttonText: 'Cancel' }])(
+    'closes modal when cancel or close are clicked',
+    async ({ buttonText }) => {
+      const { user } = setUp();
 
-    expect(onClose).not.toHaveBeenCalled();
-    await user.click(screen.queryByLabelText(buttonText) ?? screen.getByText(buttonText));
-    expect(onClose).toHaveBeenCalled();
-  });
+      expect(onClose).not.toHaveBeenCalled();
+      await user.click(screen.queryByLabelText(buttonText) ?? screen.getByText(buttonText));
+      expect(onClose).toHaveBeenCalled();
+    },
+  );
 
   it('deletes server when confirm is clicked', async () => {
     const { user } = setUp();

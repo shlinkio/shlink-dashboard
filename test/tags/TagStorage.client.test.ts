@@ -18,25 +18,26 @@ describe('TagsStorage', () => {
   });
 
   describe('storeTagColors', () => {
-    it.each([
-      [{}],
-      [{ bar: 'green' }],
-      [{ foo: 'red', bar: 'green', baz: 'yellow' }],
-      [{ foo: 'red', baz: 'yellow' }],
-    ])('stores no colors if provided ones already exist', (newColors) => {
-      const tagsStorage = createTagsStorage();
-      tagsStorage.storeTagColors(newColors);
+    it.each([[{}], [{ bar: 'green' }], [{ foo: 'red', bar: 'green', baz: 'yellow' }], [{ foo: 'red', baz: 'yellow' }]])(
+      'stores no colors if provided ones already exist',
+      (newColors) => {
+        const tagsStorage = createTagsStorage();
+        tagsStorage.storeTagColors(newColors);
 
-      expect(fetch).not.toHaveBeenCalled();
-    });
+        expect(fetch).not.toHaveBeenCalled();
+      },
+    );
 
     it('sends only new colors', () => {
       const tagsStorage = createTagsStorage();
       tagsStorage.storeTagColors({ shlink: 'blue', urls: 'magenta', bar: 'green' });
 
-      expect(fetch).toHaveBeenCalledWith('/save', expect.objectContaining({
-        body: JSON.stringify({ shlink: 'blue', urls: 'magenta' }),
-      }));
+      expect(fetch).toHaveBeenCalledWith(
+        '/save',
+        expect.objectContaining({
+          body: JSON.stringify({ shlink: 'blue', urls: 'magenta' }),
+        }),
+      );
     });
   });
 });

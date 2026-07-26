@@ -19,15 +19,19 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
     (serverPublicId: string) => setServersList((prev) => prev.filter((s) => s.publicId !== serverPublicId)),
     [],
   );
-  const addServer = useCallback((server: MinimalServer) => setServersList((prev) => {
-    if (prev.some((s) => s.publicId === server.publicId)) {
-      return prev;
-    }
+  const addServer = useCallback(
+    (server: MinimalServer) =>
+      setServersList((prev) => {
+        if (prev.some((s) => s.publicId === server.publicId)) {
+          return prev;
+        }
 
-    return [...prev, server];
-  }), []);
+        return [...prev, server];
+      }),
+    [],
+  );
   const searchResultsMap = useMemo(
-    () => searchResults ? new Map(searchResults.map((s) => [s.publicId, s])) : undefined,
+    () => (searchResults ? new Map(searchResults.map((s) => [s.publicId, s])) : undefined),
     [searchResults],
   );
 
@@ -37,7 +41,11 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
         onSearch={onSearch}
         onSelectSearchResult={addServer}
         searchResults={searchResultsMap}
-        renderSearchResult={(server) => <><b className="mr-2">{server.name}</b> {server.baseUrl}</>}
+        renderSearchResult={(server) => (
+          <>
+            <b className="mr-2">{server.name}</b> {server.baseUrl}
+          </>
+        )}
         placeholder="Search servers to add..."
         aria-label="Search servers to add"
         loading={loading}
@@ -48,16 +56,20 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
           }
         }}
       />
-      <Table header={(
-        <Table.Row>
-          <Table.Cell>Name</Table.Cell>
-          <Table.Cell>Base URL</Table.Cell>
-          <Table.Cell aria-hidden />
-        </Table.Row>
-      )}>
+      <Table
+        header={
+          <Table.Row>
+            <Table.Cell>Name</Table.Cell>
+            <Table.Cell>Base URL</Table.Cell>
+            <Table.Cell aria-hidden />
+          </Table.Row>
+        }
+      >
         {orderedServers.length === 0 && (
           <Table.Row>
-            <Table.Cell colSpan={3} className="text-center">This user has no servers</Table.Cell>
+            <Table.Cell colSpan={3} className="text-center">
+              This user has no servers
+            </Table.Cell>
           </Table.Row>
         )}
         {orderedServers.map(({ name, publicId, baseUrl }) => (
@@ -72,7 +84,9 @@ export const UserServers: FC<UserServersProps> = ({ initialServers, onSearch, se
           </Table.Row>
         ))}
       </Table>
-      {orderedServers.map(({ publicId }) => <input key={publicId} type="hidden" name="servers[]" value={publicId} />)}
+      {orderedServers.map(({ publicId }) => (
+        <input key={publicId} type="hidden" name="servers[]" value={publicId} />
+      ))}
     </div>
   );
 };

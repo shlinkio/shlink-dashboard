@@ -8,8 +8,13 @@ import { validateFormDataSchema } from '../validation/validator.server';
 import { IncorrectPasswordError } from './IncorrectPasswordError.server';
 import { NoTempPasswordError } from './NoTempPasswordError.server';
 import { PasswordMismatchError } from './PasswordMismatchError.server';
-import type { ChangeTempPassword, EditUserData  } from './user-schemas.server';
-import { CHANGE_PASSWORD_SCHEMA, CHANGE_TEMP_PASSWORD_SCHEMA, CREATE_USER_SCHEMA, EDIT_USER_SCHEMA } from './user-schemas.server';
+import type { ChangeTempPassword, EditUserData } from './user-schemas.server';
+import {
+  CHANGE_PASSWORD_SCHEMA,
+  CHANGE_TEMP_PASSWORD_SCHEMA,
+  CREATE_USER_SCHEMA,
+  EDIT_USER_SCHEMA,
+} from './user-schemas.server';
 import type { FindAndCountUsersOptions, UsersRepository } from './UsersRepository.server';
 
 export type UserOrderableFields = keyof Omit<User, 'id' | 'password'>;
@@ -96,7 +101,7 @@ export class UsersService {
     return this.#editUserData(publicId, allowedUserData);
   }
 
-  async #editUserData(publicId: string,  { displayName, role }: EditUserData): Promise<User> {
+  async #editUserData(publicId: string, { displayName, role }: EditUserData): Promise<User> {
     const user = await this.getUserById(publicId);
 
     if (displayName !== undefined) {

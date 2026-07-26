@@ -30,9 +30,14 @@ export const ShlinkVersionsContainer: FC<ShlinkVersionsContainerProps> = ({
   serverVersion,
 }) => (
   <small className={clsx('text-center text-gray-500 p-4', { 'md:ml-(--aside-menu-width)': serverVersion })}>
-    <span>Dashboard: <VersionLink project="shlink-dashboard" version={normalizeVersion(dashboardVersion)} /></span>
+    <span>
+      Dashboard: <VersionLink project="shlink-dashboard" version={normalizeVersion(dashboardVersion)} />
+    </span>
     {serverVersion && (
-      <span> - Server: <VersionLink project="shlink" version={normalizeVersion(serverVersion)} /></span>
+      <span>
+        {' '}
+        - Server: <VersionLink project="shlink" version={normalizeVersion(serverVersion)} />
+      </span>
     )}
   </small>
 );

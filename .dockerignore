@@ -6,7 +6,6 @@ docs
 home
 node_modules
 test
-.eslintrc
 docker-compose*
 indocker
 vitest.config.ts

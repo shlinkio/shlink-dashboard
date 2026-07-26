@@ -1,6 +1,6 @@
 import { Button, LabelledInput, SimpleCard } from '@shlinkio/shlink-frontend-kit';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import { redirect,useFetcher  } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { CenteredContentLayout } from '../common/CenteredContentLayout';
 import { serverContainer } from '../container/container.server';

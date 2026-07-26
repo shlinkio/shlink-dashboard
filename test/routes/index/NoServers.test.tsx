@@ -7,18 +7,18 @@ import { NoServers } from '../../../app/routes/index/NoServers';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<NoServers />', () => {
-  const setUp = (session: SessionData | null = null) => render(
-    <MemoryRouter>
-      <SessionProvider value={session}>
-        <NoServers />
-      </SessionProvider>
-    </MemoryRouter>,
-  );
+  const setUp = (session: SessionData | null = null) =>
+    render(
+      <MemoryRouter>
+        <SessionProvider value={session}>
+          <NoServers />
+        </SessionProvider>
+      </MemoryRouter>,
+    );
 
-  it.each([
-    null,
-    fromPartial<SessionData>({ role: 'admin' }),
-  ])('passes a11y checks', (session) => checkAccessibility(setUp(session)));
+  it.each([null, fromPartial<SessionData>({ role: 'admin' })])('passes a11y checks', (session) =>
+    checkAccessibility(setUp(session)),
+  );
 
   it.each([
     fromPartial<SessionData>({ role: 'managed-user' }),

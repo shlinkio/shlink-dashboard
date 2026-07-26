@@ -5,11 +5,7 @@ import { checkAccessibility } from '../../__helpers__/accessibility';
 
 describe('<RoleBadge />', () => {
   const setUp = (role: Role) => render(<RoleBadge role={role} />);
-  const testCases = [
-    { role: 'admin' as const },
-    { role: 'advanced-user' as const },
-    { role: 'managed-user' as const },
-  ];
+  const testCases = [{ role: 'admin' as const }, { role: 'advanced-user' as const }, { role: 'managed-user' as const }];
 
   it.each(testCases)('passes a11y checks', ({ role }) => checkAccessibility(setUp(role)));
 

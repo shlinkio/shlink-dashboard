@@ -30,15 +30,20 @@ type SetUpOptions = {
 
 describe('list-users', () => {
   describe('<ListUsers />', () => {
-    const mockUser = (userData: Partial<Omit<User, 'publicId'>>): User => fromPartial({
-      createdAt: new Date(),
-      ...userData,
-      publicId: crypto.randomUUID(),
-    });
+    const mockUser = (userData: Partial<Omit<User, 'publicId'>>): User =>
+      fromPartial({
+        createdAt: new Date(),
+        ...userData,
+        publicId: crypto.randomUUID(),
+      });
 
-    const setUp = async (
-      { users = [], totalPages = 1, orderBy = {}, searchTerm, currentUsername }: SetUpOptions = {},
-    ) => {
+    const setUp = async ({
+      users = [],
+      totalPages = 1,
+      orderBy = {},
+      searchTerm,
+      currentUsername,
+    }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
@@ -133,10 +138,10 @@ describe('list-users', () => {
       {
         orderBy: undefined,
         expectedUrls: {
-          'Created': 'order-by=createdAt-DESC',
-          'Username': 'order-by=username-ASC',
+          Created: 'order-by=createdAt-DESC',
+          Username: 'order-by=username-ASC',
           'Display name': 'order-by=displayName-ASC',
-          'Role': 'order-by=role-ASC',
+          Role: 'order-by=role-ASC',
         },
       },
       {
@@ -145,10 +150,10 @@ describe('list-users', () => {
           dir: 'DESC' as const,
         },
         expectedUrls: {
-          'Created': 'order-by=createdAt-ASC',
+          Created: 'order-by=createdAt-ASC',
           // 'Username': 'order-by=username-ASC', TODO Fix this
           'Display name': 'order-by=displayName-ASC',
-          'Role': 'order-by=role-ASC',
+          Role: 'order-by=role-ASC',
         },
       },
       {
@@ -157,10 +162,10 @@ describe('list-users', () => {
           dir: 'ASC' as const,
         },
         expectedUrls: {
-          'Created': 'order-by=createdAt-ASC',
-          'Username': 'order-by=username-ASC',
+          Created: 'order-by=createdAt-ASC',
+          Username: 'order-by=username-ASC',
           'Display name': 'order-by=displayName-DESC',
-          'Role': 'order-by=role-ASC',
+          Role: 'order-by=role-ASC',
         },
       },
     ])('includes order in header URLs', async ({ orderBy, expectedUrls }) => {
@@ -182,8 +187,8 @@ describe('list-users', () => {
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // It should eventually navigate to the URL with the search term
-      await waitFor(
-        () => expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
+      await waitFor(() =>
+        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
       );
     });
 

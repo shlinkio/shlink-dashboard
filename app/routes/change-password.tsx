@@ -33,9 +33,11 @@ export async function action(
 
     return data(
       { ok: true },
-      sessionCookie ? {
-        headers: { 'Set-Cookie': sessionCookie },
-      } : undefined,
+      sessionCookie
+        ? {
+            headers: { 'Set-Cookie': sessionCookie },
+          }
+        : undefined,
     );
   } catch (e) {
     if (e instanceof ValidationError) {
@@ -68,14 +70,16 @@ export default function ChangePassword() {
               </p>
             </div>
             <ChangePasswordFields />
-            {(data && !data.ok) && (
+            {data && !data.ok && (
               <div className="text-danger" data-testid="error-container">
                 {data.error}
               </div>
             )}
           </Card.Body>
           <Card.Footer className="flex justify-end">
-            <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? 'Saving...' : 'Save'}
+            </Button>
           </Card.Footer>
         </Form>
       </Card>

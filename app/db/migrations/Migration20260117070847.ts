@@ -11,9 +11,6 @@ export class Migration20260117070847 extends Migration {
 
   override async down(): Promise<void> {
     const kysley = this.getEntityManager().getKysely();
-    await kysley.schema
-      .alterTable('user_has_servers')
-      .dropConstraint('IDX_user_server')
-      .execute();
+    await kysley.schema.alterTable('user_has_servers').dropConstraint('IDX_user_server').execute();
   }
 }

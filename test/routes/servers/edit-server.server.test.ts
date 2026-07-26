@@ -10,10 +10,14 @@ describe('edit-server', () => {
   const serversService: ServersService = fromPartial({ getByPublicIdAndUser, editServerForUser });
 
   describe('loader', () => {
-    const runLoader = () => loader(fromPartial({
-      context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
-      params: { serverPublicId: 'abc456' },
-    }), serversService);
+    const runLoader = () =>
+      loader(
+        fromPartial({
+          context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
+          params: { serverPublicId: 'abc456' },
+        }),
+        serversService,
+      );
 
     it('throws 404 response when server is not found', async () => {
       getByPublicIdAndUser.mockRejectedValue(new NotFoundError('Server not found'));
@@ -36,11 +40,15 @@ describe('edit-server', () => {
   });
 
   describe('action', () => {
-    const runAction = () => action(fromPartial({
-      context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
-      params: { serverPublicId: 'abc456' },
-      request: { formData: vi.fn().mockResolvedValue(new FormData()) },
-    }), serversService);
+    const runAction = () =>
+      action(
+        fromPartial({
+          context: { get: vi.fn().mockReturnValue({ publicId: '123' }) },
+          params: { serverPublicId: 'abc456' },
+          request: { formData: vi.fn().mockResolvedValue(new FormData()) },
+        }),
+        serversService,
+      );
 
     it('creates server and redirects to servers list', async () => {
       const resp = await runAction();
