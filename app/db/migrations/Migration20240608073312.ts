@@ -5,13 +5,11 @@ export class Migration20240608073312 extends Migration {
   async up(): Promise<void> {
     const kysely = this.getEntityManager().getKysely();
 
-    // Detect target driver via env var used by migrations config. This is reliable
-    // when running migrations through the provided CLI which reads migrations.config.ts
-    const driver = (process.env.SHLINK_DASHBOARD_DB_DRIVER ?? 'sqlite').toLowerCase();
-    const isPostgres = driver === 'postgres';
-    const isMysql = driver === 'mysql' || driver === 'mariadb';
-    const isSqlite = driver === 'sqlite';
-    const isMicrosoft = driver === 'mssql';
+    const driverName = this.getEntityManager().getDriver().constructor.name.toLowerCase();
+    const isPostgres = driverName.includes('postgres');
+    const isMysql = driverName.includes('mysql') || driverName.includes('mariadb');
+    const isSqlite = driverName.includes('sqlite');
+    const isMicrosoft = driverName.includes('mssql');
 
     const idType = isPostgres ? 'bigserial' : isSqlite ? 'integer' : 'bigint';
     const idColBuilder = (column: ColumnDefinitionBuilder) => {
