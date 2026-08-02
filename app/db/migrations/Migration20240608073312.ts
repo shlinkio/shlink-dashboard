@@ -1,30 +1,58 @@
 import { Migration } from '@mikro-orm/migrations';
+import type { ColumnDefinitionBuilder } from 'kysely';
 
 export class Migration20240608073312 extends Migration {
   async up(): Promise<void> {
     const kysely = this.getEntityManager().getKysely();
 
+    // Detect target driver via env var used by migrations config. This is reliable
+    // when running migrations through the provided CLI which reads migrations.config.ts
+    const driver = (process.env.SHLINK_DASHBOARD_DB_DRIVER ?? 'sqlite').toLowerCase();
+    const isPostgres = driver === 'postgres';
+    const isMysql = driver === 'mysql' || driver === 'mariadb';
+    const isSqlite = driver === 'sqlite';
+    const isMicrosoft = driver === 'mssql';
+
+    const idType = isPostgres ? 'bigserial' : isSqlite ? 'integer' : 'bigint';
+    const idColBuilder = (column: ColumnDefinitionBuilder) => {
+      if (isPostgres) {
+        // In postgres, autoincrement is implicit by the bigserial type
+        return column.primaryKey();
+      }
+      if (isMicrosoft) {
+        return column.identity().primaryKey();
+      }
+
+      return column.autoIncrement().primaryKey();
+    };
+    const fkType = isSqlite ? 'integer' : 'bigint';
+    const dateType = isPostgres ? 'timestamp' : 'datetime';
+    const jsonType = isMicrosoft ? 'text' : 'json';
+
     await kysely.schema
       .createTable('users')
-      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
+      .addColumn('id', idType, idColBuilder)
       .addColumn('username', 'varchar(255)', (column) => column.notNull().unique())
       .addColumn('password', 'varchar(255)', (column) => column.notNull())
       .addColumn('role', 'varchar(255)', (column) => column.notNull())
       .addColumn('display_name', 'varchar(255)')
-      .addColumn('created_at', 'datetime')
+      .addColumn('created_at', dateType)
       .execute();
 
     await kysely.schema
       .createTable('settings')
-      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
-      .addColumn('user_id', 'bigint')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('user_id', fkType)
+      .addColumn('settings', jsonType)
       .addUniqueConstraint('IDX_user_settings', ['user_id'])
-      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
+      .addForeignKeyConstraint('FK_setting_has_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
       .execute();
 
     await kysely.schema
       .createTable('servers')
-      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
+      .addColumn('id', idType, idColBuilder)
       .addColumn('name', 'varchar(255)', (column) => column.notNull())
       .addColumn('base_url', 'varchar(255)', (column) => column.notNull())
       .addColumn('api_key', 'varchar(255)', (column) => column.notNull())
@@ -33,24 +61,28 @@ export class Migration20240608073312 extends Migration {
 
     await kysely.schema
       .createTable('user_has_servers')
-      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
-      .addColumn('user_id', 'bigint')
-      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
-      .addColumn('server_id', 'integer', (column) => column.unsigned())
-      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('user_id', fkType)
+      .addForeignKeyConstraint('FK_servers_in_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .addColumn('server_id', fkType, (column) => (isMysql ? column : column))
+      .addForeignKeyConstraint('FK_users_in_servers', ['server_id'], 'servers', ['id'], (constraint) =>
         constraint.onDelete('cascade'),
       )
       .execute();
 
     await kysely.schema
       .createTable('tags')
-      .addColumn('id', 'bigint', (column) => column.autoIncrement().primaryKey())
+      .addColumn('id', idType, idColBuilder)
       .addColumn('tag', 'varchar(255)', (column) => column.notNull())
       .addColumn('color', 'varchar(255)', (column) => column.notNull())
-      .addColumn('user_id', 'bigint')
-      .addForeignKeyConstraint('FK_users', ['user_id'], 'users', ['id'], (constraint) => constraint.onDelete('cascade'))
-      .addColumn('server_id', 'integer', (column) => column.unsigned())
-      .addForeignKeyConstraint('FK_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+      .addColumn('user_id', fkType)
+      .addForeignKeyConstraint('FK_tag_has_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .addColumn('server_id', fkType, (column) => (isMysql ? column : column))
+      .addForeignKeyConstraint('FK_tag_has_servers', ['server_id'], 'servers', ['id'], (constraint) =>
         constraint.onDelete('cascade'),
       )
       .addUniqueConstraint('IDX_tag_user_server', ['tag', 'user_id', 'server_id'])
@@ -66,4 +98,8 @@ export class Migration20240608073312 extends Migration {
     await kysely.schema.dropTable('servers').execute();
     await kysely.schema.dropTable('users').execute();
   }
+
+  // isTransactional(): boolean {
+  //   return false;
+  // }
 }
