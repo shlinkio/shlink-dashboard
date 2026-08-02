@@ -21,6 +21,30 @@ services:
       SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
       SHLINK_DASHBOARD_DB_USER: postgres
       SHLINK_DASHBOARD_DB_PASSWORD: root
+
+      # MS
+#      SHLINK_DASHBOARD_DB_DRIVER: mssql
+#      SHLINK_DASHBOARD_DB_HOST: shlink_dashboard_db_ms
+#      SHLINK_DASHBOARD_DB_PORT: 1433
+#      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
+#      SHLINK_DASHBOARD_DB_USER: sa
+#      SHLINK_DASHBOARD_DB_PASSWORD: "Passw0rd!"
+
+      # MySQL
+#      SHLINK_DASHBOARD_DB_DRIVER: mysql
+#      SHLINK_DASHBOARD_DB_HOST: shlink_dashboard_db_mysql
+#      SHLINK_DASHBOARD_DB_PORT: 3306
+#      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
+#      SHLINK_DASHBOARD_DB_USER: root
+#      SHLINK_DASHBOARD_DB_PASSWORD: root
+
+      # MariaDB
+#      SHLINK_DASHBOARD_DB_DRIVER: mariadb
+#      SHLINK_DASHBOARD_DB_HOST: shlink_dashboard_db_maria
+#      SHLINK_DASHBOARD_DB_PORT: 3306
+#      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
+#      SHLINK_DASHBOARD_DB_USER: root
+#      SHLINK_DASHBOARD_DB_PASSWORD: root
     extra_hosts:
       - 'host.docker.internal:host-gateway'
 
@@ -37,6 +61,42 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: shlink_dashboard
       PGDATA: /var/lib/postgresql/data/pgdata
+
+  shlink_dashboard_db_mysql:
+    container_name: shlink_dashboard_db_mysql
+    user: 1000:1000
+    image: mysql:8.0
+    ports:
+      - "33306:3306"
+    volumes:
+      - ./:/home/shlink/www
+      - ./data/infra/database_mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shlink_dashboard
+
+  shlink_dashboard_db_maria:
+    container_name: shlink_dashboard_db_maria
+    user: 1000:1000
+    image: mariadb:12.3
+    ports:
+      - "33307:3306"
+    volumes:
+      - ./:/home/shlink/www
+      - ./data/infra/database_maria:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shlink_dashboard
+      MYSQL_INITDB_SKIP_TZINFO: 1
+
+  shlink_dashboard_db_ms:
+    container_name: shlink_dashboard_db_ms
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "11433:1433"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "Passw0rd!"
 
 #  # Production docker image linked with the dev database
 #  shlink_dashboard_testing:

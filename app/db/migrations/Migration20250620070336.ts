@@ -5,8 +5,8 @@ import { Migration } from '@mikro-orm/migrations';
  */
 export class Migration20250620070336 extends Migration {
   override async up(): Promise<void> {
-    const kysley = this.getEntityManager().getKysely<{ users: never }>();
-    await kysley
+    const kysely = this.getEntityManager().getKysely<{ users: never }>();
+    await kysely
       .insertInto('users')
       .values({
         username: 'admin',
@@ -21,8 +21,8 @@ export class Migration20250620070336 extends Migration {
   }
 
   override async down(): Promise<void> {
-    const kysley = this.getEntityManager().getKysely<{ users: never }>();
-    await kysley
+    const kysely = this.getEntityManager().getKysely<{ users: never }>();
+    await kysely
       .deleteFrom('users')
       // @ts-expect-error Foo
       .where({ username: 'admin' })
