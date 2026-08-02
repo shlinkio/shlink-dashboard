@@ -18,7 +18,7 @@ services:
       SHLINK_DASHBOARD_DB_DRIVER: postgres
       SHLINK_DASHBOARD_DB_HOST: shlink_dashboard_db_postgres
       SHLINK_DASHBOARD_DB_PORT: 5432
-      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard_kysley
+      SHLINK_DASHBOARD_DB_NAME: shlink_dashboard
       SHLINK_DASHBOARD_DB_USER: postgres
       SHLINK_DASHBOARD_DB_PASSWORD: root
 
