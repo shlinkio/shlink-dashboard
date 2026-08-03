@@ -6,11 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
-* *Nothing*
+* [shlink-web-component] Add support for Shlink 5.1.0, by supporting browser redirect conditions.
 
 ### Changed
 * [#559](https://github.com/shlinkio/shlink-dashboard/issues/559) Run client tests in an actual browser with vitest browser mode.
 * Migrate from ESLint to Oxlint and Oxfmt
+* Update dependencies, including major version updates to React Router and MikroORM
 
 ### Deprecated
 * *Nothing*
