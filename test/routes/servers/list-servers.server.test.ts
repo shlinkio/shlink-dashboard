@@ -31,7 +31,7 @@ describe('list-servers', () => {
     const runLoader = ({ role, publicId, queryString, page }: RunLoader) =>
       loader(
         fromPartial({
-          request: fromPartial({ url: `https://example.com/?${queryString}` }),
+          url: new URL(`https://example.com/?${queryString}`),
           context: { get: vi.fn().mockReturnValue(fromPartial<SessionData>({ role, publicId })) },
           params: { page },
         }),

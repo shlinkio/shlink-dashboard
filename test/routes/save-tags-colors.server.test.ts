@@ -11,14 +11,15 @@ describe('save-tags-colors', () => {
   const authHelper = fromPartial<AuthHelper>({ getSession });
 
   const callAction = (args: ActionFunctionArgs) => action(args, tagsService, authHelper);
+  const url = new URL('https://example.com');
 
   it('skips updates if there is no user authenticated', async () => {
     const request = fromPartial<ActionFunctionArgs['request']>({});
 
-    const resp = await callAction(fromPartial({ params: { serverId: '123' }, request }));
+    const resp = await callAction(fromPartial({ params: { serverId: '123' }, request, url }));
 
     expect(resp.status).toEqual(204);
-    expect(getSession).toHaveBeenCalledWith(request);
+    expect(getSession).toHaveBeenCalledWith(request, url);
     expect(updateTagColors).not.toHaveBeenCalled();
   });
 
@@ -28,10 +29,10 @@ describe('save-tags-colors', () => {
     const colors = { foo: 'red' };
     const request = fromPartial<ActionFunctionArgs['request']>({ json: vi.fn().mockResolvedValue(colors) });
 
-    const resp = await callAction(fromPartial({ params: { serverId: '123' }, request }));
+    const resp = await callAction(fromPartial({ params: { serverId: '123' }, request, url }));
 
     expect(resp.status).toEqual(204);
-    expect(getSession).toHaveBeenCalledWith(request);
+    expect(getSession).toHaveBeenCalledWith(request, url);
     expect(updateTagColors).toHaveBeenCalledWith(expect.objectContaining({ colors, userPublicId: '1' }));
   });
 });

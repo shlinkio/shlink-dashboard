@@ -10,9 +10,11 @@ describe('login', () => {
   describe('action', () => {
     it('authenticates user', () => {
       const request = fromPartial<Request>({});
-      action(fromPartial({ request }), authHelper);
+      const url = new URL('https://example.com');
 
-      expect(login).toHaveBeenCalledWith(request);
+      action(fromPartial({ request, url }), authHelper);
+
+      expect(login).toHaveBeenCalledWith(request, url);
     });
 
     it.each([{ message: 'Incorrect password' }, { message: 'User not found' }])(
@@ -21,7 +23,8 @@ describe('login', () => {
         login.mockRejectedValue(new Error(message));
 
         const request = fromPartial<Request>({});
-        const response = await action(fromPartial({ request }), authHelper);
+        const url = new URL('https://example.com');
+        const response = await action(fromPartial({ request, url }), authHelper);
 
         expect(response).toEqual({ error: true });
       },

@@ -30,7 +30,7 @@ describe('AuthHelper', () => {
       const authHelper = setUp();
       const request = buildRequest(url);
 
-      const response = await authHelper.login(request);
+      const response = await authHelper.login(request, new URL(url));
 
       expect(response.headers.get('Location')).toEqual(expectedRedirect);
       expect(authenticate).toHaveBeenCalled();
@@ -63,7 +63,7 @@ describe('AuthHelper', () => {
         const request = buildRequest();
 
         getSessionData.mockReturnValue(returnedSessionData);
-        const sessionData = await authHelper.getSession(request);
+        const sessionData = await authHelper.getSession(request, new URL('https://example.com'));
 
         expect(sessionData).toEqual(returnedSessionData);
       },
@@ -75,7 +75,9 @@ describe('AuthHelper', () => {
 
       getSessionData.mockReturnValue(undefined);
 
-      await expect(() => authHelper.getSession(request, '/redirect-here')).rejects.toThrow(
+      await expect(() =>
+        authHelper.getSession(request, new URL('https://example.com'), '/redirect-here'),
+      ).rejects.toThrow(
         expect.objectContaining({
           status: 302,
         }),
@@ -92,7 +94,7 @@ describe('AuthHelper', () => {
 
       getSessionData.mockReturnValue({ ...defaultSessionData, tempPassword: true });
 
-      await expect(() => authHelper.getSession(request)).rejects.toThrow(
+      await expect(() => authHelper.getSession(request, new URL('https://example.com'))).rejects.toThrow(
         expect.objectContaining({
           status: 302,
         }),
@@ -110,7 +112,7 @@ describe('AuthHelper', () => {
       const request = buildRequest();
 
       getSessionData.mockReturnValue(returnedSessionData);
-      const result = await authHelper.isAuthenticated(request);
+      const result = await authHelper.isAuthenticated(request, new URL('https://example.com'));
 
       expect(result).toEqual(!!returnedSessionData);
       expect(getSession).toHaveBeenCalled();

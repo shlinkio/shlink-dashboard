@@ -8,7 +8,6 @@ import { serverContainer } from '../../container/container.server';
 import { authMiddleware, sessionContext } from '../../middleware/middleware.server';
 import { CHANGE_PASSWORD_ACTION, PROFILE_ACTION } from '../../users/user-profile-actions';
 import { UsersService } from '../../users/UsersService.server';
-import { requestQueryParam } from '../../utils/request.server';
 import { changePasswordAction } from './change-password-action.server';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { editProfileAction } from './edit-profile-action.server';
@@ -17,12 +16,12 @@ import { EditProfileForm } from './EditProfileForm';
 export const middleware = [authMiddleware];
 
 export async function action(
-  { request, context }: ActionFunctionArgs,
+  { request, context, url }: ActionFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   const sessionData = context.get(sessionContext);
-  const action = requestQueryParam(request, 'action');
+  const action = url.searchParams.get('action');
   const formData = await request.formData();
 
   switch (action) {

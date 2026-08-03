@@ -31,13 +31,13 @@ function resolveApiMethod(client: ShlinkApiClient, method?: string): Callback | 
 }
 
 export async function action(
-  { params, request }: ActionFunctionArgs,
+  { params, request, url }: ActionFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
   createApiClient: ApiClientBuilder = serverContainer.apiClientBuilder,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   console_ = console,
 ) {
-  const sessionData = await authHelper.getSession(request);
+  const sessionData = await authHelper.getSession(request, url);
   if (!sessionData) {
     return problemDetails({
       status: 403,

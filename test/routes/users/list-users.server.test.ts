@@ -14,7 +14,7 @@ describe('list-users', () => {
       listUsers.mockResolvedValue(fromPartial({}));
 
       await runLoader({
-        request: fromPartial({ url: 'https://example.com' }),
+        url: new URL('https://example.com'),
         params: { page: '5' },
       });
 

@@ -8,11 +8,11 @@ import type { Route } from './+types/home';
 import { WelcomeCard } from './WelcomeCard';
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, url }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const sessionData = await authHelper.getSession(request, '/login');
+  const sessionData = await authHelper.getSession(request, url, '/login');
   const servers = await serversService.getUserServers(sessionData.publicId);
 
   return { servers };

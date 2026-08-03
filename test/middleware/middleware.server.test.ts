@@ -24,12 +24,13 @@ describe('middleware', () => {
     const authHelper: AuthHelper = fromPartial({ getSession });
 
     it('sets session in context', async () => {
+      const url = new URL('https://example.com');
       const session = fromPartial<SessionData>({ role: 'admin', publicId: '123' });
       getSession.mockResolvedValue(session);
 
-      await authMiddleware(fromPartial({ request, context: createContext() }), next, authHelper);
+      await authMiddleware(fromPartial({ request, url, context: createContext() }), next, authHelper);
 
-      expect(getSession).toHaveBeenCalledWith(request, '/login');
+      expect(getSession).toHaveBeenCalledWith(request, url, '/login');
       expect(set).toHaveBeenCalledWith(expect.anything(), session);
     });
   });

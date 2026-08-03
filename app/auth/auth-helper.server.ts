@@ -1,7 +1,6 @@
 import type { Session, SessionStorage } from 'react-router';
 import { redirect } from 'react-router';
 import type { Authenticator } from 'remix-auth';
-import { requestQueryParam } from '../utils/request.server';
 import { CREDENTIALS_STRATEGY } from './auth.server';
 import type { SessionData, ShlinkSessionData } from './session-context';
 
@@ -18,14 +17,14 @@ export class AuthHelper {
     this.#sessionStorage = sessionStorage;
   }
 
-  async login(request: Request): Promise<Response> {
+  async login(request: Request, url: URL): Promise<Response> {
     const [sessionData, session] = await Promise.all([
       this.#authenticator.authenticate(CREDENTIALS_STRATEGY, request),
       this.sessionFromRequest(request),
     ]);
     session.set('sessionData', sessionData);
 
-    const redirectTo = requestQueryParam(request, 'redirect-to');
+    const redirectTo = url.searchParams.get('redirect-to');
     const successRedirect = redirectTo && !redirectTo.toLowerCase().startsWith('http') ? redirectTo : '/';
 
     return redirect(successRedirect, {
@@ -40,16 +39,16 @@ export class AuthHelper {
     });
   }
 
-  async getSession(request: Request): Promise<SessionData | undefined>;
-  async getSession(request: Request, onMissingSessionRedirectTo: string): Promise<SessionData>;
-  async getSession(request: Request, onMissingSessionRedirectTo?: string): Promise<SessionData | undefined> {
+  async getSession(request: Request, url: URL): Promise<SessionData | undefined>;
+  async getSession(request: Request, url: URL, onMissingSessionRedirectTo: string): Promise<SessionData>;
+  async getSession(request: Request, url: URL, onMissingSessionRedirectTo?: string): Promise<SessionData | undefined> {
     const [sessionData] = await this.sessionAndData(request);
     if (onMissingSessionRedirectTo && !sessionData) {
       throw redirect(onMissingSessionRedirectTo);
     }
 
     // Redirect logged-in users with a temp password to the change-password form, unless that's already the active route
-    if (sessionData?.tempPassword && new URL(request.url).pathname !== '/change-password') {
+    if (sessionData?.tempPassword && url.pathname !== '/change-password') {
       throw redirect('/change-password');
     }
 
@@ -87,8 +86,8 @@ export class AuthHelper {
     return [session.get('sessionData'), session];
   }
 
-  async isAuthenticated(request: Request): Promise<boolean> {
-    const sessionData = await this.getSession(request);
+  async isAuthenticated(request: Request, url: URL): Promise<boolean> {
+    const sessionData = await this.getSession(request, url);
     return !!sessionData;
   }
 }
