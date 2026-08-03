@@ -16,11 +16,11 @@ export const sessionContext = createContext<SessionData>();
  * @todo Redirect to login with a redirect-to param to return to original location
  */
 export const authMiddleware = async function (
-  { request, context },
+  { request, url, context },
   next,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const sessionData = await authHelper.getSession(request, '/login');
+  const sessionData = await authHelper.getSession(request, url, '/login');
   context.set(sessionContext, sessionData);
 
   return next();

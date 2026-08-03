@@ -14,13 +14,13 @@ import type { Route } from './+types/shlink-component-wrapper';
 import type { RouteComponentProps } from './types';
 
 export async function loader(
-  { request, params }: LoaderFunctionArgs,
+  { request, params, url }: LoaderFunctionArgs,
   tagsService: TagsService = serverContainer[TagsService.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
   const { serverId: serverPublicId } = params;
-  const { publicId } = await authHelper.getSession(request, '/login');
+  const { publicId } = await authHelper.getSession(request, url, '/login');
   const [tagColors, settings] = await Promise.all([
     tagsService.tagColors({ userPublicId: publicId, serverPublicId }),
     settingsService.userSettings(publicId),

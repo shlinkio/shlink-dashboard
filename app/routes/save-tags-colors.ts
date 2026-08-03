@@ -5,11 +5,11 @@ import { TagsService } from '../tags/TagsService.server';
 import { empty } from '../utils/response.server';
 
 export async function action(
-  { params, request }: ActionFunctionArgs,
+  { params, request, url }: ActionFunctionArgs,
   tagsService: TagsService = serverContainer[TagsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const sessionData = await authHelper.getSession(request);
+  const sessionData = await authHelper.getSession(request, url);
   if (!sessionData) {
     return empty();
   }

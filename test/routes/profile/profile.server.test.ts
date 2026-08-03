@@ -19,10 +19,8 @@ describe('profile', () => {
       action(
         fromPartial({
           context: { get: () => ({}) },
-          request: {
-            url: `http://example.com?action=${profileAction}`,
-            formData: vi.fn().mockResolvedValue(new FormData()),
-          },
+          request: { formData: vi.fn().mockResolvedValue(new FormData()) },
+          url: new URL(`http://example.com?action=${profileAction}`),
         }),
         usersService,
         authHelper,

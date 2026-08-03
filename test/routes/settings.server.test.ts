@@ -31,15 +31,16 @@ describe('settings', () => {
   describe('action', () => {
     const setUp = () => (args: ActionFunctionArgs) => settingsAction(args, authHelper, settingsService);
     const request = fromPartial<Request>({ json: vi.fn().mockResolvedValue({}) });
+    const url = new URL('https://example.com');
 
     it('does not save settings when user is not logged in', async () => {
       const action = setUp();
 
       getSession.mockResolvedValue(undefined);
 
-      await action(fromPartial({ request }));
+      await action(fromPartial({ request, url }));
 
-      expect(getSession).toHaveBeenCalledWith(request);
+      expect(getSession).toHaveBeenCalledWith(request, url);
       expect(saveUserSettings).not.toHaveBeenCalled();
     });
 
@@ -48,9 +49,9 @@ describe('settings', () => {
 
       getSession.mockResolvedValue({ publicId: '1' });
 
-      await action(fromPartial({ request }));
+      await action(fromPartial({ request, url }));
 
-      expect(getSession).toHaveBeenCalledWith(request);
+      expect(getSession).toHaveBeenCalledWith(request, url);
       expect(saveUserSettings).toHaveBeenCalledWith('1', {});
     });
   });

@@ -8,20 +8,20 @@ import { serverContainer } from '../container/container.server';
 const INCORRECT_CREDENTIAL_ERROR_PREFIXES = ['Incorrect password', 'User not found'];
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, url }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   // If the user is already authenticated, redirect to home
-  const isAuthenticated = await authHelper.isAuthenticated(request);
+  const isAuthenticated = await authHelper.isAuthenticated(request, url);
   return isAuthenticated ? redirect('/') : {};
 }
 
 export async function action(
-  { request }: ActionFunctionArgs,
+  { request, url }: ActionFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
   try {
-    return await authHelper.login(request);
+    return await authHelper.login(request, url);
   } catch (e: any) {
     // TODO Use a more robust way to detect errors
     if (INCORRECT_CREDENTIAL_ERROR_PREFIXES.some((prefix) => e.message.startsWith(prefix))) {
