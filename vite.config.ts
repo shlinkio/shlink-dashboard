@@ -38,7 +38,10 @@ export default defineConfig({
           include: ['**/*.client.test.{ts,tsx}', '**/[A-Z][a-zA-Z0-9]*.test.{ts,tsx}'],
           exclude: ['**/*.server.test.{ts,tsx}'],
           browser: {
-            provider: playwright(),
+            provider: playwright({
+              // In CI, this instructs playwright to use a pre-existing Chrome instance
+              launchOptions: process.env.CI ? { channel: 'chrome' } : undefined,
+            }),
             enabled: true,
             headless: true,
             screenshotFailures: false,
