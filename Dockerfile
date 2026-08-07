@@ -33,6 +33,7 @@ ENV TINI_VERSION="v0.19.0"
 USER root
 COPY --from=builder /shlink-dashboard/build /shlink-dashboard
 COPY --from=builder /shlink-dashboard/node_modules /shlink-dashboard/node_modules
+COPY tsconfig.json /shlink-dashboard/tsconfig.json
 COPY package.json /shlink-dashboard/package.json
 COPY package-lock.json /shlink-dashboard/package-lock.json
 COPY LICENSE /shlink-dashboard/LICENSE
