@@ -43,7 +43,7 @@
     "@react-router/node": "^8.3.0",
     "@shlinkio/shlink-frontend-kit": "^1.5.0",
     "@shlinkio/shlink-js-sdk": "^3.2.1",
-    "@shlinkio/shlink-web-component": "^0.19.1",
+    "@shlinkio/shlink-web-component": "^0.19.2",
     "argon2": "^0.45.1",
     "bottlejs": "^2.0.1",
     "express": "^5.2.1",
