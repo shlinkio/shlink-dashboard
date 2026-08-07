@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.3.0] - 2026-08-07
 ### Added
 * [shlink-web-component] Add support for Shlink 5.1.0, by supporting browser redirect conditions.
 
@@ -20,7 +20,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * *Nothing*
 
 ### Fixed
-* *Nothing*
+* [shlink-web-component#1024](https://github.com/shlinkio/shlink-web-component/issues/1024) Fix incorrect colSpan calculated in visits table depending on what columns have been enabled.
+* [shlink-web-component#982](https://github.com/shlinkio/shlink-web-component/issues/982) Fix ability to select any domain from the dropdown when creating a short URL, when the list of domains is long.
+* [shlink-web-component#913](https://github.com/shlinkio/shlink-web-component/issues/913) Fix rendering of maps due to missing leaflet stylesheet import.
 
 
 ## [0.2.3] - 2026-02-04
