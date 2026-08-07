@@ -21,10 +21,12 @@ describe('change-password-action', () => {
   });
 
   it('returns invalid passwords error when validation error occurs', async () => {
-    editUserPassword.mockRejectedValue(new ValidationError({
-      foo: 'foo',
-      bar: 'bar',
-    }));
+    editUserPassword.mockRejectedValue(
+      new ValidationError({
+        foo: 'foo',
+        bar: 'bar',
+      }),
+    );
 
     const { ok, invalidFields } = await changePasswordAction('abc123', formData, usersService);
 

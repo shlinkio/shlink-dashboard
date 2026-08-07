@@ -9,7 +9,7 @@ export type ExpandSearchTermOptions<T extends BaseEntity> = {
 export function expandSearchTerm<T extends BaseEntity>(
   searchTerm: string | undefined,
   { searchableFields, baseFilter = {} }: ExpandSearchTermOptions<T>,
-):  ObjectQuery<T> {
+): ObjectQuery<T> {
   if (!searchTerm) {
     return baseFilter;
   }

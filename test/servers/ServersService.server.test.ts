@@ -13,9 +13,14 @@ describe('ServersService', () => {
   const updateServer = vi.fn();
   const nativeDelete = vi.fn();
   const setServersForUser = vi.fn();
-  const repo: ServersRepository = fromPartial(
-    { findByPublicIdAndUserId, findByUserId, createServer, updateServer, nativeDelete, setServersForUser },
-  );
+  const repo: ServersRepository = fromPartial({
+    findByPublicIdAndUserId,
+    findByUserId,
+    createServer,
+    updateServer,
+    nativeDelete,
+    setServersForUser,
+  });
   let service: ServersService;
 
   beforeEach(() => {
@@ -63,23 +68,27 @@ describe('ServersService', () => {
   });
 
   describe('createServerForUser', () => {
-    it.each([
-      {},
-      { baseUrl: 'not a URL' },
-      { name: 'too long'.repeat(50) },
-    ])('throws if invalid data is provided', async (data) => {
-      await expect(service.createServerForUser('123', createFormData(data))).rejects.toEqual(expect.objectContaining({
-        name: 'ValidationError',
-      }));
-      expect(createServer).not.toHaveBeenCalled();
-    });
+    it.each([{}, { baseUrl: 'not a URL' }, { name: 'too long'.repeat(50) }])(
+      'throws if invalid data is provided',
+      async (data) => {
+        await expect(service.createServerForUser('123', createFormData(data))).rejects.toEqual(
+          expect.objectContaining({
+            name: 'ValidationError',
+          }),
+        );
+        expect(createServer).not.toHaveBeenCalled();
+      },
+    );
 
     it('delegates into repository', async () => {
-      await service.createServerForUser('123', createFormData({
-        name: '  The server',
-        baseUrl: 'https://example.com  ',
-        apiKey: '  abc123  ',
-      }));
+      await service.createServerForUser(
+        '123',
+        createFormData({
+          name: '  The server',
+          baseUrl: 'https://example.com  ',
+          apiKey: '  abc123  ',
+        }),
+      );
       expect(createServer).toHaveBeenCalledWith('123', {
         name: 'The server',
         baseUrl: 'https://example.com',
@@ -89,15 +98,15 @@ describe('ServersService', () => {
   });
 
   describe('editServerForUser', () => {
-    it.each([
-      { baseUrl: 'not a URL' },
-      { name: 'too long'.repeat(50) },
-    ])('throws if invalid data is provided', async (data) => {
-      await expect(service.editServerForUser('123', 'abc123', createFormData(data))).rejects.toEqual(
-        expect.objectContaining({ name: 'ValidationError' }),
-      );
-      expect(updateServer).not.toHaveBeenCalled();
-    });
+    it.each([{ baseUrl: 'not a URL' }, { name: 'too long'.repeat(50) }])(
+      'throws if invalid data is provided',
+      async (data) => {
+        await expect(service.editServerForUser('123', 'abc123', createFormData(data))).rejects.toEqual(
+          expect.objectContaining({ name: 'ValidationError' }),
+        );
+        expect(updateServer).not.toHaveBeenCalled();
+      },
+    );
 
     it('throws if the server is not found', async () => {
       updateServer.mockResolvedValue(null);
@@ -130,16 +139,15 @@ describe('ServersService', () => {
   });
 
   describe('setServersForUser', () => {
-    it.each([
-      { 'servers': ['not a key array'] },
-      { 'servers[]': 'not an array' },
-      { 'servers[]': ['not a uuid'] },
-    ])('throws if invalid data is provided', async (data) => {
-      await expect(service.setServersForUser('123', createFormData(data))).rejects.toEqual(
-        expect.objectContaining({ name: 'ValidationError' }),
-      );
-      expect(setServersForUser).not.toHaveBeenCalled();
-    });
+    it.each([{ servers: ['not a key array'] }, { 'servers[]': 'not an array' }, { 'servers[]': ['not a uuid'] }])(
+      'throws if invalid data is provided',
+      async (data) => {
+        await expect(service.setServersForUser('123', createFormData(data))).rejects.toEqual(
+          expect.objectContaining({ name: 'ValidationError' }),
+        );
+        expect(setServersForUser).not.toHaveBeenCalled();
+      },
+    );
 
     it('delegates into repository', async () => {
       const servers = [crypto.randomUUID(), crypto.randomUUID()];

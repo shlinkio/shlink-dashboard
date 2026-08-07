@@ -14,13 +14,13 @@ import type { Route } from './+types/shlink-component-wrapper';
 import type { RouteComponentProps } from './types';
 
 export async function loader(
-  { request, params }: LoaderFunctionArgs,
+  { request, params, url }: LoaderFunctionArgs,
   tagsService: TagsService = serverContainer[TagsService.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ): Promise<{ settings: Settings; tagColors: Record<string, string> }> {
   const { serverId: serverPublicId } = params;
-  const { publicId } = await authHelper.getSession(request, '/login');
+  const { publicId } = await authHelper.getSession(request, url, '/login');
   const [tagColors, settings] = await Promise.all([
     tagsService.tagColors({ userPublicId: publicId, serverPublicId }),
     settingsService.userSettings(publicId),
@@ -54,22 +54,24 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
       // client only
       import('@shlinkio/shlink-web-component'),
       apiClient.health(),
-    ]).then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
-      setServerVersion(version);
-      setComponent(
-        <ShlinkSidebarVisibilityProvider>
-          <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
-          <ShlinkWebComponent
-            serverVersion={version as any}
-            apiClient={apiClient}
-            routesPrefix={prefix}
-            settings={settings}
-            tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
-            autoSidebarToggle={false}
-          />
-        </ShlinkSidebarVisibilityProvider>,
-      );
-    });
+    ])
+      .then(([{ ShlinkWebComponent, ShlinkSidebarVisibilityProvider, ShlinkSidebarToggleButton }, { version }]) => {
+        setServerVersion(version);
+        setComponent(
+          <ShlinkSidebarVisibilityProvider>
+            <ShlinkSidebarToggleButton className="fixed top-3.5 left-2 z-1035" />
+            <ShlinkWebComponent
+              serverVersion={version as any}
+              apiClient={apiClient}
+              routesPrefix={prefix}
+              settings={settings}
+              tagColorsStorage={new TagsStorage(tagColors, `${prefix}/tags/colors`)}
+              autoSidebarToggle={false}
+            />
+          </ShlinkSidebarVisibilityProvider>,
+        );
+      })
+      .catch(() => {});
   }, [prefix, serverId, settings, tagColors]);
 
   return (

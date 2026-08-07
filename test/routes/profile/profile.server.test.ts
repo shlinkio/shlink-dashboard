@@ -15,13 +15,16 @@ describe('profile', () => {
     const usersService: UsersService = fromPartial({ editUser, editUserPassword });
     const updateSession = vi.fn();
     const authHelper: AuthHelper = fromPartial({ updateSession });
-    const runAction = (profileAction: string) => action(fromPartial({
-      context: { get: () => ({}) },
-      request: {
-        url: `http://example.com?action=${profileAction}`,
-        formData: vi.fn().mockResolvedValue(new FormData()),
-      },
-    }), usersService, authHelper);
+    const runAction = (profileAction: string) =>
+      action(
+        fromPartial({
+          context: { get: () => ({}) },
+          request: { formData: vi.fn().mockResolvedValue(new FormData()) },
+          url: new URL(`http://example.com?action=${profileAction}`),
+        }),
+        usersService,
+        authHelper,
+      );
 
     it('edits user when action is PROFILE_ACTION', async () => {
       await runAction(PROFILE_ACTION);

@@ -10,7 +10,7 @@ export async function action(
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
   const session = context.get(sessionContext);
-  const formData = await  request.formData();
+  const formData = await request.formData();
 
   // TODO Handle error when creating a server
   await serversService.createServerForUser(session.publicId, formData);

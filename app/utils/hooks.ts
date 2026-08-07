@@ -8,6 +8,7 @@ export function useIsClient(): boolean {
 
   useEffect(() => {
     // Side effects do not run in the server, so if we reach this, we can safely set isClient to `true`
+    // oxlint-disable-next-line react/react-compiler
     setIsClient(true);
   }, []);
 

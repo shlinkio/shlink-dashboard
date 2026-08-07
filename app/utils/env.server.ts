@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const supportedDbEngines = ['mysql', 'postgres', 'mariadb', 'sqlite', 'mssql'] as const;
 
-export type DbEngine = typeof supportedDbEngines[number];
+export type DbEngine = (typeof supportedDbEngines)[number];
 
 const envVariables = z.object({
   NODE_ENV: z.enum(['production', 'development', 'test']).optional(),
@@ -17,10 +17,13 @@ const envVariables = z.object({
   SHLINK_DASHBOARD_DB_USE_ENCRYPTION: z.stringbool({ truthy: ['true'] }).optional(),
 
   // Sessions
-  SHLINK_DASHBOARD_SESSION_SECRETS: z.string().transform(
-    // Split the comma-separated list of secrets
-    (secrets) => secrets.split(',').map((v) => v.trim()),
-  ).optional(),
+  SHLINK_DASHBOARD_SESSION_SECRETS: z
+    .string()
+    .transform(
+      // Split the comma-separated list of secrets
+      (secrets) => secrets.split(',').map((v) => v.trim()),
+    )
+    .optional(),
 });
 
 export const env = envVariables.parse(process.env);

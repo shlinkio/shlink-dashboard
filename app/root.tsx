@@ -16,26 +16,27 @@ import './tailwind.css';
 export const middleware = [forkEmMiddleware];
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, url }: LoaderFunctionArgs,
   settingsService: SettingsService = serverContainer[SettingsService.name],
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
 ) {
-  const { pathname } = new URL(request.url);
+  const { pathname } = url;
   const isPublicRoute = ['/login', '/logout'].includes(pathname);
   const sessionData = await (isPublicRoute
-    ? authHelper.getSession(request)
-    // For non-public routes, redirect to login route
-    : authHelper.getSession(request, `/login?${new URLSearchParams({ 'redirect-to': pathname })}`)
-  );
+    ? authHelper.getSession(request, url)
+    : // For non-public routes, redirect to login route
+      authHelper.getSession(request, url, `/login?${new URLSearchParams({ 'redirect-to': pathname })}`));
 
   const settings = sessionData && (await settingsService.userSettings(sessionData.publicId));
   const sessionCookie = await authHelper.refreshSessionExpiration(request);
 
   return data(
     { sessionData, settings },
-    sessionCookie ? {
-      headers: { 'Set-Cookie': sessionCookie },
-    } : undefined,
+    sessionCookie
+      ? {
+          headers: { 'Set-Cookie': sessionCookie },
+        }
+      : undefined,
   );
 }
 
@@ -45,6 +46,7 @@ export default function App({ loaderData }: RouteComponentProps<Route.ComponentP
 
   useEffect(() => {
     // This check does not make sense in the server, so doing in useEffect to make sure it is run in the browser
+    // oxlint-disable-next-line react/react-compiler
     setSystemPreferredTheme(getSystemPreferredTheme());
   }, []);
 

@@ -12,10 +12,11 @@ import {
 describe('middleware', () => {
   const next = vi.fn().mockResolvedValue(new Response('Success', { status: 200 }));
   const set = vi.fn();
-  const createContext = (role?: Role) => fromPartial<RouterContextProvider>({
-    get: vi.fn().mockReturnValue({ role }),
-    set,
-  });
+  const createContext = (role?: Role) =>
+    fromPartial<RouterContextProvider>({
+      get: vi.fn().mockReturnValue({ role }),
+      set,
+    });
 
   describe('authMiddleware', () => {
     const request: Request = fromPartial({});
@@ -23,30 +24,30 @@ describe('middleware', () => {
     const authHelper: AuthHelper = fromPartial({ getSession });
 
     it('sets session in context', async () => {
+      const url = new URL('https://example.com');
       const session = fromPartial<SessionData>({ role: 'admin', publicId: '123' });
       getSession.mockResolvedValue(session);
 
-      await authMiddleware(fromPartial({ request, context: createContext() }), next, authHelper);
+      await authMiddleware(fromPartial({ request, url, context: createContext() }), next, authHelper);
 
-      expect(getSession).toHaveBeenCalledWith(request, '/login');
+      expect(getSession).toHaveBeenCalledWith(request, url, '/login');
       expect(set).toHaveBeenCalledWith(expect.anything(), session);
     });
   });
 
   describe('ensureNotManagedMiddleware', () => {
-    it.each([
-      'admin' as const,
-      'advanced-user' as const,
-    ])('calls next when a non-managed user is logged-in', async (role) => {
-      await ensureNotManagedMiddleware(fromPartial({ context: createContext(role) }), next);
-      expect(next).toHaveBeenCalled();
-    });
+    it.each(['admin' as const, 'advanced-user' as const])(
+      'calls next when a non-managed user is logged-in',
+      async (role) => {
+        await ensureNotManagedMiddleware(fromPartial({ context: createContext(role) }), next);
+        expect(next).toHaveBeenCalled();
+      },
+    );
 
     it('throws when a managed user is logged-in', async () => {
-      await expect(ensureNotManagedMiddleware(
-        fromPartial({ context: createContext('managed-user') }),
-        next,
-      )).rejects.toThrow(expect.objectContaining({ status: 404 }));
+      await expect(
+        ensureNotManagedMiddleware(fromPartial({ context: createContext('managed-user') }), next),
+      ).rejects.toThrow(expect.objectContaining({ status: 404 }));
       expect(next).not.toHaveBeenCalled();
     });
   });
@@ -57,15 +58,14 @@ describe('middleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it.each([
-      'managed-user' as const,
-      'advanced-user' as const,
-    ])('throws when a non-admin user is logged-in', async (role) => {
-      await expect(ensureAdminMiddleware(
-        fromPartial({ context: createContext(role) }),
-        next,
-      )).rejects.toThrow(expect.objectContaining({ status: 404 }));
-      expect(next).not.toHaveBeenCalled();
-    });
+    it.each(['managed-user' as const, 'advanced-user' as const])(
+      'throws when a non-admin user is logged-in',
+      async (role) => {
+        await expect(ensureAdminMiddleware(fromPartial({ context: createContext(role) }), next)).rejects.toThrow(
+          expect.objectContaining({ status: 404 }),
+        );
+        expect(next).not.toHaveBeenCalled();
+      },
+    );
   });
 });

@@ -21,9 +21,9 @@ describe('home', () => {
     it('renders no-servers welcome page when there are no servers', async () => {
       setUp();
 
-      await waitFor(() => expect(
-        screen.getByText('This application will help you manage your Shlink servers.'),
-      ).toBeInTheDocument());
+      await waitFor(() =>
+        expect(screen.getByText('This application will help you manage your Shlink servers.')).toBeInTheDocument(),
+      );
       expect(screen.queryByTestId('servers-list')).not.toBeInTheDocument();
     });
 

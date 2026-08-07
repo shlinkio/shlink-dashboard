@@ -7,12 +7,10 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('<UserServers />', () => {
   const onSearch = vi.fn();
-  const setUp = (props: Partial<UserServersProps> = {}) => renderWithEvents(
-    <UserServers initialServers={[]} onSearch={onSearch} loading={false} {...props} />,
-  );
-  const server = (props: Partial<Omit<MinimalServer, 'publicId'>>): MinimalServer => fromPartial(
-    { ...props, publicId: crypto.randomUUID() },
-  );
+  const setUp = (props: Partial<UserServersProps> = {}) =>
+    renderWithEvents(<UserServers initialServers={[]} onSearch={onSearch} loading={false} {...props} />);
+  const server = (props: Partial<Omit<MinimalServer, 'publicId'>>): MinimalServer =>
+    fromPartial({ ...props, publicId: crypto.randomUUID() });
 
   beforeEach(() => {
     // Make all timeouts be still async, but resolve immediately
@@ -24,11 +22,10 @@ describe('<UserServers />', () => {
     vi.unstubAllGlobals();
   });
 
-  it.each([
-    {},
-    { loading: true },
-    { initialServers: [server({ name: 'Foo' }), server({ name: 'Bar' })] },
-  ])('passes a11y checks', (props) => checkAccessibility(setUp(props)));
+  it.each([{}, { loading: true }, { initialServers: [server({ name: 'Foo' }), server({ name: 'Bar' })] }])(
+    'passes a11y checks',
+    (props) => checkAccessibility(setUp(props)),
+  );
 
   it('calls onSearch when searching in combobox', async () => {
     const { user } = setUp();

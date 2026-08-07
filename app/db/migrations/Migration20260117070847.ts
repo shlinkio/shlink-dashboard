@@ -2,16 +2,15 @@ import { Migration } from '@mikro-orm/migrations';
 
 export class Migration20260117070847 extends Migration {
   override async up(): Promise<void> {
-    const knex = this.getKnex();
-    await knex.schema.table('user_has_servers', (builder) => {
-      builder.unique(['user_id', 'server_id'], { indexName: 'IDX_user_server' });
-    });
+    const kysely = this.getEntityManager().getKysely();
+    await kysely.schema
+      .alterTable('user_has_servers')
+      .addUniqueConstraint('IDX_user_server', ['user_id', 'server_id'])
+      .execute();
   }
 
   override async down(): Promise<void> {
-    const knex = this.getKnex();
-    await knex.schema.table('user_has_servers', (builder) => {
-      builder.dropUnique(['user_id', 'server_id'], 'IDX_user_server');
-    });
+    const kysely = this.getEntityManager().getKysely();
+    await kysely.schema.alterTable('user_has_servers').dropConstraint('IDX_user_server').execute();
   }
 }

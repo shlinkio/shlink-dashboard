@@ -1,66 +1,103 @@
 import { Migration } from '@mikro-orm/migrations';
+import type { ColumnDefinitionBuilder } from 'kysely';
 
 export class Migration20240608073312 extends Migration {
   async up(): Promise<void> {
-    const knex = this.getKnex();
+    const kysely = this.getEntityManager().getKysely();
 
-    await knex.schema.createTable('users', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('username').notNullable().unique();
-      table.string('password').notNullable();
-      table.string('role').notNullable();
-      table.string('display_name');
-      table.dateTime('created_at');
-    });
+    const driverName = this.getEntityManager().getDriver().constructor.name.toLowerCase();
+    const isPostgres = driverName.includes('postgres');
+    const isMysql = driverName.includes('mysql') || driverName.includes('mariadb');
+    const isSqlite = driverName.includes('sqlite');
+    const isMicrosoft = driverName.includes('mssql');
 
-    await knex.schema.createTable('settings', (table) => {
-      table.increments('id').unsigned().primary();
-      table.integer('user_id').unsigned();
-      table.json('settings');
+    const idType = isPostgres ? 'bigserial' : isSqlite ? 'integer' : 'bigint';
+    const idColBuilder = (column: ColumnDefinitionBuilder) => {
+      if (isPostgres) {
+        // In postgres, autoincrement is implicit by the bigserial type
+        return column.primaryKey();
+      }
+      if (isMicrosoft) {
+        return column.identity().primaryKey();
+      }
 
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
+      return column.autoIncrement().primaryKey();
+    };
+    const fkType = isSqlite ? 'integer' : 'bigint';
+    const dateType = isPostgres ? 'timestamp' : 'datetime';
+    const jsonType = isMicrosoft ? 'text' : 'json';
 
-      table.unique('user_id', { indexName: 'IDX_user_settings' });
-    });
+    await kysely.schema
+      .createTable('users')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('username', 'varchar(255)', (column) => column.notNull().unique())
+      .addColumn('password', 'varchar(255)', (column) => column.notNull())
+      .addColumn('role', 'varchar(255)', (column) => column.notNull())
+      .addColumn('display_name', 'varchar(255)')
+      .addColumn('created_at', dateType)
+      .execute();
 
-    await knex.schema.createTable('servers', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('name').notNullable();
-      table.string('base_url').notNullable();
-      table.string('api_key').notNullable();
-      table.string('public_id').notNullable().unique();
-    });
+    await kysely.schema
+      .createTable('settings')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('user_id', fkType)
+      .addColumn('settings', jsonType)
+      .addUniqueConstraint('IDX_user_settings', ['user_id'])
+      .addForeignKeyConstraint('FK_setting_has_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .execute();
 
-    await knex.schema.createTable('user_has_servers', (table) => {
-      table.increments('id').unsigned().primary();
-      table.integer('user_id').unsigned();
-      table.integer('server_id').unsigned();
+    await kysely.schema
+      .createTable('servers')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('name', 'varchar(255)', (column) => column.notNull())
+      .addColumn('base_url', 'varchar(255)', (column) => column.notNull())
+      .addColumn('api_key', 'varchar(255)', (column) => column.notNull())
+      .addColumn('public_id', 'varchar(255)', (column) => column.notNull().unique())
+      .execute();
 
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
-      table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
-    });
+    await kysely.schema
+      .createTable('user_has_servers')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('user_id', fkType)
+      .addForeignKeyConstraint('FK_servers_in_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .addColumn('server_id', fkType, (column) => (isMysql ? column : column))
+      .addForeignKeyConstraint('FK_users_in_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .execute();
 
-    await knex.schema.createTable('tags', (table) => {
-      table.increments('id').unsigned().primary();
-      table.string('tag').notNullable();
-      table.string('color').notNullable();
-      table.integer('user_id').unsigned();
-      table.integer('server_id').unsigned();
-
-      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
-      table.foreign('server_id').references('id').inTable('servers').onDelete('CASCADE');
-
-      table.unique(['tag', 'user_id', 'server_id'], { indexName: 'IDX_tag_user_server' });
-    });
+    await kysely.schema
+      .createTable('tags')
+      .addColumn('id', idType, idColBuilder)
+      .addColumn('tag', 'varchar(255)', (column) => column.notNull())
+      .addColumn('color', 'varchar(255)', (column) => column.notNull())
+      .addColumn('user_id', fkType)
+      .addForeignKeyConstraint('FK_tag_has_users', ['user_id'], 'users', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .addColumn('server_id', fkType, (column) => (isMysql ? column : column))
+      .addForeignKeyConstraint('FK_tag_has_servers', ['server_id'], 'servers', ['id'], (constraint) =>
+        constraint.onDelete('cascade'),
+      )
+      .addUniqueConstraint('IDX_tag_user_server', ['tag', 'user_id', 'server_id'])
+      .execute();
   }
 
   async down(): Promise<void> {
-    const knex = this.getKnex();
+    const kysely = this.getEntityManager().getKysely();
 
-    await knex.schema.dropTable('tags');
-    await knex.schema.dropTable('settings');
-    await knex.schema.dropTable('user_has_servers');
-    await knex.schema.dropTable('servers');
-    await knex.schema.dropTable('users');
+    await kysely.schema.dropTable('tags').execute();
+    await kysely.schema.dropTable('settings').execute();
+    await kysely.schema.dropTable('user_has_servers').execute();
+    await kysely.schema.dropTable('servers').execute();
+    await kysely.schema.dropTable('users').execute();
   }
+
+  // isTransactional(): boolean {
+  //   return false;
+  // }
 }

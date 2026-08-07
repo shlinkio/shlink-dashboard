@@ -1,7 +1,7 @@
-import AdmZip from 'adm-zip';
-import chalk from 'chalk';
 import fs from 'fs';
 import { execSync } from 'node:child_process';
+import AdmZip from 'adm-zip';
+import chalk from 'chalk';
 
 const version = process.env.VERSION;
 if (!version) {

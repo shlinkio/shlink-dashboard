@@ -12,20 +12,20 @@ import type { Route } from './+types/settings';
 import type { RouteComponentProps } from './types';
 
 export async function loader(
-  { request }: LoaderFunctionArgs,
+  { request, url }: LoaderFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  const { publicId } = await authHelper.getSession(request, '/login');
+  const { publicId } = await authHelper.getSession(request, url, '/login');
   return settingsService.userSettings(publicId);
 }
 
 export async function action(
-  { request }: ActionFunctionArgs,
+  { request, url }: ActionFunctionArgs,
   authHelper: AuthHelper = serverContainer[AuthHelper.name],
   settingsService: SettingsService = serverContainer[SettingsService.name],
 ) {
-  const [sessionData, newSettings] = await Promise.all([authHelper.getSession(request), request.json()]);
+  const [sessionData, newSettings] = await Promise.all([authHelper.getSession(request, url), request.json()]);
   if (sessionData) {
     await settingsService.saveUserSettings(sessionData.publicId, newSettings);
   }
@@ -36,10 +36,14 @@ export async function action(
 export default function Settings({ loaderData: settings }: RouteComponentProps<Route.ComponentProps>) {
   const fetcher = useFetcher();
   // TODO Add some deferring
-  const submitSettings = useCallback((newSettings: AppSettings) => fetcher.submit(newSettings, {
-    method: 'POST',
-    encType: 'application/json',
-  }), [fetcher]);
+  const submitSettings = useCallback(
+    (newSettings: AppSettings) =>
+      fetcher.submit(newSettings, {
+        method: 'POST',
+        encType: 'application/json',
+      }),
+    [fetcher],
+  );
 
   return (
     <Layout>
@@ -47,13 +51,13 @@ export default function Settings({ loaderData: settings }: RouteComponentProps<R
         <Routes>
           <RouteComp
             path="*"
-            element={(
+            element={
               <ShlinkWebSettings
                 settings={settings}
                 onUpdateSettings={submitSettings}
                 defaultShortUrlsListOrdering={{}}
               />
-            )}
+            }
           />
         </Routes>
       </ClientOnly>

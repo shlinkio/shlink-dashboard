@@ -7,6 +7,7 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
   ],
+  "exclude": ["build"],
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["@react-router/node", "vite/client", "vitest/globals"],

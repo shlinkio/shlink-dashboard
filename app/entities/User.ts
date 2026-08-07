@@ -5,7 +5,7 @@ import { Server } from './Server';
 
 export const roles = ['admin', 'advanced-user', 'managed-user'] as const;
 
-export type Role = typeof roles[number];
+export type Role = (typeof roles)[number];
 
 export class User extends BaseEntity {
   publicId!: string;

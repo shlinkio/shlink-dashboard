@@ -17,11 +17,7 @@ export class TagsStorage implements TagColorsStorage {
   readonly #saveEndpoint: string;
   readonly #fetch: typeof globalThis.fetch;
 
-  constructor(
-    colors: Record<string, string>,
-    saveEndpoint: string,
-    fetch = globalThis.fetch.bind(globalThis),
-  ) {
+  constructor(colors: Record<string, string>, saveEndpoint: string, fetch = globalThis.fetch.bind(globalThis)) {
     this.#colors = colors;
     this.#saveEndpoint = saveEndpoint;
     this.#fetch = fetch;

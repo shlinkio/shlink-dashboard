@@ -1,6 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button,useTimeoutToggle  } from '@shlinkio/shlink-frontend-kit';
+import { Button, useTimeoutToggle } from '@shlinkio/shlink-frontend-kit';
 import type { FC, PropsWithChildren } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import type { useFetcher } from 'react-router';

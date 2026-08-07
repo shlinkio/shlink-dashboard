@@ -9,9 +9,7 @@ export const NoServers: FC = () => {
   const session = useSession();
   return (
     <div className="p-6 text-center flex flex-col gap-8">
-      <p className="text-xl">
-        This application will help you manage your Shlink servers.
-      </p>
+      <p className="text-xl">This application will help you manage your Shlink servers.</p>
       {session?.role !== 'managed-user' && (
         <p>
           <Button inline size="lg" to="/manage-servers/create">

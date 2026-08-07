@@ -30,7 +30,7 @@ describe('AuthHelper', () => {
       const authHelper = setUp();
       const request = buildRequest(url);
 
-      const response = await authHelper.login(request);
+      const response = await authHelper.login(request, new URL(url));
 
       expect(response.headers.get('Location')).toEqual(expectedRedirect);
       expect(authenticate).toHaveBeenCalled();
@@ -56,18 +56,18 @@ describe('AuthHelper', () => {
   });
 
   describe('getSession', () => {
-    it.each([
-      [defaultSessionData],
-      [undefined],
-    ])('returns session data when no redirect is provided', async (returnedSessionData) => {
-      const authHelper = setUp();
-      const request = buildRequest();
+    it.each([[defaultSessionData], [undefined]])(
+      'returns session data when no redirect is provided',
+      async (returnedSessionData) => {
+        const authHelper = setUp();
+        const request = buildRequest();
 
-      getSessionData.mockReturnValue(returnedSessionData);
-      const sessionData = await authHelper.getSession(request);
+        getSessionData.mockReturnValue(returnedSessionData);
+        const sessionData = await authHelper.getSession(request, new URL('https://example.com'));
 
-      expect(sessionData).toEqual(returnedSessionData);
-    });
+        expect(sessionData).toEqual(returnedSessionData);
+      },
+    );
 
     it('throws redirect to provided URL if session is not found', async () => {
       const authHelper = setUp();
@@ -75,9 +75,13 @@ describe('AuthHelper', () => {
 
       getSessionData.mockReturnValue(undefined);
 
-      await expect(() => authHelper.getSession(request, '/redirect-here')).rejects.toThrow(expect.objectContaining({
-        status: 302,
-      }));
+      await expect(() =>
+        authHelper.getSession(request, new URL('https://example.com'), '/redirect-here'),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: 302,
+        }),
+      );
       expect(getSession).toHaveBeenCalled();
       expect(destroySession).not.toHaveBeenCalled();
       expect(commitSession).not.toHaveBeenCalled();
@@ -90,9 +94,11 @@ describe('AuthHelper', () => {
 
       getSessionData.mockReturnValue({ ...defaultSessionData, tempPassword: true });
 
-      await expect(() => authHelper.getSession(request)).rejects.toThrow(expect.objectContaining({
-        status: 302,
-      }));
+      await expect(() => authHelper.getSession(request, new URL('https://example.com'))).rejects.toThrow(
+        expect.objectContaining({
+          status: 302,
+        }),
+      );
       expect(getSession).toHaveBeenCalled();
       expect(destroySession).not.toHaveBeenCalled();
       expect(commitSession).not.toHaveBeenCalled();
@@ -101,15 +107,12 @@ describe('AuthHelper', () => {
   });
 
   describe('isAuthenticated', () => {
-    it.each([
-      [defaultSessionData],
-      [undefined],
-    ])('checks if a session exists', async (returnedSessionData) => {
+    it.each([[defaultSessionData], [undefined]])('checks if a session exists', async (returnedSessionData) => {
       const authHelper = setUp();
       const request = buildRequest();
 
       getSessionData.mockReturnValue(returnedSessionData);
-      const result = await authHelper.isAuthenticated(request);
+      const result = await authHelper.isAuthenticated(request, new URL('https://example.com'));
 
       expect(result).toEqual(!!returnedSessionData);
       expect(getSession).toHaveBeenCalled();

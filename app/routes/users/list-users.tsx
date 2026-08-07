@@ -32,17 +32,16 @@ import { useSession } from '../../auth/session-context';
 import { serverContainer } from '../../container/container.server';
 import type { ListUsersOptions, UserOrderableFields } from '../../users/UsersService.server';
 import { UsersService } from '../../users/UsersService.server';
-import { requestQueryParams } from '../../utils/request.server';
 import type { RouteComponentProps } from '../types';
 import type { Route } from './+types/list-users';
 import { DeleteUserModal } from './DeleteUserModal';
 import { RoleBadge } from './RoleBadge';
 
 export async function loader(
-  { request, params }: LoaderFunctionArgs,
+  { params, url }: LoaderFunctionArgs,
   usersService: UsersService = serverContainer[UsersService.name],
 ) {
-  const query = requestQueryParams(request);
+  const query = url.searchParams;
   const orderByParam = query.get('order-by');
   const orderBy = orderByParam ? stringToOrder<UserOrderableFields>(orderByParam) : {};
   const currentParams = {
@@ -61,9 +60,7 @@ function HeaderCell({ orderDir, to, children }: PropsWithChildren<{ orderDir: Or
       <Link className="text-current" to={to}>
         {children}
       </Link>
-      {orderDir && (
-        <FontAwesomeIcon className="ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />
-      )}
+      {orderDir && <FontAwesomeIcon className="ml-2" icon={orderDir === 'DESC' ? faSortAlphaDesc : faSortAlphaAsc} />}
     </Table.Cell>
   );
 }
@@ -91,33 +88,40 @@ export default function ListUsers({ loaderData }: RouteComponentProps<Route.Comp
   const { users, totalPages, currentParams } = loaderData;
   const { field, dir } = currentParams.orderBy;
 
-  const urlForParams = useCallback((newParams: ListUsersOptions) => {
-    const query = new URLSearchParams();
-    const mergedParams = mergeDeepRight(currentParams, newParams);
-    const stringifiedOrderBy = orderToString(mergedParams.orderBy ?? {});
+  const urlForParams = useCallback(
+    (newParams: ListUsersOptions) => {
+      const query = new URLSearchParams();
+      const mergedParams = mergeDeepRight(currentParams, newParams);
+      const stringifiedOrderBy = orderToString(mergedParams.orderBy ?? {});
 
-    if (stringifiedOrderBy) {
-      query.set('order-by', stringifiedOrderBy);
-    }
-    if (mergedParams.searchTerm) {
-      query.set('search-term', mergedParams.searchTerm);
-    }
+      if (stringifiedOrderBy) {
+        query.set('order-by', stringifiedOrderBy);
+      }
+      if (mergedParams.searchTerm) {
+        query.set('search-term', mergedParams.searchTerm);
+      }
 
-    const queryString = query.size > 0 ? `?${query.toString()}` : '';
-    const baseUrl = href('/manage-users/:page', { page: `${mergedParams.page}` });
+      const queryString = query.size > 0 ? `?${query.toString()}` : '';
+      const baseUrl = href('/manage-users/:page', { page: `${mergedParams.page}` });
 
-    return `${baseUrl}${queryString}`;
-  }, [currentParams]);
-  const headerUrl = useCallback((newField: UserOrderableFields, dirFallback?: OrderDir) => urlForParams({
-    page: 1,
-    orderBy: determineOrder({
-      newField,
-      currentField: field ?? newField,
-      currentOrderDir: dir ?? dirFallback,
-    }),
-  }), [dir, field, urlForParams]);
+      return `${baseUrl}${queryString}`;
+    },
+    [currentParams],
+  );
+  const headerUrl = useCallback(
+    (newField: UserOrderableFields, dirFallback?: OrderDir) =>
+      urlForParams({
+        page: 1,
+        orderBy: determineOrder({
+          newField,
+          currentField: field ?? newField,
+          currentOrderDir: dir ?? dirFallback,
+        }),
+      }),
+    [dir, field, urlForParams],
+  );
 
-  const [userToDelete, setUserToDelete] = useState<typeof users[number]>();
+  const [userToDelete, setUserToDelete] = useState<(typeof users)[number]>();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -139,7 +143,7 @@ export default function ListUsers({ loaderData }: RouteComponentProps<Route.Comp
             <Table.Row>
               <HeaderCell
                 to={headerUrl('createdAt', 'ASC')}
-                orderDir={(!field || field === 'createdAt') ? (dir ?? 'ASC') : undefined}
+                orderDir={!field || field === 'createdAt' ? (dir ?? 'ASC') : undefined}
               >
                 Created
               </HeaderCell>
@@ -158,13 +162,17 @@ export default function ListUsers({ loaderData }: RouteComponentProps<Route.Comp
         >
           {navigation.state === 'loading' ? (
             <Table.Row className="text-center">
-              <Table.Cell colSpan={5} className="italic">Loading...</Table.Cell>
+              <Table.Cell colSpan={5} className="italic">
+                Loading...
+              </Table.Cell>
             </Table.Row>
           ) : (
             <>
               {users.length === 0 && (
                 <Table.Row className="text-center">
-                  <Table.Cell colSpan={4} className="italic">No users found</Table.Cell>
+                  <Table.Cell colSpan={4} className="italic">
+                    No users found
+                  </Table.Cell>
                 </Table.Row>
               )}
               {users.map((user) => (
@@ -172,7 +180,9 @@ export default function ListUsers({ loaderData }: RouteComponentProps<Route.Comp
                   <Table.Cell columnName="Created:">{user.createdAt.toLocaleDateString()}</Table.Cell>
                   <Table.Cell columnName="Username:">{user.username}</Table.Cell>
                   <Table.Cell columnName="Display name:">{user.displayName ?? '-'}</Table.Cell>
-                  <Table.Cell columnName="Role:"><RoleBadge role={user.role} /></Table.Cell>
+                  <Table.Cell columnName="Role:">
+                    <RoleBadge role={user.role} />
+                  </Table.Cell>
                   <Table.Cell
                     className={clsx(
                       'text-right lg:static lg:[&]:border-b-1', // Big screens

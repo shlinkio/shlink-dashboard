@@ -8,9 +8,12 @@ import { ValidationError } from '../../app/validation/ValidationError.server';
 
 describe('change-password', () => {
   describe('loader', () => {
-    const runLoader = async ({ tempPassword }: { tempPassword: boolean }) => loader(fromPartial({
-      context: { get: () => ({ tempPassword }) },
-    }));
+    const runLoader = async ({ tempPassword }: { tempPassword: boolean }) =>
+      loader(
+        fromPartial({
+          context: { get: () => ({ tempPassword }) },
+        }),
+      );
 
     it('redirects to home if current user password is not temporary', async () => {
       const response = await runLoader({ tempPassword: false });
@@ -31,14 +34,15 @@ describe('change-password', () => {
     const updateSession = vi.fn();
     const authHelper: AuthHelper = fromPartial({ updateSession });
 
-    const runAction = () => action(
-      fromPartial({
-        context: { get: () => ({ publicId: 'abc123' }) },
-        request: { formData: vi.fn().mockResolvedValue(new FormData()) },
-      }),
-      usersService,
-      authHelper,
-    );
+    const runAction = () =>
+      action(
+        fromPartial({
+          context: { get: () => ({ publicId: 'abc123' }) },
+          request: { formData: vi.fn().mockResolvedValue(new FormData()) },
+        }),
+        usersService,
+        authHelper,
+      );
 
     it.each([
       {
@@ -66,11 +70,7 @@ describe('change-password', () => {
       await expect(runAction()).rejects.toThrow(unknownError);
     });
 
-    it.each([
-      undefined,
-      '',
-      'session cookie',
-    ])('updates session when passwords are correct', async (sessionCookie) => {
+    it.each([undefined, '', 'session cookie'])('updates session when passwords are correct', async (sessionCookie) => {
       editUserTempPassword.mockResolvedValue(undefined);
       updateSession.mockResolvedValue(sessionCookie);
 

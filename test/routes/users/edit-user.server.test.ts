@@ -40,17 +40,17 @@ describe('edit-user', () => {
   describe('action', () => {
     const runAction = (params: ActionFunctionArgs['params']) => action(fromPartial({ params, request }), usersService);
 
-    it.each([
-      { userPublicId: '123' },
-      { userPublicId: 'abc' },
-    ])('edits user and redirects to list', async ({ userPublicId }) => {
-      editUser.mockResolvedValue(fromPartial({ id: 'abc123' }));
+    it.each([{ userPublicId: '123' }, { userPublicId: 'abc' }])(
+      'edits user and redirects to list',
+      async ({ userPublicId }) => {
+        editUser.mockResolvedValue(fromPartial({ id: 'abc123' }));
 
-      const response = await runAction({ userPublicId });
+        const response = await runAction({ userPublicId });
 
-      expect(response.status).toEqual(302);
-      expect(response.headers.get('Location')).toEqual('/manage-users/1');
-      expect(editUser).toHaveBeenCalledWith(userPublicId, new FormData());
-    });
+        expect(response.status).toEqual(302);
+        expect(response.headers.get('Location')).toEqual('/manage-users/1');
+        expect(editUser).toHaveBeenCalledWith(userPublicId, new FormData());
+      },
+    );
   });
 });

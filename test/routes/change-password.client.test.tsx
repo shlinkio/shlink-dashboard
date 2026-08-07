@@ -12,7 +12,7 @@ describe('change-password', () => {
           path,
           Component: ChangePassword,
           HydrateFallback: () => null,
-          action: () => error ? { ok: false, error } : undefined,
+          action: () => (error ? { ok: false, error } : undefined),
         },
       ]);
 
@@ -22,10 +22,7 @@ describe('change-password', () => {
       return renderResult;
     };
 
-    it.each([
-      undefined,
-      'There was an error',
-    ])('shows error only if action response fails', async (error) => {
+    it.each([undefined, 'There was an error'])('shows error only if action response fails', async (error) => {
       const { user } = await setUp(error);
 
       // Send form so that the fetcher invokes the action

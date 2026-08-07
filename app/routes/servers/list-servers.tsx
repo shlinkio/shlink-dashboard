@@ -10,16 +10,15 @@ import { serverContainer } from '../../container/container.server';
 import type { PlainServer } from '../../entities/Server';
 import { sessionContext } from '../../middleware/middleware.server';
 import { ServersService } from '../../servers/ServersService.server';
-import { requestQueryParams } from '../../utils/request.server';
 import type { RouteComponentProps } from '../types';
 import type { Route } from './+types/list-servers';
 import { DeleteServerModal } from './DeleteServerModal';
 
 export async function loader(
-  { request, context, params }: LoaderFunctionArgs,
+  { context, params, url }: LoaderFunctionArgs,
   serversService: ServersService = serverContainer[ServersService.name],
 ) {
-  const query = requestQueryParams(request);
+  const query = url.searchParams;
   const currentSearchTerm = query.get('search-term') ?? undefined;
   const page = Number(params.page ?? 1);
   const itemsPerPage = query.has('items-per-page') ? Number(query.get('items-per-page')) : undefined;
@@ -75,7 +74,9 @@ export default function ListServers({ loaderData }: RouteComponentProps<Route.Co
         >
           {servers.length === 0 && (
             <Table.Row className="text-center">
-              <Table.Cell colSpan={4} className="italic">No servers found</Table.Cell>
+              <Table.Cell colSpan={4} className="italic">
+                No servers found
+              </Table.Cell>
             </Table.Row>
           )}
           {servers.map((server) => (
@@ -124,11 +125,7 @@ export default function ListServers({ loaderData }: RouteComponentProps<Route.Co
         </Table>
       </SimpleCard>
 
-      <DeleteServerModal
-        serverToDelete={serverToDelete}
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
+      <DeleteServerModal serverToDelete={serverToDelete} open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );
 }

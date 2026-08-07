@@ -12,7 +12,7 @@ import { ValidationError } from './ValidationError.server';
 export function validateSchema<T extends ZodRawShape>(
   schema: ZodObject<T>,
   object: Record<string, unknown>,
-): ReturnType<typeof schema['parse']> {
+): ReturnType<(typeof schema)['parse']> {
   try {
     return schema.parse(object);
   } catch (e) {
@@ -33,6 +33,6 @@ export function validateSchema<T extends ZodRawShape>(
 export function validateFormDataSchema<T extends ZodRawShape>(
   schema: ZodObject<T>,
   formData: FormData,
-): ReturnType<typeof schema['parse']> {
+): ReturnType<(typeof schema)['parse']> {
   return validateSchema(schema, formDataToRecord(formData));
 }

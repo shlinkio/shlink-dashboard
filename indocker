@@ -5,4 +5,4 @@ if ! [[ $(docker ps | grep shlink_dashboard_node) ]]; then
     docker compose up -d
 fi
 
-docker exec -it shlink_dashboard_node /bin/sh -c "cd /home/shlink-dashboard && $*"
+docker exec -it shlink_dashboard_node /bin/sh -c "$*"
