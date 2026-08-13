@@ -82,7 +82,7 @@
     "oxfmt": "^0.62.0",
     "oxlint": "^1.77.0",
     "oxlint-tsgolint": "^7.0.2001",
-    "playwright": "^1.62.0",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4.0.1",
     "typescript": "^7.0.2",
     "unplugin-strip-exports": "^0.1.9",
