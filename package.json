@@ -73,7 +73,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
-    "@vitest/browser": "^4.1.10",
+    "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.2",
     "@vitest/coverage-v8": "^4.1.2",
     "adm-zip": "^0.6.0",
