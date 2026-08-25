@@ -1,4 +1,4 @@
-FROM node:26.6-slim AS builder
+FROM node:26.7-slim AS builder
 ARG VERSION="latest"
 ENV VERSION=${VERSION}
 
@@ -18,7 +18,7 @@ RUN npm ci && node --run build
 RUN rm -rf node_modules && npm ci --omit=dev && npm cache clean --force
 
 
-FROM node:26.6-slim
+FROM node:26.7-slim
 ARG UID=101
 ARG VERSION="latest"
 ENV VERSION=${VERSION}
