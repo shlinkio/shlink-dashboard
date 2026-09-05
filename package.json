@@ -39,8 +39,8 @@
     "@mikro-orm/mysql": "^7.0.4",
     "@mikro-orm/postgresql": "^7.1.13",
     "@mikro-orm/sqlite": "^7.1.13",
-    "@react-router/express": "^8.3.0",
-    "@react-router/node": "^8.3.0",
+    "@react-router/express": "^8.3.1",
+    "@react-router/node": "^8.3.1",
     "@shlinkio/shlink-frontend-kit": "^1.5.0",
     "@shlinkio/shlink-js-sdk": "^3.2.1",
     "@shlinkio/shlink-web-component": "^0.19.2",
@@ -60,7 +60,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@react-router/dev": "^8.3.0",
+    "@react-router/dev": "^8.3.1",
     "@shlinkio/eslint-config-js-coding-standard": "~4.1.0",
     "@tailwindcss/vite": "^4.3.2",
     "@testing-library/jest-dom": "^7.0.1",
