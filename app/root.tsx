@@ -46,7 +46,7 @@ export default function App({ loaderData }: RouteComponentProps<Route.ComponentP
 
   useEffect(() => {
     // This check does not make sense in the server, so doing in useEffect to make sure it is run in the browser
-    // oxlint-disable-next-line react/react-compiler
+    // oxlint-disable-next-line react/set-state-in-effect
     setSystemPreferredTheme(getSystemPreferredTheme());
   }, []);
 

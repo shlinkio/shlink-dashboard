@@ -10,7 +10,7 @@ const useBrandColor = () => {
   const [color, setColor] = useState<string>();
 
   useEffect(() => {
-    // oxlint-disable-next-line react/react-compiler
+    // oxlint-disable-next-line react/set-state-in-effect
     setColor(brandColor());
   }, []);
 
