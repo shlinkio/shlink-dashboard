@@ -24,7 +24,6 @@ describe('<ServersList />', () => {
     [[fromPartial<Server>({ name: 'Foo', publicId: '1' })]],
   ])('renders expected amount of links', (servers) => {
     setUp(servers);
-
     expect(screen.queryAllByRole('link')).toHaveLength(servers.length);
   });
 });

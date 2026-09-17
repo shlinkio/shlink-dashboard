@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import { SessionProvider } from '../../../app/auth/session-context';
@@ -60,17 +60,17 @@ describe('list-servers', () => {
 
         if (role === 'admin') {
           expect(screen.getAllByRole('columnheader')).toHaveLength(3);
-          expect(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
+          await expect.element(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
         } else {
           expect(screen.getAllByRole('columnheader')).toHaveLength(2);
-          expect(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
+          await expect.element(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
         }
       },
     );
 
     it('displays fallback message when there are no servers', async () => {
       await setUp();
-      expect(screen.getByText('No servers found')).toBeInTheDocument();
+      await expect.element(screen.getByText('No servers found')).toBeInTheDocument();
     });
 
     it('shows list of servers', async () => {
@@ -91,13 +91,17 @@ describe('list-servers', () => {
 
       await Promise.all(
         servers.map(async (server) => {
-          expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
-          expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
-          expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
+          await expect
+            .element(screen.getByRole('link', { name: server.name }))
+            .toHaveAttribute('href', `/server/${server.publicId}`);
+          await expect.element(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
+          await expect
+            .element(screen.getByTestId(`users-count-${server.publicId}`))
+            .toHaveTextContent(`${server.usersCount}`);
 
           await openRowMenu(server.name);
-          expect(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
-          expect(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
+          await expect.element(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
+          await expect.element(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
         }),
       );
     });
@@ -106,12 +110,12 @@ describe('list-servers', () => {
       const { user } = await setUp();
       await user.click(screen.getByRole('link', { name: /Add a server/ }));
 
-      expect(screen.getByText('Server creation'));
+      await expect.element(screen.getByText('Server creation')).toBeInTheDocument();
     });
 
     it('initializes current search term', async () => {
       await setUp({ currentSearchTerm: 'something' });
-      expect(screen.getByRole('searchbox')).toHaveValue('something');
+      await expect.element(screen.getByRole('searchbox')).toHaveValue('something');
     });
 
     it('allows servers list to be filtered by search', async () => {
@@ -119,9 +123,9 @@ describe('list-servers', () => {
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // Search is deferred. It should eventually navigate to the URL with the search term
-      await waitFor(() =>
-        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
-      );
+      await expect
+        .poll(() => navigate)
+        .toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true });
     });
   });
 });

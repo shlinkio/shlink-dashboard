@@ -27,7 +27,6 @@ export default defineConfig({
     globals: true,
     clearMocks: true,
     dir: 'test',
-    setupFiles: './test/setup.ts',
 
     projects: [
       // Run component and client-specific tests in JSDOM environment

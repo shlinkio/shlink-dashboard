@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
 import CreateServer from '../../../app/routes/servers/create-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -28,9 +28,9 @@ describe('create-server', () => {
     it('renders form', async () => {
       await setUp();
 
-      expect(screen.getByLabelText(/^Name/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/^URL/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/^API key/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Name/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^URL/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^API key/)).toBeInTheDocument();
     });
 
     // TODO Investigate why this test does not pass, as there's a similar one in create-user test
@@ -42,7 +42,7 @@ describe('create-server', () => {
       await user.type(screen.getByLabelText(/^Name/), 'api-key');
       const submitPromise = user.click(screen.getByRole('button', { name: 'Create server' }));
 
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled());
+      await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
       await submitPromise;
     });
   });

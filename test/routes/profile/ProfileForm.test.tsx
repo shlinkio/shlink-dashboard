@@ -56,12 +56,12 @@ describe('<ProfileForm />', () => {
     await setUp({ state });
 
     if (expectedDisabled) {
-      expect(screen.getByRole('button', { name: buttonText, hidden: true })).toBeDisabled();
+      await expect.element(screen.getByRole('button', { name: buttonText, hidden: true })).toBeDisabled();
     } else {
-      expect(screen.getByRole('button', { name: buttonText })).not.toBeDisabled();
+      await expect.element(screen.getByRole('button', { name: buttonText })).not.toBeDisabled();
     }
 
-    expect(screen.queryByRole('img', { hidden: true })).not.toBeInTheDocument();
+    await expect.element(screen.queryByRole('img', { hidden: true })).not.toBeInTheDocument();
   });
 
   it('resets form when transitioning to idle state and everything is valid', async () => {
@@ -74,6 +74,6 @@ describe('<ProfileForm />', () => {
     });
 
     expect(resetForm).toHaveBeenCalled();
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    await expect.element(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
   });
 });

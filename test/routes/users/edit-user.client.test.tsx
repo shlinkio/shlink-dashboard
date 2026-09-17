@@ -38,11 +38,11 @@ describe('edit-user', () => {
       await setUp(user);
 
       const usernameInput = screen.getByLabelText(/^Username/);
-      expect(usernameInput).toHaveValue(user.username);
-      expect(usernameInput).toHaveAttribute('readonly');
+      await expect.element(usernameInput).toHaveValue(user.username);
+      await expect.element(usernameInput).toHaveAttribute('readonly');
 
-      expect(screen.getByLabelText('Display name')).toHaveValue(user.displayName);
-      expect(screen.getByLabelText(/^Role/)).toHaveValue(user.role);
+      await expect.element(screen.getByLabelText('Display name')).toHaveValue(user.displayName);
+      await expect.element(screen.getByLabelText(/^Role/)).toHaveValue(user.role);
     });
   });
 });

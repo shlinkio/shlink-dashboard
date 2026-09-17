@@ -20,8 +20,8 @@ describe('settings', () => {
     it('renders settings component', async () => {
       setUp();
 
-      await waitFor(() => expect(screen.getByRole('heading', { name: 'User interface' })).toBeInTheDocument());
-      expect(screen.getByRole('heading', { name: 'Real-time updates' })).toBeInTheDocument();
+      await waitFor(() => expect.element(screen.getByRole('heading', { name: 'User interface' })).toBeInTheDocument());
+      await expect.element(screen.getByRole('heading', { name: 'Real-time updates' })).toBeInTheDocument();
     });
   });
 });

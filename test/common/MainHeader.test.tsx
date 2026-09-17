@@ -27,13 +27,13 @@ describe('<MainHeader />', () => {
     [fromPartial<SessionData>({ displayName: 'Jane Doe' })],
     [fromPartial<SessionData>({ displayName: '', username: 'john_doe' })],
     [fromPartial<SessionData>({ username: 'john_doe' })],
-  ])('shows user menu toggle only if session is set', (session) => {
+  ])('shows user menu toggle only if session is set', async (session) => {
     setUp(session);
 
     if (session) {
-      expect(screen.getByTestId('user-menu')).toHaveTextContent(session.displayName || session.username);
+      await expect.element(screen.getByTestId('user-menu')).toHaveTextContent(session.displayName || session.username);
     } else {
-      expect(screen.queryByTestId('user-menu')).not.toBeInTheDocument();
+      await expect.element(screen.queryByTestId('user-menu')).not.toBeInTheDocument();
     }
   });
 
@@ -62,15 +62,15 @@ describe('<MainHeader />', () => {
       await user.click(screen.getByRole('button', { name: 'Foo' }));
 
       if (shouldShowUsersMenu) {
-        expect(screen.getByText('Manage users')).toBeInTheDocument();
+        await expect.element(screen.getByText('Manage users')).toBeInTheDocument();
       } else {
-        expect(screen.queryByText('Manage users')).not.toBeInTheDocument();
+        await expect.element(screen.queryByText('Manage users')).not.toBeInTheDocument();
       }
 
       if (shouldShowManageServers) {
-        expect(screen.getByText('Manage servers')).toBeInTheDocument();
+        await expect.element(screen.getByText('Manage servers')).toBeInTheDocument();
       } else {
-        expect(screen.queryByText('Manage servers')).not.toBeInTheDocument();
+        await expect.element(screen.queryByText('Manage servers')).not.toBeInTheDocument();
       }
     },
   );

@@ -19,15 +19,15 @@ describe('login', () => {
     it('renders expected form controls', async () => {
       setUp();
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
-      expect(screen.getByLabelText('Password:')).toBeInTheDocument();
-      expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Password:')).toBeInTheDocument();
+      await expect.element(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
 
     it('shows loading state while logging in', async () => {
       const { user } = setUp(true);
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
       // Submit form with data
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
@@ -35,21 +35,21 @@ describe('login', () => {
       // Do not wait for submit to finish, as the loading state will be reset afterward
       const loginPromise = user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument());
+      await waitFor(() => expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument());
       await loginPromise;
     });
 
     it('renders error when present', async () => {
       const { user } = setUp(true);
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
       // Submit form with data
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
       await user.type(screen.getByLabelText('Password:'), 'incorrect');
       await user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await waitFor(() => expect(screen.getByText('Username or password are incorrect')).toBeInTheDocument());
+      await expect.element(screen.getByText('Username or password are incorrect')).toBeInTheDocument();
     });
   });
 });

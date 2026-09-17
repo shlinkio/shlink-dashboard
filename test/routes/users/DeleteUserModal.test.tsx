@@ -26,13 +26,13 @@ describe('<DeleteUserModal />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
-  it.each([{ open: true }, { open: false }])('opens modal if open is true', ({ open }) => {
+  it.each([{ open: true }, { open: false }])('opens modal if open is true', async ({ open }) => {
     setUp(open);
 
     if (open) {
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toBeInTheDocument();
+      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).toBeInTheDocument();
     } else {
-      expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+      await expect.element(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
     }
   });
 

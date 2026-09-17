@@ -26,8 +26,8 @@ describe('profile', () => {
     it('renders both forms', async () => {
       setUp();
 
-      expect(screen.getByText('Edit profile')).toBeInTheDocument();
-      expect(screen.getByText('Change password')).toBeInTheDocument();
+      await expect.element(screen.getByText('Edit profile')).toBeInTheDocument();
+      await expect.element(screen.getByText('Change password')).toBeInTheDocument();
     });
   });
 });

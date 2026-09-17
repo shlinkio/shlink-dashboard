@@ -13,15 +13,15 @@ describe('<ChangePasswordForm />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
-  it('renders expected form fields', () => {
+  it('renders expected form fields', async () => {
     setUp();
 
-    expect(screen.getByLabelText(/^Current password/)).toBeRequired();
-    expect(screen.getByLabelText(/^New password/)).toBeRequired();
-    expect(screen.getByLabelText(/^Repeat password/)).toBeRequired();
+    await expect.element(screen.getByLabelText(/^Current password/)).toBeRequired();
+    await expect.element(screen.getByLabelText(/^New password/)).toBeRequired();
+    await expect.element(screen.getByLabelText(/^Repeat password/)).toBeRequired();
   });
 
-  it('shows error messages when provided', () => {
+  it('shows error messages when provided', async () => {
     const invalidElements = {
       currentPassword: 'Current password error',
       newPassword: 'New password error',
@@ -29,8 +29,8 @@ describe('<ChangePasswordForm />', () => {
     };
     setUp(invalidElements);
 
-    expect(screen.getByText(invalidElements.currentPassword)).toBeInTheDocument();
-    expect(screen.getByText(invalidElements.newPassword)).toBeInTheDocument();
-    expect(screen.getByText(invalidElements.repeatPassword)).toBeInTheDocument();
+    await expect.element(screen.getByText(invalidElements.currentPassword)).toBeInTheDocument();
+    await expect.element(screen.getByText(invalidElements.newPassword)).toBeInTheDocument();
+    await expect.element(screen.getByText(invalidElements.repeatPassword)).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
 import ChangePassword from '../../app/routes/change-password';
 import { renderWithEvents } from '../__helpers__/set-up-test';
@@ -31,9 +31,9 @@ describe('change-password', () => {
       await user.click(screen.getByRole('button', { name: 'Save' }));
 
       if (error) {
-        await waitFor(() => expect(screen.getByTestId('error-container')).toHaveTextContent(error));
+        await expect.element(screen.getByTestId('error-container')).toHaveTextContent(error);
       } else {
-        expect(screen.queryByTestId('error-container')).not.toBeInTheDocument();
+        await expect.element(screen.queryByTestId('error-container')).not.toBeInTheDocument();
       }
     });
   });

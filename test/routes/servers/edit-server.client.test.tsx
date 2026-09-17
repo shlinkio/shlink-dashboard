@@ -32,9 +32,9 @@ describe('edit-server', () => {
     it('renders form with initial server data', async () => {
       await setUp();
 
-      expect(screen.getByLabelText(/^Name/)).toHaveValue('the name');
-      expect(screen.getByLabelText(/^URL/)).toHaveValue('the base url');
-      expect(screen.getByLabelText(/^API key/)).toHaveValue('the api key');
+      await expect.element(screen.getByLabelText(/^Name/)).toHaveValue('the name');
+      await expect.element(screen.getByLabelText(/^URL/)).toHaveValue('the base url');
+      await expect.element(screen.getByLabelText(/^API key/)).toHaveValue('the api key');
     });
   });
 });

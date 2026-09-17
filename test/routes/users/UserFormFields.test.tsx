@@ -20,27 +20,27 @@ describe('<UserFormFields />', () => {
     (user) => checkAccessibility(setUp({ user })),
   );
 
-  it('disables elements when disabled', () => {
+  it('disables elements when disabled', async () => {
     setUp({ disabled: true });
 
-    expect(screen.getByLabelText(/^Username/)).toBeDisabled();
-    expect(screen.getByLabelText(/^Display name/)).toBeDisabled();
-    expect(screen.getByLabelText(/^Role/)).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^Username/)).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^Display name/)).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^Role/)).toBeDisabled();
+    await expect.element(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
   });
 
   it.each([[undefined], [fromPartial<User>({ username: 'foo', role: 'advanced-user' })]])(
     'sets username as readonly when user is provided',
-    (user) => {
+    async (user) => {
       setUp({ user });
       const usernameInput = screen.getByLabelText(/^Username/);
 
       if (user) {
-        expect(usernameInput).toHaveAttribute('readonly');
-        expect(usernameInput).not.toHaveAttribute('name');
+        await expect.element(usernameInput).toHaveAttribute('readonly');
+        await expect.element(usernameInput).not.toHaveAttribute('name');
       } else {
-        expect(usernameInput).not.toHaveAttribute('readonly');
-        expect(usernameInput).toHaveAttribute('name', 'username');
+        await expect.element(usernameInput).not.toHaveAttribute('readonly');
+        await expect.element(usernameInput).toHaveAttribute('name', 'username');
       }
     },
   );

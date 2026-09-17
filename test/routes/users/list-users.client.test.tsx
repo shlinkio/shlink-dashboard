@@ -94,8 +94,8 @@ describe('list-users', () => {
     it('renders empty users list if no users are returned', async () => {
       await setUp();
 
-      expect(screen.getByText('No users found')).toBeInTheDocument();
-      expect(screen.queryByTestId('paginator')).not.toBeInTheDocument();
+      await expect.element(screen.getByText('No users found')).toBeInTheDocument();
+      await expect.element(screen.queryByTestId('paginator')).not.toBeInTheDocument();
     });
 
     it('renders list with returned users', async () => {
@@ -104,9 +104,9 @@ describe('list-users', () => {
         totalPages: 5,
       });
 
-      expect(screen.queryByText('No users found')).not.toBeInTheDocument();
-      expect(screen.getByText('John Doe')).toBeInTheDocument();
-      expect(screen.getByTestId('paginator')).toBeInTheDocument();
+      await expect.element(screen.queryByText('No users found')).not.toBeInTheDocument();
+      await expect.element(screen.getByText('John Doe')).toBeInTheDocument();
+      await expect.element(screen.getByTestId('paginator')).toBeInTheDocument();
     });
 
     it.each([
@@ -131,7 +131,11 @@ describe('list-users', () => {
       await setUp({ orderBy });
       const column = screen.getByText(expectedOrderedColumn);
 
-      expect(column.parentElement?.querySelector('svg')).toBeInTheDocument();
+      if (!column.parentElement) {
+        throw new Error('Parent element not set');
+      }
+
+      await expect.element(column.parentElement.querySelector('svg')).toBeInTheDocument();
     });
 
     it.each([
@@ -171,14 +175,18 @@ describe('list-users', () => {
     ])('includes order in header URLs', async ({ orderBy, expectedUrls }) => {
       await setUp({ totalPages: 10, orderBy });
 
-      Object.entries(expectedUrls).forEach(([linkText, expectedUrl]) => {
-        expect(screen.getByRole('link', { name: linkText })).toHaveAttribute('href', `/manage-users/1?${expectedUrl}`);
-      });
+      await Promise.all(
+        Object.entries(expectedUrls).map(([linkText, expectedUrl]) =>
+          expect
+            .element(screen.getByRole('link', { name: linkText }))
+            .toHaveAttribute('href', `/manage-users/1?${expectedUrl}`),
+        ),
+      );
     });
 
     it('sets current search term in search input', async () => {
       await setUp({ searchTerm: 'Hello' });
-      expect(screen.getByRole('searchbox')).toHaveValue('Hello');
+      await expect.element(screen.getByRole('searchbox')).toHaveValue('Hello');
     });
 
     it('navigates to search term when typing in search box', async () => {
@@ -196,7 +204,7 @@ describe('list-users', () => {
       const { user } = await setUp();
 
       await user.click(screen.getByRole('link', { name: /New user$/ }));
-      await waitFor(() => expect(screen.getByText('Create user')).toBeInTheDocument());
+      await expect.element(screen.getByText('Create user')).toBeInTheDocument();
     });
 
     it('shows interaction buttons only for users other than current one', async () => {
@@ -209,24 +217,24 @@ describe('list-users', () => {
       const { user } = await setUp({ currentUsername: 'current', users });
 
       await openDropdown(user, 'foo');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      await expect.element(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
 
       await openDropdown(user, 'bar');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      await expect.element(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
 
       await openDropdown(user, 'baz');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Servers' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Servers' })).toBeInTheDocument();
 
-      expect(screen.queryByLabelText('Options for current')).not.toBeInTheDocument();
+      await expect.element(screen.queryByLabelText('Options for current')).not.toBeInTheDocument();
     });
 
     it('shows information about the user to be deleted', async () => {
@@ -237,16 +245,16 @@ describe('list-users', () => {
         ],
       });
 
-      expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+      await expect.element(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
 
       await openDropdown(user, 'foo');
       await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
+      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
       await user.click(screen.getByText('Cancel'));
 
       await openDropdown(user, 'bar');
       await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
+      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
     });
   });
 });

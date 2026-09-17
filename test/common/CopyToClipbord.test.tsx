@@ -11,8 +11,8 @@ describe('<CopyToClipboard />', () => {
   it.each([
     { children: undefined, expectedContent: 'The text' },
     { children: 'Something else', expectedContent: 'Something else' },
-  ])('shows children if provided, otherwise falls back ot text', ({ children, expectedContent }) => {
+  ])('shows children if provided, otherwise falls back ot text', async ({ children, expectedContent }) => {
     const { container } = setUp(children);
-    expect(container.firstChild).toHaveTextContent(expectedContent);
+    await expect.element(container.firstChild as HTMLElement).toHaveTextContent(expectedContent);
   });
 });

@@ -15,30 +15,30 @@ describe('<ServerFormFields />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
-  it('can disable all inputs', () => {
+  it('can disable all inputs', async () => {
     setUp({ disabled: true });
 
-    expect(screen.getByLabelText(/^Name/)).toBeDisabled();
-    expect(screen.getByLabelText(/^URL/)).toBeDisabled();
-    expect(screen.getByLabelText(/^API key/)).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^Name/)).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^URL/)).toBeDisabled();
+    await expect.element(screen.getByLabelText(/^API key/)).toBeDisabled();
+    await expect.element(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
 
-  it.each(['Hello world', 'Do something', 'Cool title'])('can customize title', (title) => {
+  it.each(['Hello world', 'Do something', 'Cool title'])('can customize title', async (title) => {
     setUp({ title });
-    expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
+    await expect.element(screen.getByRole('heading', { name: title })).toBeInTheDocument();
   });
 
-  it.each(['Save', 'Foo bar', 'Create'])('can submit text', (submitText) => {
+  it.each(['Save', 'Foo bar', 'Create'])('can submit text', async (submitText) => {
     setUp({ submitText });
-    expect(screen.getByRole('button', { name: submitText })).toBeInTheDocument();
+    await expect.element(screen.getByRole('button', { name: submitText })).toBeInTheDocument();
   });
 
-  it('initializes fields with provided server', () => {
+  it('initializes fields with provided server', async () => {
     setUp({ server: fromPartial({ name: 'initial name', baseUrl: 'initial base url', apiKey: 'initial api key' }) });
 
-    expect(screen.getByLabelText(/^Name/)).toHaveValue('initial name');
-    expect(screen.getByLabelText(/^URL/)).toHaveValue('initial base url');
-    expect(screen.getByLabelText(/^API key/)).toHaveValue('initial api key');
+    await expect.element(screen.getByLabelText(/^Name/)).toHaveValue('initial name');
+    await expect.element(screen.getByLabelText(/^URL/)).toHaveValue('initial base url');
+    await expect.element(screen.getByLabelText(/^API key/)).toHaveValue('initial api key');
   });
 });

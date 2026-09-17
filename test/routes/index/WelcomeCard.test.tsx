@@ -15,17 +15,21 @@ describe('<WelcomeCard />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp([])));
 
-  it('renders no-servers welcome page when there are no servers', () => {
+  it('renders no-servers welcome page when there are no servers', async () => {
     setUp([]);
 
-    expect(screen.getByText('This application will help you manage your Shlink servers.')).toBeInTheDocument();
-    expect(screen.queryByTestId('servers-list')).not.toBeInTheDocument();
+    await expect
+      .element(screen.getByText('This application will help you manage your Shlink servers.'))
+      .toBeInTheDocument();
+    await expect.element(screen.queryByTestId('servers-list')).not.toBeInTheDocument();
   });
 
-  it('renders servers list when there is more than one server', () => {
+  it('renders servers list when there is more than one server', async () => {
     setUp([fromPartial({ name: '1', publicId: '1' })]);
 
-    expect(screen.getByTestId('servers-list')).toBeInTheDocument();
-    expect(screen.queryByText('This application will help you manage your Shlink servers.')).not.toBeInTheDocument();
+    await expect.element(screen.getByTestId('servers-list')).toBeInTheDocument();
+    await expect
+      .element(screen.queryByText('This application will help you manage your Shlink servers.'))
+      .not.toBeInTheDocument();
   });
 });

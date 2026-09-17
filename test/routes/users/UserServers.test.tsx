@@ -34,16 +34,16 @@ describe('<UserServers />', () => {
     expect(onSearch).toHaveBeenCalledWith('something');
   });
 
-  it('shows fallback message if there are no servers for the user', () => {
+  it('shows fallback message if there are no servers for the user', async () => {
     setUp();
-    expect(screen.getByText('This user has no servers')).toBeInTheDocument();
+    await expect.element(screen.getByText('This user has no servers')).toBeInTheDocument();
   });
 
-  it('shows a row for every server the user has', () => {
+  it('shows a row for every server the user has', async () => {
     const initialServers = [server({ name: 'Foo' }), server({ name: 'Bar' }), server({ name: 'Baz' })];
     setUp({ initialServers });
 
-    expect(screen.queryByText('This user has no servers')).not.toBeInTheDocument();
+    await expect.element(screen.queryByText('This user has no servers')).not.toBeInTheDocument();
     expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 1);
   });
 

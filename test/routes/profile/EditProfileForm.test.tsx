@@ -18,8 +18,8 @@ describe('<EditProfileForm />', () => {
     { sessionData: null, expectedValue: '' },
     { sessionData: {}, expectedValue: '' },
     { sessionData: { displayName: 'John Doe' }, expectedValue: 'John Doe' },
-  ])('initializes field with current user display name', ({ sessionData, expectedValue }) => {
+  ])('initializes field with current user display name', async ({ sessionData, expectedValue }) => {
     setUp(sessionData ? fromPartial(sessionData) : null);
-    expect(screen.getByLabelText('Display name')).toHaveValue(expectedValue);
+    await expect.element(screen.getByLabelText('Display name')).toHaveValue(expectedValue);
   });
 });

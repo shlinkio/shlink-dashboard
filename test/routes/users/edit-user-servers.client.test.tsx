@@ -42,7 +42,7 @@ describe('edit-user-servers', () => {
       const { user } = await setUp();
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
-      expect(screen.getByText('Prev route')).toBeInTheDocument();
+      await expect.element(screen.getByText('Prev route')).toBeInTheDocument();
     });
 
     it('saves servers when clicking Save button', async () => {

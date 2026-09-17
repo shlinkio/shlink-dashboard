@@ -32,12 +32,12 @@ describe('reset-user-password', () => {
     it('shows warning when page is loaded', async () => {
       await setUp();
 
-      expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Reset password' })).toBeInTheDocument();
+      await expect.element(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+      await expect.element(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('button', { name: 'Reset password' })).toBeInTheDocument();
 
-      expect(screen.queryByRole('link', { name: 'Manage users' })).not.toBeInTheDocument();
-      expect(screen.queryByText(/Their new temporary password is/)).not.toBeInTheDocument();
+      await expect.element(screen.queryByRole('link', { name: 'Manage users' })).not.toBeInTheDocument();
+      await expect.element(screen.queryByText(/Their new temporary password is/)).not.toBeInTheDocument();
     });
 
     it('shows new password after resetting', async () => {
@@ -52,11 +52,11 @@ describe('reset-user-password', () => {
       // Eventually loads new section
       await clickPromise;
       await waitFor(() => expect(screen.getByRole('link', { name: 'Manage users' })).toBeInTheDocument());
-      expect(screen.getByText(/Their new temporary password is/)).toBeInTheDocument();
+      await expect.element(screen.getByText(/Their new temporary password is/)).toBeInTheDocument();
 
-      expect(screen.queryByText(/This action cannot be undone/)).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: 'Reset password' })).not.toBeInTheDocument();
+      await expect.element(screen.queryByText(/This action cannot be undone/)).not.toBeInTheDocument();
+      await expect.element(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+      await expect.element(screen.queryByRole('button', { name: 'Reset password' })).not.toBeInTheDocument();
     });
   });
 });

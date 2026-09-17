@@ -40,16 +40,16 @@ describe('create-user', () => {
     it('renders form', async () => {
       await setUp();
 
-      expect(screen.getByLabelText(/^Username/)).toBeInTheDocument();
-      expect(screen.getByLabelText('Display name')).toBeInTheDocument();
-      expect(screen.getByLabelText(/^Role/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Username/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Display name')).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Role/)).toBeInTheDocument();
     });
 
     it('renders loading state while saving', async () => {
       const { user } = await setUp();
       const submitPromise = submitForm(user);
 
-      await waitFor(() => expect(screen.getByText('Saving...')).toBeDisabled());
+      await waitFor(() => expect.element(screen.getByText('Saving...')).toBeDisabled());
       await submitPromise;
     });
 
@@ -60,7 +60,7 @@ describe('create-user', () => {
       });
       await submitForm(user);
 
-      await waitFor(() => expect(screen.getByText('Error in user field')).toBeInTheDocument());
+      await expect.element(screen.getByText('Error in user field')).toBeInTheDocument();
     });
 
     it('renders created user data on success', async () => {
@@ -71,17 +71,16 @@ describe('create-user', () => {
       });
       await submitForm(user);
 
-      await waitFor(() => expect(screen.getByTestId('success-message')).toBeInTheDocument());
-
-      expect(screen.getByText(/the_username/)).toBeInTheDocument();
-      expect(screen.getByText(/plain-password/)).toBeInTheDocument();
+      await expect.element(screen.getByTestId('success-message')).toBeInTheDocument();
+      await expect.element(screen.getByText(/the_username/)).toBeInTheDocument();
+      await expect.element(screen.getByText(/plain-password/)).toBeInTheDocument();
     });
 
     it('navigates back to list when cancel is clicked', async () => {
       const { user } = await setUp();
 
       await user.click(screen.getByRole('link', { name: 'Cancel' }));
-      await waitFor(() => expect(screen.getByText('Users list')).toBeInTheDocument());
+      await expect.element(screen.getByText('Users list')).toBeInTheDocument();
     });
   });
 });

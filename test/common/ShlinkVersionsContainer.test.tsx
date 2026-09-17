@@ -16,18 +16,18 @@ describe('<ShlinkVersionsContainer />', () => {
     { dashboardVersion: undefined, expectedText: 'Dashboard: latest' },
     { dashboardVersion: 'not-semver', expectedText: 'Dashboard: latest' },
     { dashboardVersion: '4.5.6', expectedText: 'Dashboard: v4.5.6' },
-  ])('renders expected dashboard version', ({ dashboardVersion, expectedText }) => {
+  ])('renders expected dashboard version', async ({ dashboardVersion, expectedText }) => {
     setUp({ dashboardVersion });
 
-    expect(screen.getByText(/^Dashboard/)).toHaveTextContent(expectedText);
-    expect(screen.queryByText(/Server/)).not.toBeInTheDocument();
+    await expect.element(screen.getByText(/^Dashboard/)).toHaveTextContent(expectedText);
+    await expect.element(screen.queryByText(/Server/)).not.toBeInTheDocument();
   });
 
   it.each([
     { serverVersion: 'not-semver', expectedText: 'Server: latest' },
     { serverVersion: '4.5.6', expectedText: 'Server: v4.5.6' },
-  ])('renders expected server version', ({ serverVersion, expectedText }) => {
+  ])('renders expected server version', async ({ serverVersion, expectedText }) => {
     setUp({ serverVersion });
-    expect(screen.getByText(/Server/)).toHaveTextContent(expectedText);
+    await expect.element(screen.getByText(/Server/)).toHaveTextContent(expectedText);
   });
 });

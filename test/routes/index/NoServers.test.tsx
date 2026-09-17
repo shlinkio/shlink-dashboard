@@ -24,13 +24,13 @@ describe('<NoServers />', () => {
     fromPartial<SessionData>({ role: 'managed-user' }),
     fromPartial<SessionData>({ role: 'advanced-user' }),
     fromPartial<SessionData>({ role: 'admin' }),
-  ])('shows button to create servers only for non-managed users', (session) => {
+  ])('shows button to create servers only for non-managed users', async (session) => {
     setUp(session);
 
     if (session.role !== 'managed-user') {
-      expect(screen.getByRole('link', { name: 'Add a server' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('link', { name: 'Add a server' })).toBeInTheDocument();
     } else {
-      expect(screen.queryByRole('link', { name: 'Add a server' })).not.toBeInTheDocument();
+      await expect.element(screen.queryByRole('link', { name: 'Add a server' })).not.toBeInTheDocument();
     }
   });
 });
