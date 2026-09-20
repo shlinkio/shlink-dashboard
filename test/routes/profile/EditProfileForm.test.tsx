@@ -1,10 +1,9 @@
-import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { FC, PropsWithChildren, RefAttributes } from 'react';
-import { page as screen } from 'vitest/browser';
 import type { SessionData } from '../../../app/auth/session-context';
 import { EditProfileForm } from '../../../app/routes/profile/EditProfileForm';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import { render } from '../../__helpers__/set-up-test';
 
 describe('<EditProfileForm />', () => {
   const Form: FC<PropsWithChildren<RefAttributes<HTMLFormElement>>> = ({ children, ref }) => (
@@ -20,7 +19,7 @@ describe('<EditProfileForm />', () => {
     { sessionData: {}, expectedValue: '' },
     { sessionData: { displayName: 'John Doe' }, expectedValue: 'John Doe' },
   ])('initializes field with current user display name', async ({ sessionData, expectedValue }) => {
-    setUp(sessionData ? fromPartial(sessionData) : null);
+    const screen = await setUp(sessionData ? fromPartial(sessionData) : null);
     await expect.element(screen.getByLabelText('Display name')).toHaveValue(expectedValue);
   });
 });

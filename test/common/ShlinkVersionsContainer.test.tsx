@@ -1,8 +1,7 @@
-import { render } from '@testing-library/react';
-import { page as screen } from 'vitest/browser';
 import type { ShlinkVersionsContainerProps } from '../../app/common/ShlinkVersionsContainer';
 import { ShlinkVersionsContainer } from '../../app/common/ShlinkVersionsContainer';
 import { checkAccessibility } from '../__helpers__/accessibility';
+import { render } from '../__helpers__/set-up-test';
 
 describe('<ShlinkVersionsContainer />', () => {
   const setUp = (props?: ShlinkVersionsContainerProps) => render(<ShlinkVersionsContainer {...props} />);
@@ -18,7 +17,7 @@ describe('<ShlinkVersionsContainer />', () => {
     { dashboardVersion: 'not-semver', expectedText: 'Dashboard: latest' },
     { dashboardVersion: '4.5.6', expectedText: 'Dashboard: v4.5.6' },
   ])('renders expected dashboard version', async ({ dashboardVersion, expectedText }) => {
-    setUp({ dashboardVersion });
+    const screen = await setUp({ dashboardVersion });
 
     await expect.element(screen.getByText(/^Dashboard/)).toHaveTextContent(expectedText);
     await expect.element(screen.getByText(/Server/)).not.toBeInTheDocument();
@@ -28,7 +27,7 @@ describe('<ShlinkVersionsContainer />', () => {
     { serverVersion: 'not-semver', expectedText: 'Server: latest' },
     { serverVersion: '4.5.6', expectedText: 'Server: v4.5.6' },
   ])('renders expected server version', async ({ serverVersion, expectedText }) => {
-    setUp({ serverVersion });
+    const screen = await setUp({ serverVersion });
     await expect.element(screen.getByText(/Server/)).toHaveTextContent(expectedText);
   });
 });

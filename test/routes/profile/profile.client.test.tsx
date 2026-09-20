@@ -1,9 +1,8 @@
-import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import { SessionProvider } from '../../../app/auth/session-context';
 import Profile from '../../../app/routes/profile/profile';
+import { render } from '../../__helpers__/set-up-test';
 
 describe('profile', () => {
   describe('<Profile />', () => {
@@ -25,7 +24,7 @@ describe('profile', () => {
     };
 
     it('renders both forms', async () => {
-      setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByText('Edit profile')).toBeInTheDocument();
       await expect.element(screen.getByText('Change password')).toBeInTheDocument();

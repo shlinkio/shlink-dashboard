@@ -1,5 +1,4 @@
 import type { Order } from '@shlinkio/shlink-frontend-kit';
-import { waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import { page as screen } from 'vitest/browser';
@@ -196,9 +195,9 @@ describe('list-users', () => {
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // It should eventually navigate to the URL with the search term
-      await waitFor(() =>
-        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
-      );
+      await expect
+        .poll(() => navigate)
+        .toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true });
     });
 
     it('redirects to create user form', async () => {

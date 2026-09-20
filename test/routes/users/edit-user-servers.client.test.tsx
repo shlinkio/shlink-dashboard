@@ -1,4 +1,3 @@
-import { waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
 import { page as screen } from 'vitest/browser';
 import EditUserServers from '../../../app/routes/users/edit-user-servers';
@@ -52,7 +51,7 @@ describe('edit-user-servers', () => {
       const { user } = await setUp();
 
       const savePromise = user.click(screen.getByRole('button', { name: 'Save servers' }));
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled());
+      await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
 
       await savePromise;
     });

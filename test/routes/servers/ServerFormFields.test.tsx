@@ -1,10 +1,9 @@
-import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import type { ServerFormFieldsProps } from '../../../app/routes/servers/ServerFormFields';
 import { ServerFormFields } from '../../../app/routes/servers/ServerFormFields';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import { render } from '../../__helpers__/set-up-test';
 
 describe('<ServerFormFields />', () => {
   const setUp = (props: Partial<ServerFormFieldsProps> = {}) =>
@@ -17,7 +16,7 @@ describe('<ServerFormFields />', () => {
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
   it('can disable all inputs', async () => {
-    setUp({ disabled: true });
+    const screen = await setUp({ disabled: true });
 
     await expect.element(screen.getByLabelText(/^Name/)).toBeDisabled();
     await expect.element(screen.getByLabelText(/^URL/)).toBeDisabled();
@@ -26,17 +25,19 @@ describe('<ServerFormFields />', () => {
   });
 
   it.each(['Hello world', 'Do something', 'Cool title'])('can customize title', async (title) => {
-    setUp({ title });
+    const screen = await setUp({ title });
     await expect.element(screen.getByRole('heading', { name: title })).toBeInTheDocument();
   });
 
   it.each(['Save', 'Foo bar', 'Create'])('can submit text', async (submitText) => {
-    setUp({ submitText });
+    const screen = await setUp({ submitText });
     await expect.element(screen.getByRole('button', { name: submitText })).toBeInTheDocument();
   });
 
   it('initializes fields with provided server', async () => {
-    setUp({ server: fromPartial({ name: 'initial name', baseUrl: 'initial base url', apiKey: 'initial api key' }) });
+    const screen = await setUp({
+      server: fromPartial({ name: 'initial name', baseUrl: 'initial base url', apiKey: 'initial api key' }),
+    });
 
     await expect.element(screen.getByLabelText(/^Name/)).toHaveValue('initial name');
     await expect.element(screen.getByLabelText(/^URL/)).toHaveValue('initial base url');

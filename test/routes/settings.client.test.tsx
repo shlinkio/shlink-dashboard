@@ -1,7 +1,7 @@
-import { render, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import SettingsComp from '../../app/routes/settings';
+import { render } from '../__helpers__/set-up-test';
 
 describe('settings', () => {
   describe('<Settings />', () => {
@@ -19,7 +19,7 @@ describe('settings', () => {
     };
 
     it('renders settings component', async () => {
-      setUp();
+      const screen = await setUp();
 
       await waitFor(() => expect.element(screen.getByRole('heading', { name: 'User interface' })).toBeInTheDocument());
       await expect.element(screen.getByRole('heading', { name: 'Real-time updates' })).toBeInTheDocument();

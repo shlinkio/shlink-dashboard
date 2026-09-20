@@ -1,4 +1,3 @@
-import { waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import { page as screen } from 'vitest/browser';
@@ -47,11 +46,11 @@ describe('reset-user-password', () => {
       await user.click(screen.getByRole('button', { name: 'Reset password' }));
 
       // Transitions to loading state first - FIXME Removed due to the requirement of awaiting user interaction
-      // await waitFor(() => expect(screen.getByRole('button', { name: 'Resetting...', includeHidden: true })).toBeDisabled());
+      // await expect.element(screen.getByRole('button', { name: 'Resetting...', includeHidden: true })).toBeDisabled();
       // await expect.element(screen.getByRole('button', { name: 'Cancel', includeHidden: true })).toBeDisabled();
 
       // Eventually loads new section
-      await waitFor(() => expect(screen.getByRole('link', { name: 'Manage users' })).toBeInTheDocument());
+      await expect.element(screen.getByRole('link', { name: 'Manage users' })).toBeInTheDocument();
       await expect.element(screen.getByText(/Their new temporary password is/)).toBeInTheDocument();
 
       await expect.element(screen.getByText(/This action cannot be undone/)).not.toBeInTheDocument();
