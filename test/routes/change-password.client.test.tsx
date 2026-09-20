@@ -1,5 +1,4 @@
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import ChangePassword from '../../app/routes/change-password';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
@@ -16,14 +15,14 @@ describe('change-password', () => {
         },
       ]);
 
-      const renderResult = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText(/^You need to change your temporary password/).findElement();
+      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
+      await renderResult.getByText(/^You need to change your temporary password/).findElement();
 
       return renderResult;
     };
 
     it.each([undefined, 'There was an error'])('shows error only if action response fails', async (error) => {
-      const { user } = await setUp(error);
+      const { user, ...screen } = await setUp(error);
 
       // Send form so that the fetcher invokes the action
       await user.type(screen.getByLabelText(/^New password/), 'aA123456!');

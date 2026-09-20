@@ -1,6 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import type { Server } from '../../../app/entities/Server';
 import EditServer from '../../../app/routes/servers/edit-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -21,16 +20,16 @@ describe('edit-server', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
       await screen.getByText(/^Edit server/).findElement();
 
-      return result;
+      return screen;
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('renders form with initial server data', async () => {
-      await setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByLabelText(/^Name/)).toHaveValue('the name');
       await expect.element(screen.getByLabelText(/^URL/)).toHaveValue('the base url');

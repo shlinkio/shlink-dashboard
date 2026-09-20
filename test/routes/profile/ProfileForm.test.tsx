@@ -1,7 +1,6 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { FC, PropsWithChildren, RefAttributes } from 'react';
 import { useState } from 'react';
-import { page as screen } from 'vitest/browser';
 import type { ProfileFormProps } from '../../../app/routes/profile/ProfileForm';
 import { ProfileForm } from '../../../app/routes/profile/ProfileForm';
 import { PROFILE_ACTION } from '../../../app/users/user-profile-actions';
@@ -36,15 +35,15 @@ function TestComponent({ newStateAfterRender, state: initialState, data }: SetUp
 
 describe('<ProfileForm />', () => {
   const setUp = async ({ state, data, newStateAfterRender = state }: SetUpOptions = {}) => {
-    const renderResult = renderWithEvents(
+    const { user, ...screen } = await renderWithEvents(
       <TestComponent state={state} data={data} newStateAfterRender={newStateAfterRender} />,
     );
 
     if (state !== newStateAfterRender) {
-      await renderResult.user.click(screen.getByTestId('update-state'));
+      await user.click(screen.getByTestId('update-state'));
     }
 
-    return renderResult;
+    return { user, ...screen };
   };
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
@@ -53,7 +52,7 @@ describe('<ProfileForm />', () => {
     { state: 'submitting' as const, buttonText: 'Saving...', expectedDisabled: true },
     { state: 'idle' as const, buttonText: 'Save', expectedDisabled: false },
   ])('disables save button while saving', async ({ state, buttonText, expectedDisabled }) => {
-    await setUp({ state });
+    const screen = await setUp({ state });
 
     if (expectedDisabled) {
       await expect.element(screen.getByRole('button', { name: buttonText, includeHidden: true })).toBeDisabled();
@@ -67,7 +66,7 @@ describe('<ProfileForm />', () => {
   it('resets form when transitioning to idle state and everything is valid', async () => {
     const resetForm = vi.spyOn(HTMLFormElement.prototype, 'reset');
 
-    await setUp({
+    const screen = await setUp({
       state: 'submitting',
       newStateAfterRender: 'idle',
       data: { ok: true },

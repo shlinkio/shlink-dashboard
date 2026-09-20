@@ -1,10 +1,9 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
-import type { UserEvent } from 'vitest/browser';
 import type { action } from '../../../app/routes/users/create-user';
 import CreateUser from '../../../app/routes/users/create-user';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import type { RenderWithEventsResult } from '../../__helpers__/set-up-test';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-user', () => {
@@ -23,13 +22,13 @@ describe('create-user', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
       await screen.getByText('Add new user').findElement();
 
-      return result;
+      return screen;
     };
 
-    const submitForm = async (user: UserEvent) => {
+    const submitForm = async ({ user, ...screen }: RenderWithEventsResult) => {
       await user.type(screen.getByLabelText(/^Username/), 'the_username');
       await user.selectOptions(screen.getByLabelText(/^Role/), 'managed user');
       return user.click(screen.getByRole('button', { name: 'Create user' }));
@@ -38,7 +37,7 @@ describe('create-user', () => {
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('renders form', async () => {
-      await setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByLabelText(/^Username/)).toBeInTheDocument();
       await expect.element(screen.getByLabelText('Display name')).toBeInTheDocument();
@@ -48,30 +47,30 @@ describe('create-user', () => {
     // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
     //       tested
     it.skip('renders loading state while saving', async () => {
-      const { user } = await setUp();
-      const submitPromise = submitForm(user);
+      const screen = await setUp();
+      const submitPromise = submitForm(screen);
 
       await expect.element(screen.getByText('Saving...')).toBeDisabled();
       await submitPromise;
     });
 
     it('renders error when saving fails', async () => {
-      const { user } = await setUp({
+      const screen = await setUp({
         status: 'error',
         messages: { username: 'Error in user field' },
       });
-      await submitForm(user);
+      await submitForm(screen);
 
       await expect.element(screen.getByText('Error in user field')).toBeInTheDocument();
     });
 
     it('renders created user data on success', async () => {
-      const { user } = await setUp({
+      const screen = await setUp({
         status: 'success',
         user: fromPartial({ username: 'the_username' }),
         plainTextPassword: 'plain-password',
       });
-      await submitForm(user);
+      await submitForm(screen);
 
       await expect.element(screen.getByTestId('success-message')).toBeInTheDocument();
       await expect.element(screen.getByText(/the_username/)).toBeInTheDocument();
@@ -79,7 +78,7 @@ describe('create-user', () => {
     });
 
     it('navigates back to list when cancel is clicked', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.click(screen.getByRole('link', { name: 'Cancel' }));
       await expect.element(screen.getByText('Users list')).toBeInTheDocument();

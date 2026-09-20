@@ -1,5 +1,4 @@
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import Login from '../../app/routes/login';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
@@ -17,7 +16,7 @@ describe('login', () => {
     };
 
     it('renders expected form controls', async () => {
-      setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
       await expect.element(screen.getByLabelText('Password:')).toBeInTheDocument();
@@ -27,7 +26,7 @@ describe('login', () => {
     // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
     //       tested
     it.skip('shows loading state while logging in', async () => {
-      const { user } = setUp(true);
+      const { user, ...screen } = await setUp(true);
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
@@ -42,7 +41,7 @@ describe('login', () => {
     });
 
     it('renders error when present', async () => {
-      const { user } = setUp(true);
+      const { user, ...screen } = await setUp(true);
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 

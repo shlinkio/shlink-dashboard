@@ -1,5 +1,4 @@
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import EditUserServers from '../../../app/routes/users/edit-user-servers';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
@@ -32,14 +31,14 @@ describe('edit-user-servers', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
       await screen.getByText('Shlink servers for "foo"').findElement();
 
-      return result;
+      return screen;
     };
 
     it('navigates back when clicking Cancel button', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
       await expect.element(screen.getByText('Prev route')).toBeInTheDocument();
@@ -48,7 +47,7 @@ describe('edit-user-servers', () => {
     // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
     //       tested
     it.skip('saves servers when clicking Save button', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       const savePromise = user.click(screen.getByRole('button', { name: 'Save servers' }));
       await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
@@ -57,7 +56,7 @@ describe('edit-user-servers', () => {
     });
 
     it('can search servers by typing in combobox', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.type(screen.getByLabelText('Search servers to add'), 'ba');
       await expect.element(screen.getByRole('option', { name: /^baz/ })).toBeInTheDocument();

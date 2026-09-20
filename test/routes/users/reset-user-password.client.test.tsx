@@ -1,6 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import ResetUserPassword from '../../../app/routes/users/reset-user-password';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -21,16 +20,16 @@ describe('reset-user-password', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
       await screen.getByText('Reset "john_doe" password').findElement();
 
-      return result;
+      return screen;
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('shows warning when page is loaded', async () => {
-      await setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
       await expect.element(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
@@ -41,7 +40,7 @@ describe('reset-user-password', () => {
     });
 
     it('shows new password after resetting', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.click(screen.getByRole('button', { name: 'Reset password' }));
 

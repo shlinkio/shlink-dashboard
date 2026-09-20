@@ -1,6 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import type { UserFormFieldsProps } from '../../../app/routes/users/UserFormFields';
 import { UserFormFields } from '../../../app/routes/users/UserFormFields';
@@ -21,7 +20,7 @@ describe('<UserFormFields />', () => {
   );
 
   it('disables elements when disabled', async () => {
-    setUp({ disabled: true });
+    const screen = await setUp({ disabled: true });
 
     await expect.element(screen.getByLabelText(/^Username/)).toBeDisabled();
     await expect.element(screen.getByLabelText(/^Display name/)).toBeDisabled();
@@ -32,7 +31,7 @@ describe('<UserFormFields />', () => {
   it.each([[undefined], [fromPartial<User>({ username: 'foo', role: 'advanced-user' })]])(
     'sets username as readonly when user is provided',
     async (user) => {
-      setUp({ user });
+      const screen = await setUp({ user });
       const usernameInput = screen.getByLabelText(/^Username/);
 
       if (user) {

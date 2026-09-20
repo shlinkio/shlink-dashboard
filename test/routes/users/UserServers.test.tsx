@@ -1,5 +1,4 @@
 import { fromPartial } from '@total-typescript/shoehorn';
-import { page as screen } from 'vitest/browser';
 import type { MinimalServer, UserServersProps } from '../../../app/routes/users/UserServers';
 import { UserServers } from '../../../app/routes/users/UserServers';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -28,20 +27,20 @@ describe('<UserServers />', () => {
   );
 
   it('calls onSearch when searching in combobox', async () => {
-    const { user } = setUp();
+    const { user, ...screen } = await setUp();
 
     await user.type(screen.getByPlaceholder('Search servers to add...'), 'something');
     expect(onSearch).toHaveBeenCalledWith('something');
   });
 
   it('shows fallback message if there are no servers for the user', async () => {
-    setUp();
+    const screen = await setUp();
     await expect.element(screen.getByText('This user has no servers')).toBeInTheDocument();
   });
 
   it('shows a row for every server the user has', async () => {
     const initialServers = [server({ name: 'Foo' }), server({ name: 'Bar' }), server({ name: 'Baz' })];
-    setUp({ initialServers });
+    const screen = await setUp({ initialServers });
 
     await expect.element(screen.getByText('This user has no servers')).not.toBeInTheDocument();
     expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 1);
@@ -49,7 +48,7 @@ describe('<UserServers />', () => {
 
   it('can remove existing servers', async () => {
     const initialServers = [server({ name: 'Foo' }), server({ name: 'Bar' }), server({ name: 'Baz' })];
-    const { user } = setUp({ initialServers });
+    const { user, ...screen } = await setUp({ initialServers });
 
     expect(screen.getByRole('row').all()).toHaveLength(4);
     await user.click(screen.getByLabelText('Remove Foo'));
@@ -61,7 +60,7 @@ describe('<UserServers />', () => {
   it('can add servers from the search results', async () => {
     const initialServers = [server({ name: 'Foo1' }), server({ name: 'Foo2' })];
     const searchResults = [server({ name: 'Bar1' }), server({ name: 'bar2' }), server({ name: 'bar3' })];
-    const { user } = setUp({ initialServers, searchResults });
+    const { user, ...screen } = await setUp({ initialServers, searchResults });
 
     expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 1);
     await user.click(screen.getByLabelText('Search servers to add'));

@@ -1,6 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import EditUser from '../../../app/routes/users/edit-user';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -20,10 +19,10 @@ describe('edit-user', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
       await screen.getByText('Edit user').findElement();
 
-      return result;
+      return screen;
     };
 
     it('passes a11y checks', () =>
@@ -35,7 +34,7 @@ describe('edit-user', () => {
       [fromPartial<User>({ id: 'abc', username: 'foo', displayName: 'Foo Bar', role: 'advanced-user' })],
       [fromPartial<User>({ id: 'def', username: 'bar', displayName: 'Jane Doe', role: 'admin' })],
     ])('loads the form with the user data set on it', async (user) => {
-      await setUp(user);
+      const screen = await setUp(user);
 
       const usernameInput = screen.getByLabelText(/^Username/);
       await expect.element(usernameInput).toHaveValue(user.username);

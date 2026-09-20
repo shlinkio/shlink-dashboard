@@ -1,5 +1,4 @@
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import CreateServer from '../../../app/routes/servers/create-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
@@ -17,25 +16,26 @@ describe('create-server', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
       await screen.getByText('Add new server').findElement();
 
-      return result;
+      return screen;
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('renders form', async () => {
-      await setUp();
+      const screen = await setUp();
 
       await expect.element(screen.getByLabelText(/^Name/)).toBeInTheDocument();
       await expect.element(screen.getByLabelText(/^URL/)).toBeInTheDocument();
       await expect.element(screen.getByLabelText(/^API key/)).toBeInTheDocument();
     });
 
-    // TODO Investigate why this test does not pass, as there's a similar one in create-user test
+    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
+    //       tested
     it.skip('disables form while saving', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.type(screen.getByLabelText(/^Name/), 'The name');
       await user.type(screen.getByLabelText(/^URL/), 'https://example.com');

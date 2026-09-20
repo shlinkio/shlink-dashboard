@@ -1,6 +1,5 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
-import { page as screen } from 'vitest/browser';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { PlainServer } from '../../../app/entities/Server';
 import type { Role } from '../../../app/entities/User';
@@ -45,18 +44,18 @@ describe('list-servers', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
+      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
 
       // Wait for the table to render before returning...
       await screen.getByRole('table').findElement();
 
-      return result;
+      return screen;
     };
 
     it.each(['admin' as const, 'advanced-user' as const])(
       'displays amount of users when logged-in user is an admin',
       async (role) => {
-        await setUp({ role });
+        const screen = await setUp({ role });
         const columns = [...screen.getByRole('table').element().querySelectorAll('th:not([aria-hidden="true"])')];
 
         // Users column is included only for admins
@@ -65,7 +64,7 @@ describe('list-servers', () => {
     );
 
     it('displays fallback message when there are no servers', async () => {
-      await setUp();
+      const screen = await setUp();
       await expect.element(screen.getByText('No servers found')).toBeInTheDocument();
     });
 
@@ -78,7 +77,7 @@ describe('list-servers', () => {
           usersCount: id,
         }),
       );
-      const { user } = await setUp({ servers });
+      const { user, ...screen } = await setUp({ servers });
       const openRowMenu = async (serverName: string) =>
         await user.click(screen.getByLabelText(`Options for ${serverName}`));
 
@@ -103,19 +102,19 @@ describe('list-servers', () => {
     });
 
     it('has a link to go to server creation page', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
       await user.click(screen.getByRole('link', { name: /Add a server/ }));
 
       await expect.element(screen.getByText('Server creation')).toBeInTheDocument();
     });
 
     it('initializes current search term', async () => {
-      await setUp({ currentSearchTerm: 'something' });
+      const screen = await setUp({ currentSearchTerm: 'something' });
       await expect.element(screen.getByRole('searchbox')).toHaveValue('something');
     });
 
     it('allows servers list to be filtered by search', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // Search is deferred. It should eventually navigate to the URL with the search term
