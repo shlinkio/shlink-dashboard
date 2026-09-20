@@ -1,5 +1,5 @@
-import { screen } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import ChangePassword from '../../app/routes/change-password';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
@@ -17,7 +17,7 @@ describe('change-password', () => {
       ]);
 
       const renderResult = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText(/^You need to change your temporary password/);
+      await screen.getByText(/^You need to change your temporary password/).findElement();
 
       return renderResult;
     };
@@ -33,7 +33,7 @@ describe('change-password', () => {
       if (error) {
         await expect.element(screen.getByTestId('error-container')).toHaveTextContent(error);
       } else {
-        await expect.element(screen.queryByTestId('error-container')).not.toBeInTheDocument();
+        await expect.element(screen.getByTestId('error-container')).not.toBeInTheDocument();
       }
     });
   });

@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import type { UserFormFieldsProps } from '../../../app/routes/users/UserFormFields';
 import { UserFormFields } from '../../../app/routes/users/UserFormFields';

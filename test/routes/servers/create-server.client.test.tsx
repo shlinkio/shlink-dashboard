@@ -1,5 +1,5 @@
-import { screen } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import CreateServer from '../../../app/routes/servers/create-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
@@ -18,7 +18,7 @@ describe('create-server', () => {
       ]);
 
       const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Add new server');
+      await screen.getByText('Add new server').findElement();
 
       return result;
     };

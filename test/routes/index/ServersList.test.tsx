@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { Server } from '../../../app/entities/Server';
 import { ServersList } from '../../../app/routes/index/ServersList';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -24,6 +25,6 @@ describe('<ServersList />', () => {
     [[fromPartial<Server>({ name: 'Foo', publicId: '1' })]],
   ])('renders expected amount of links', (servers) => {
     setUp(servers);
-    expect(screen.queryAllByRole('link')).toHaveLength(servers.length);
+    expect(screen.getByRole('link').all()).toHaveLength(servers.length);
   });
 });

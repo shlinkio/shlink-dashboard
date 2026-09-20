@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { FC, PropsWithChildren, RefAttributes } from 'react';
+import { page as screen } from 'vitest/browser';
 import { ChangePasswordForm } from '../../../app/routes/profile/ChangePasswordForm';
 import { checkAccessibility } from '../../__helpers__/accessibility';
 

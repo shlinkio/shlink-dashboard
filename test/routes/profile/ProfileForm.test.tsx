@@ -1,7 +1,7 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import type { FC, PropsWithChildren, RefAttributes } from 'react';
 import { useState } from 'react';
+import { page as screen } from 'vitest/browser';
 import type { ProfileFormProps } from '../../../app/routes/profile/ProfileForm';
 import { ProfileForm } from '../../../app/routes/profile/ProfileForm';
 import { PROFILE_ACTION } from '../../../app/users/user-profile-actions';
@@ -56,12 +56,12 @@ describe('<ProfileForm />', () => {
     await setUp({ state });
 
     if (expectedDisabled) {
-      await expect.element(screen.getByRole('button', { name: buttonText, hidden: true })).toBeDisabled();
+      await expect.element(screen.getByRole('button', { name: buttonText, includeHidden: true })).toBeDisabled();
     } else {
       await expect.element(screen.getByRole('button', { name: buttonText })).not.toBeDisabled();
     }
 
-    await expect.element(screen.queryByRole('img', { hidden: true })).not.toBeInTheDocument();
+    await expect.element(screen.getByRole('img', { includeHidden: true })).not.toBeInTheDocument();
   });
 
   it('resets form when transitioning to idle state and everything is valid', async () => {
@@ -74,6 +74,6 @@ describe('<ProfileForm />', () => {
     });
 
     expect(resetForm).toHaveBeenCalled();
-    await expect.element(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    await expect.element(screen.getByRole('img', { includeHidden: true })).toBeInTheDocument();
   });
 });

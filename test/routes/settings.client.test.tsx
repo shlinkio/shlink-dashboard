@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import SettingsComp from '../../app/routes/settings';
 
 describe('settings', () => {

@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { SessionData } from '../../../app/auth/session-context';
 import { SessionProvider } from '../../../app/auth/session-context';
 import { NoServers } from '../../../app/routes/index/NoServers';
@@ -30,7 +31,7 @@ describe('<NoServers />', () => {
     if (session.role !== 'managed-user') {
       await expect.element(screen.getByRole('link', { name: 'Add a server' })).toBeInTheDocument();
     } else {
-      await expect.element(screen.queryByRole('link', { name: 'Add a server' })).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('link', { name: 'Add a server' })).not.toBeInTheDocument();
     }
   });
 });

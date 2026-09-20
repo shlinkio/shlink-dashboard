@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import EditUser from '../../../app/routes/users/edit-user';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -21,7 +21,7 @@ describe('edit-user', () => {
       ]);
 
       const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Edit user');
+      await screen.getByText('Edit user').findElement();
 
       return result;
     };

@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import { SessionProvider } from '../../../app/auth/session-context';
 import Profile from '../../../app/routes/profile/profile';
 

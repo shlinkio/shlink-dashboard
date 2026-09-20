@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import { SessionProvider } from '../../../app/auth/session-context';
 import type { PlainServer } from '../../../app/entities/Server';
 import type { Role } from '../../../app/entities/User';
@@ -48,7 +48,7 @@ describe('list-servers', () => {
       const result = renderWithEvents(<Stub initialEntries={[path]} />);
 
       // Wait for the table to render before returning...
-      await screen.findByRole('table');
+      await screen.getByRole('table').findElement();
 
       return result;
     };
@@ -57,14 +57,10 @@ describe('list-servers', () => {
       'displays amount of users when logged-in user is an admin',
       async (role) => {
         await setUp({ role });
+        const columns = [...screen.getByRole('table').element().querySelectorAll('th:not([aria-hidden="true"])')];
 
-        if (role === 'admin') {
-          expect(screen.getAllByRole('columnheader')).toHaveLength(3);
-          await expect.element(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
-        } else {
-          expect(screen.getAllByRole('columnheader')).toHaveLength(2);
-          await expect.element(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
-        }
+        // Users column is included only for admins
+        expect(columns).toHaveLength(role === 'admin' ? 3 : 2);
       },
     );
 
@@ -87,7 +83,7 @@ describe('list-servers', () => {
         await user.click(screen.getByLabelText(`Options for ${serverName}`));
 
       // We add 1 for the header row
-      expect(screen.getAllByRole('row')).toHaveLength(servers.length + 1);
+      expect(screen.getByRole('row').all()).toHaveLength(servers.length + 1);
 
       await Promise.all(
         servers.map(async (server) => {

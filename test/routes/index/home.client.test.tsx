@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { Server } from '../../../app/entities/Server';
 import Home from '../../../app/routes/index/home';
 
@@ -26,7 +27,7 @@ describe('home', () => {
           .element(screen.getByText('This application will help you manage your Shlink servers.'))
           .toBeInTheDocument(),
       );
-      await expect.element(screen.queryByTestId('servers-list')).not.toBeInTheDocument();
+      await expect.element(screen.getByTestId('servers-list')).not.toBeInTheDocument();
     });
 
     it('renders servers list when there is more than one server', async () => {
@@ -34,7 +35,7 @@ describe('home', () => {
 
       await waitFor(() => expect.element(screen.getByTestId('servers-list')).toBeInTheDocument());
       await expect
-        .element(screen.queryByText('This application will help you manage your Shlink servers.'))
+        .element(screen.getByText('This application will help you manage your Shlink servers.'))
         .not.toBeInTheDocument();
     });
   });

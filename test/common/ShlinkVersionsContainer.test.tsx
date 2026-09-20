@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { page as screen } from 'vitest/browser';
 import type { ShlinkVersionsContainerProps } from '../../app/common/ShlinkVersionsContainer';
 import { ShlinkVersionsContainer } from '../../app/common/ShlinkVersionsContainer';
 import { checkAccessibility } from '../__helpers__/accessibility';
@@ -20,7 +21,7 @@ describe('<ShlinkVersionsContainer />', () => {
     setUp({ dashboardVersion });
 
     await expect.element(screen.getByText(/^Dashboard/)).toHaveTextContent(expectedText);
-    await expect.element(screen.queryByText(/Server/)).not.toBeInTheDocument();
+    await expect.element(screen.getByText(/Server/)).not.toBeInTheDocument();
   });
 
   it.each([

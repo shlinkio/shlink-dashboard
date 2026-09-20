@@ -1,5 +1,5 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
+import { page as screen } from 'vitest/browser';
 import type { MinimalServer, UserServersProps } from '../../../app/routes/users/UserServers';
 import { UserServers } from '../../../app/routes/users/UserServers';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -30,7 +30,7 @@ describe('<UserServers />', () => {
   it('calls onSearch when searching in combobox', async () => {
     const { user } = setUp();
 
-    await user.type(screen.getByPlaceholderText('Search servers to add...'), 'something');
+    await user.type(screen.getByPlaceholder('Search servers to add...'), 'something');
     expect(onSearch).toHaveBeenCalledWith('something');
   });
 
@@ -43,19 +43,19 @@ describe('<UserServers />', () => {
     const initialServers = [server({ name: 'Foo' }), server({ name: 'Bar' }), server({ name: 'Baz' })];
     setUp({ initialServers });
 
-    await expect.element(screen.queryByText('This user has no servers')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 1);
+    await expect.element(screen.getByText('This user has no servers')).not.toBeInTheDocument();
+    expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 1);
   });
 
   it('can remove existing servers', async () => {
     const initialServers = [server({ name: 'Foo' }), server({ name: 'Bar' }), server({ name: 'Baz' })];
     const { user } = setUp({ initialServers });
 
-    expect(screen.getAllByRole('row')).toHaveLength(4);
+    expect(screen.getByRole('row').all()).toHaveLength(4);
     await user.click(screen.getByLabelText('Remove Foo'));
-    expect(screen.getAllByRole('row')).toHaveLength(3);
+    expect(screen.getByRole('row').all()).toHaveLength(3);
     await user.click(screen.getByLabelText('Remove Bar'));
-    expect(screen.getAllByRole('row')).toHaveLength(2);
+    expect(screen.getByRole('row').all()).toHaveLength(2);
   });
 
   it('can add servers from the search results', async () => {
@@ -63,21 +63,21 @@ describe('<UserServers />', () => {
     const searchResults = [server({ name: 'Bar1' }), server({ name: 'bar2' }), server({ name: 'bar3' })];
     const { user } = setUp({ initialServers, searchResults });
 
-    expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 1);
+    expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 1);
     await user.click(screen.getByLabelText('Search servers to add'));
 
     // Add second search result. Should add one row
     await user.keyboard('{ArrowDown}');
     await user.keyboard('{Enter}');
-    expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 2);
+    expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 2);
 
     // Add third search result. Should add one row
     await user.keyboard('{ArrowDown}');
     await user.keyboard('{Enter}');
-    expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 3);
+    expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 3);
 
     // Add third search result again. Should be skipped as duplicated
     await user.keyboard('{Enter}');
-    expect(screen.getAllByRole('row')).toHaveLength(initialServers.length + 3);
+    expect(screen.getByRole('row').all()).toHaveLength(initialServers.length + 3);
   });
 });

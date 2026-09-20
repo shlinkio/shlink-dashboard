@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { ServerFormFieldsProps } from '../../../app/routes/servers/ServerFormFields';
 import { ServerFormFields } from '../../../app/routes/servers/ServerFormFields';
 import { checkAccessibility } from '../../__helpers__/accessibility';

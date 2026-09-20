@@ -1,6 +1,7 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import type { BrowserPage } from 'vitest/browser';
+import { page as screen } from 'vitest/browser';
 import { type PlainServer } from '../../../app/entities/Server';
 import { DeleteServerModal } from '../../../app/routes/servers/DeleteServerModal';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -32,20 +33,20 @@ describe('<DeleteServerModal />', () => {
     if (open) {
       await expect.element(screen.getByText(/^Are you sure you want to delete server/)).toBeInTheDocument();
     } else {
-      await expect.element(screen.queryByText(/^Are you sure you want to delete server/)).not.toBeInTheDocument();
+      await expect.element(screen.getByText(/^Are you sure you want to delete server/)).not.toBeInTheDocument();
     }
   });
 
-  it.each([{ buttonText: 'Close dialog' }, { buttonText: 'Cancel' }])(
-    'closes modal when cancel or close are clicked',
-    async ({ buttonText }) => {
-      const { user } = setUp();
+  it.each([
+    { getButton: (screen: BrowserPage) => screen.getByLabelText('Close dialog') },
+    { getButton: (screen) => screen.getByText('Cancel') },
+  ])('closes modal when cancel or close are clicked', async ({ getButton }) => {
+    const { user } = setUp();
 
-      expect(onClose).not.toHaveBeenCalled();
-      await user.click(screen.queryByLabelText(buttonText) ?? screen.getByText(buttonText));
-      expect(onClose).toHaveBeenCalled();
-    },
-  );
+    expect(onClose).not.toHaveBeenCalled();
+    await user.click(getButton(screen));
+    expect(onClose).toHaveBeenCalled();
+  });
 
   it('deletes server when confirm is clicked', async () => {
     const { user } = setUp();

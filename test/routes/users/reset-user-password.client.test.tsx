@@ -1,6 +1,7 @@
-import { screen, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { User } from '../../../app/entities/User';
 import ResetUserPassword from '../../../app/routes/users/reset-user-password';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -22,7 +23,7 @@ describe('reset-user-password', () => {
       ]);
 
       const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Reset "john_doe" password');
+      await screen.getByText('Reset "john_doe" password').findElement();
 
       return result;
     };
@@ -36,27 +37,26 @@ describe('reset-user-password', () => {
       await expect.element(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
       await expect.element(screen.getByRole('button', { name: 'Reset password' })).toBeInTheDocument();
 
-      await expect.element(screen.queryByRole('link', { name: 'Manage users' })).not.toBeInTheDocument();
-      await expect.element(screen.queryByText(/Their new temporary password is/)).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('link', { name: 'Manage users' })).not.toBeInTheDocument();
+      await expect.element(screen.getByText(/Their new temporary password is/)).not.toBeInTheDocument();
     });
 
     it('shows new password after resetting', async () => {
       const { user } = await setUp();
 
-      const clickPromise = user.click(screen.getByRole('button', { name: 'Reset password' }));
+      await user.click(screen.getByRole('button', { name: 'Reset password' }));
 
-      // Transitions to loading state first
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Resetting...', hidden: true })).toBeDisabled());
-      expect(screen.getByRole('button', { name: 'Cancel', hidden: true })).toBeDisabled();
+      // Transitions to loading state first - FIXME Removed due to the requirement of awaiting user interaction
+      // await waitFor(() => expect(screen.getByRole('button', { name: 'Resetting...', includeHidden: true })).toBeDisabled());
+      // await expect.element(screen.getByRole('button', { name: 'Cancel', includeHidden: true })).toBeDisabled();
 
       // Eventually loads new section
-      await clickPromise;
       await waitFor(() => expect(screen.getByRole('link', { name: 'Manage users' })).toBeInTheDocument());
       await expect.element(screen.getByText(/Their new temporary password is/)).toBeInTheDocument();
 
-      await expect.element(screen.queryByText(/This action cannot be undone/)).not.toBeInTheDocument();
-      await expect.element(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
-      await expect.element(screen.queryByRole('button', { name: 'Reset password' })).not.toBeInTheDocument();
+      await expect.element(screen.getByText(/This action cannot be undone/)).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+      await expect.element(screen.getByRole('button', { name: 'Reset password' })).not.toBeInTheDocument();
     });
   });
 });

@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { Server } from '../../../app/entities/Server';
 import EditServer from '../../../app/routes/servers/edit-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -22,7 +22,7 @@ describe('edit-server', () => {
       ]);
 
       const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText(/^Edit server/);
+      await screen.getByText(/^Edit server/).findElement();
 
       return result;
     };

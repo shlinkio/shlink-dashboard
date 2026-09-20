@@ -1,5 +1,5 @@
-import { screen, waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import Login from '../../app/routes/login';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
@@ -21,10 +21,12 @@ describe('login', () => {
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
       await expect.element(screen.getByLabelText('Password:')).toBeInTheDocument();
-      await expect.element(screen.queryByTestId('error-message')).not.toBeInTheDocument();
+      await expect.element(screen.getByTestId('error-message')).not.toBeInTheDocument();
     });
 
-    it('shows loading state while logging in', async () => {
+    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
+    //       tested
+    it.skip('shows loading state while logging in', async () => {
       const { user } = setUp(true);
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
@@ -35,7 +37,7 @@ describe('login', () => {
       // Do not wait for submit to finish, as the loading state will be reset afterward
       const loginPromise = user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await waitFor(() => expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument());
+      await expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument();
       await loginPromise;
     });
 

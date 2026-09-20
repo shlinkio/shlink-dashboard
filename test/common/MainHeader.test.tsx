@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
+import { page as screen } from 'vitest/browser';
 import type { SessionData } from '../../app/auth/session-context';
 import { SessionProvider } from '../../app/auth/session-context';
 import { MainHeader } from '../../app/common/MainHeader';
@@ -33,7 +33,7 @@ describe('<MainHeader />', () => {
     if (session) {
       await expect.element(screen.getByTestId('user-menu')).toHaveTextContent(session.displayName || session.username);
     } else {
-      await expect.element(screen.queryByTestId('user-menu')).not.toBeInTheDocument();
+      await expect.element(screen.getByTestId('user-menu')).not.toBeInTheDocument();
     }
   });
 
@@ -64,13 +64,13 @@ describe('<MainHeader />', () => {
       if (shouldShowUsersMenu) {
         await expect.element(screen.getByText('Manage users')).toBeInTheDocument();
       } else {
-        await expect.element(screen.queryByText('Manage users')).not.toBeInTheDocument();
+        await expect.element(screen.getByText('Manage users')).not.toBeInTheDocument();
       }
 
       if (shouldShowManageServers) {
         await expect.element(screen.getByText('Manage servers')).toBeInTheDocument();
       } else {
-        await expect.element(screen.queryByText('Manage servers')).not.toBeInTheDocument();
+        await expect.element(screen.getByText('Manage servers')).not.toBeInTheDocument();
       }
     },
   );
