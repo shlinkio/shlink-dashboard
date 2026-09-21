@@ -8,13 +8,18 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-user', () => {
   describe('<CreateUser />', () => {
-    const setUp = async (actionResult?: Awaited<ReturnType<typeof action>>) => {
+    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<Awaited<ReturnType<typeof action>>>();
+    const actionMock = vi.fn(async () => {
+      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+      return await promise;
+    });
+    const setUp = () => {
       const path = '/manage-users/create';
       const Stub = createRoutesStub([
         {
           path,
           Component: CreateUser,
-          action: () => actionResult,
+          action: actionMock,
         },
         {
           path: '/manage-users/1',
@@ -22,16 +27,13 @@ describe('create-user', () => {
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText('Add new user').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     const submitForm = async ({ user, ...screen }: RenderWithEventsResult) => {
       await user.type(screen.getByLabelText(/^Username/), 'the_username');
       await user.selectOptions(screen.getByLabelText(/^Role/), 'managed user');
-      return user.click(screen.getByRole('button', { name: 'Create user' }));
+      await user.click(screen.getByRole('button', { name: 'Create user' }));
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
@@ -44,18 +46,22 @@ describe('create-user', () => {
       await expect.element(screen.getByLabelText(/^Role/)).toBeInTheDocument();
     });
 
-    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
-    //       tested
-    it.skip('renders loading state while saving', async () => {
+    it('renders loading state while saving', async () => {
       const screen = await setUp();
-      const submitPromise = submitForm(screen);
 
+      expect(actionMock).not.toHaveBeenCalled();
+      await submitForm(screen);
+
+      expect(actionMock).toHaveBeenCalled();
       await expect.element(screen.getByText('Saving...')).toBeDisabled();
-      await submitPromise;
+
+      resolveActionPromise(fromPartial({}));
     });
 
-    it('renders error when saving fails', async () => {
-      const screen = await setUp({
+    it.skip('renders error when saving fails', async () => {
+      const screen = await setUp();
+
+      resolveActionPromise({
         status: 'error',
         messages: { username: 'Error in user field' },
       });
@@ -64,13 +70,16 @@ describe('create-user', () => {
       await expect.element(screen.getByText('Error in user field')).toBeInTheDocument();
     });
 
-    it('renders created user data on success', async () => {
-      const screen = await setUp({
+    it.skip('renders created user data on success', async () => {
+      const screen = await setUp();
+
+      await submitForm(screen);
+
+      resolveActionPromise({
         status: 'success',
         user: fromPartial({ username: 'the_username' }),
         plainTextPassword: 'plain-password',
       });
-      await submitForm(screen);
 
       await expect.element(screen.getByTestId('success-message')).toBeInTheDocument();
       await expect.element(screen.getByText(/the_username/)).toBeInTheDocument();

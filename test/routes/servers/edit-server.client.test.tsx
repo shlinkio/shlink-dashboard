@@ -7,7 +7,7 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-server', () => {
   describe('<EditServer />', () => {
-    const setUp = async () => {
+    const setUp = () => {
       const path = '/manage-servers/1';
       const Stub = createRoutesStub([
         {
@@ -20,10 +20,7 @@ describe('edit-server', () => {
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText(/^Edit server/).findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));

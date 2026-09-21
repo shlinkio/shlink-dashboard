@@ -25,7 +25,7 @@ describe('list-servers', () => {
       currentSearchTerm?: string;
     };
 
-    const setUp = async ({ role, servers = [], currentSearchTerm }: SetUpOptions = {}) => {
+    const setUp = ({ role, servers = [], currentSearchTerm }: SetUpOptions = {}) => {
       const path = '/manage-users/1';
       const Stub = createRoutesStub([
         {
@@ -44,12 +44,7 @@ describe('list-servers', () => {
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-
-      // Wait for the table to render before returning...
-      await screen.getByRole('table').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it.each(['admin' as const, 'advanced-user' as const])(

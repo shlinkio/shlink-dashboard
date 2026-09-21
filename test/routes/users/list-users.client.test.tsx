@@ -36,13 +36,7 @@ describe('list-users', () => {
         publicId: crypto.randomUUID(),
       });
 
-    const setUp = async ({
-      users = [],
-      totalPages = 1,
-      orderBy = {},
-      searchTerm,
-      currentUsername,
-    }: SetUpOptions = {}) => {
+    const setUp = ({ users = [], totalPages = 1, orderBy = {}, searchTerm, currentUsername }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
@@ -71,12 +65,7 @@ describe('list-users', () => {
           Component: () => <>Edit user</>,
         },
       ]);
-      const screen = await renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
-
-      // Wait for the table to be rendered
-      await screen.getByRole('table').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
     };
 
     const openDropdown = async ({ user, ...screen }: RenderWithEventsResult, username: string) =>

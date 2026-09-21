@@ -4,7 +4,7 @@ import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('change-password', () => {
   describe('<ChangePassword />', () => {
-    const setUp = async (error?: string) => {
+    const setUp = (error?: string) => {
       const path = '/change-password';
       const Stub = createRoutesStub([
         {
@@ -15,10 +15,7 @@ describe('change-password', () => {
         },
       ]);
 
-      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await renderResult.getByText(/^You need to change your temporary password/).findElement();
-
-      return renderResult;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it.each([undefined, 'There was an error'])('shows error only if action response fails', async (error) => {

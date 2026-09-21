@@ -4,12 +4,18 @@ import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('login', () => {
   describe('<Login />', () => {
-    const setUp = (error: boolean = false) => {
+    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<boolean>();
+    const action = vi.fn(async () => {
+      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+      const error = await promise;
+      return { error };
+    });
+    const setUp = () => {
       const Stub = createRoutesStub([
         {
           path: '/',
           Component: Login,
-          action: () => ({ error }),
+          action,
         },
       ]);
       return renderWithEvents(<Stub />);
@@ -23,25 +29,26 @@ describe('login', () => {
       await expect.element(screen.getByTestId('error-message')).not.toBeInTheDocument();
     });
 
-    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
-    //       tested
-    it.skip('shows loading state while logging in', async () => {
-      const { user, ...screen } = await setUp(true);
+    it('shows loading state while logging in', async () => {
+      const { user, ...screen } = await setUp();
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
       // Submit form with data
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
       await user.type(screen.getByLabelText('Password:'), 'incorrect');
-      // Do not wait for submit to finish, as the loading state will be reset afterward
-      const loginPromise = user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument();
-      await loginPromise;
+      expect(action).not.toHaveBeenCalled();
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(action).toHaveBeenCalled();
+      await expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeDisabled();
+
+      resolveActionPromise(true);
     });
 
     it('renders error when present', async () => {
-      const { user, ...screen } = await setUp(true);
+      const { user, ...screen } = await setUp();
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
@@ -49,6 +56,8 @@ describe('login', () => {
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
       await user.type(screen.getByLabelText('Password:'), 'incorrect');
       await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      resolveActionPromise(true);
 
       await expect.element(screen.getByText('Username or password are incorrect')).toBeInTheDocument();
     });

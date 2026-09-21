@@ -7,7 +7,7 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-user', () => {
   describe('<EditUser />', () => {
-    const setUp = async (user: User) => {
+    const setUp = (user: User) => {
       const path = '';
       const Stub = createRoutesStub([
         {
@@ -19,10 +19,7 @@ describe('edit-user', () => {
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText('Edit user').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it('passes a11y checks', () =>

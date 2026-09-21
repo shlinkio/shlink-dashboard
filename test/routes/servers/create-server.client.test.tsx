@@ -5,21 +5,24 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-server', () => {
   describe('<CreateServer />', () => {
-    const setUp = async () => {
+    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
+    const action = vi.fn(async () => {
+      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+      await promise;
+      return {};
+    });
+    const setUp = () => {
       const path = '/manage-servers/create';
       const Stub = createRoutesStub([
         {
           path,
           Component: CreateServer,
           HydrateFallback: () => null,
-          action: () => ({}),
+          action,
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText('Add new server').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
@@ -32,18 +35,20 @@ describe('create-server', () => {
       await expect.element(screen.getByLabelText(/^API key/)).toBeInTheDocument();
     });
 
-    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
-    //       tested
-    it.skip('disables form while saving', async () => {
+    it('disables form while saving', async () => {
       const { user, ...screen } = await setUp();
 
       await user.type(screen.getByLabelText(/^Name/), 'The name');
       await user.type(screen.getByLabelText(/^URL/), 'https://example.com');
-      await user.type(screen.getByLabelText(/^Name/), 'api-key');
-      const submitPromise = user.click(screen.getByRole('button', { name: 'Create server' }));
+      await user.type(screen.getByLabelText(/^API key/), 'api-key');
 
+      expect(action).not.toHaveBeenCalled();
+      await user.click(screen.getByRole('button', { name: 'Create server' }));
+
+      expect(action).toHaveBeenCalled();
       await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
-      await submitPromise;
+
+      resolveActionPromise();
     });
   });
 });

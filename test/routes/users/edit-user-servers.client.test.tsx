@@ -4,7 +4,13 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-user-servers', () => {
   describe('<EditUserServers />', () => {
-    const setUp = async () => {
+    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
+    const action = vi.fn(async () => {
+      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+      await promise;
+      return {};
+    });
+    const setUp = () => {
       const prevPath = '/manage-users/1';
       const path = '/manage-users/1/edit-servers';
       const Stub = createRoutesStub([
@@ -17,8 +23,8 @@ describe('edit-user-servers', () => {
           path: '/manage-servers/1',
           loader: () => ({
             servers: [
-              { name: 'bar', publicId: crypto.randomUUID },
-              { name: 'baz', publicId: crypto.randomUUID },
+              { name: 'bar', publicId: crypto.randomUUID() },
+              { name: 'baz', publicId: crypto.randomUUID() },
             ],
           }),
         },
@@ -27,14 +33,11 @@ describe('edit-user-servers', () => {
           Component: EditUserServers,
           HydrateFallback: () => null,
           loader: () => ({ servers: [], user: { username: 'foo' } }),
-          action: () => ({}),
+          action,
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
-      await screen.getByText('Shlink servers for "foo"').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
     };
 
     it('navigates back when clicking Cancel button', async () => {
@@ -44,15 +47,16 @@ describe('edit-user-servers', () => {
       await expect.element(screen.getByText('Prev route')).toBeInTheDocument();
     });
 
-    // FIXME Skipping, as vitest/browser requires user events to be awaited, so intermediary loading states cannot be
-    //       tested
-    it.skip('saves servers when clicking Save button', async () => {
+    it('invokes route action whn servers are saved', async () => {
       const { user, ...screen } = await setUp();
 
-      const savePromise = user.click(screen.getByRole('button', { name: 'Save servers' }));
+      expect(action).not.toHaveBeenCalled();
+      await user.click(screen.getByRole('button', { name: 'Save servers' }));
+
+      expect(action).toHaveBeenCalled();
       await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
 
-      await savePromise;
+      resolveActionPromise();
     });
 
     it('can search servers by typing in combobox', async () => {

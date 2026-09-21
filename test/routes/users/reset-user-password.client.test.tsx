@@ -7,7 +7,7 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('reset-user-password', () => {
   describe('<ResetUserPassword />', () => {
-    const setUp = async () => {
+    const setUp = () => {
       const path = '/manage-users/123/reset-password';
       const user = fromPartial<User>({ username: 'john_doe' });
       const Stub = createRoutesStub([
@@ -20,10 +20,7 @@ describe('reset-user-password', () => {
         },
       ]);
 
-      const screen = await renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.getByText('Reset "john_doe" password').findElement();
-
-      return screen;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
