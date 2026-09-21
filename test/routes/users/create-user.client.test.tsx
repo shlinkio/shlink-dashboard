@@ -1,21 +1,26 @@
-import { screen, waitFor } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { action } from '../../../app/routes/users/create-user';
 import CreateUser from '../../../app/routes/users/create-user';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import type { RenderWithEventsResult } from '../../__helpers__/set-up-test';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-user', () => {
   describe('<CreateUser />', () => {
-    const setUp = async (actionResult?: Awaited<ReturnType<typeof action>>) => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<Awaited<ReturnType<typeof action>>>();
+      const actionMock = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        return await promise;
+      });
+
       const path = '/manage-users/create';
       const Stub = createRoutesStub([
         {
           path,
           Component: CreateUser,
-          action: () => actionResult,
+          action: actionMock,
         },
         {
           path: '/manage-users/1',
@@ -23,65 +28,71 @@ describe('create-user', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Add new user');
-
-      return result;
+      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
+      return { ...renderResult, actionMock, resolveActionPromise };
     };
 
-    const submitForm = async (user: UserEvent) => {
+    const submitForm = async ({ user, ...screen }: RenderWithEventsResult) => {
       await user.type(screen.getByLabelText(/^Username/), 'the_username');
       await user.selectOptions(screen.getByLabelText(/^Role/), 'managed user');
-      return user.click(screen.getByRole('button', { name: 'Create user' }));
+      await user.click(screen.getByRole('button', { name: 'Create user' }));
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('renders form', async () => {
-      await setUp();
+      const screen = await setUp();
 
-      expect(screen.getByLabelText(/^Username/)).toBeInTheDocument();
-      expect(screen.getByLabelText('Display name')).toBeInTheDocument();
-      expect(screen.getByLabelText(/^Role/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Username/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Display name')).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Role/)).toBeInTheDocument();
     });
 
     it('renders loading state while saving', async () => {
-      const { user } = await setUp();
-      const submitPromise = submitForm(user);
+      const { actionMock, resolveActionPromise, ...screen } = await setUp();
 
-      await waitFor(() => expect(screen.getByText('Saving...')).toBeDisabled());
-      await submitPromise;
+      expect(actionMock).not.toHaveBeenCalled();
+      await submitForm(screen);
+
+      expect(actionMock).toHaveBeenCalled();
+      await expect.element(screen.getByText('Saving...')).toBeDisabled();
+
+      resolveActionPromise(fromPartial({}));
     });
 
     it('renders error when saving fails', async () => {
-      const { user } = await setUp({
+      const { resolveActionPromise, ...screen } = await setUp();
+
+      resolveActionPromise({
         status: 'error',
         messages: { username: 'Error in user field' },
       });
-      await submitForm(user);
+      await submitForm(screen);
 
-      await waitFor(() => expect(screen.getByText('Error in user field')).toBeInTheDocument());
+      await expect.element(screen.getByText('Error in user field')).toBeInTheDocument();
     });
 
     it('renders created user data on success', async () => {
-      const { user } = await setUp({
+      const { resolveActionPromise, ...screen } = await setUp();
+
+      await submitForm(screen);
+
+      resolveActionPromise({
         status: 'success',
         user: fromPartial({ username: 'the_username' }),
         plainTextPassword: 'plain-password',
       });
-      await submitForm(user);
 
-      await waitFor(() => expect(screen.getByTestId('success-message')).toBeInTheDocument());
-
-      expect(screen.getByText(/the_username/)).toBeInTheDocument();
-      expect(screen.getByText(/plain-password/)).toBeInTheDocument();
+      await expect.element(screen.getByTestId('success-message')).toBeInTheDocument();
+      await expect.element(screen.getByText(/the_username/)).toBeInTheDocument();
+      await expect.element(screen.getByText(/plain-password/)).toBeInTheDocument();
     });
 
     it('navigates back to list when cancel is clicked', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.click(screen.getByRole('link', { name: 'Cancel' }));
-      await waitFor(() => expect(screen.getByText('Users list')).toBeInTheDocument());
+      await expect.element(screen.getByText('Users list')).toBeInTheDocument();
     });
   });
 });

@@ -40,9 +40,6 @@ updates:
       types:
         patterns:
           - '@types/*'
-      testing:
-        patterns:
-          - '@testing-library/*'
       vite:
         patterns:
           - 'vite'
@@ -50,6 +47,7 @@ updates:
       vitest:
         patterns:
           - 'vitest'
+          - 'vitest-browser-react'
           - '@vitest/*'
       tailwindcss:
         patterns:

@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
+import type { RenderResult } from 'vitest-browser-react';
 import { type PlainServer } from '../../../app/entities/Server';
 import { DeleteServerModal } from '../../../app/routes/servers/DeleteServerModal';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -26,29 +26,29 @@ describe('<DeleteServerModal />', () => {
 
   it('passes a11y checks', () => checkAccessibility(setUp()));
 
-  it.each([{ open: true }, { open: false }])('opens modal if open is true', ({ open }) => {
-    setUp(open);
+  it.each([{ open: true }, { open: false }])('opens modal if open is true', async ({ open }) => {
+    const screen = await setUp(open);
 
     if (open) {
-      expect(screen.getByText(/^Are you sure you want to delete server/)).toBeInTheDocument();
+      await expect.element(screen.getByText(/^Are you sure you want to delete server/)).toBeInTheDocument();
     } else {
-      expect(screen.queryByText(/^Are you sure you want to delete server/)).not.toBeInTheDocument();
+      await expect.element(screen.getByText(/^Are you sure you want to delete server/)).not.toBeInTheDocument();
     }
   });
 
-  it.each([{ buttonText: 'Close dialog' }, { buttonText: 'Cancel' }])(
-    'closes modal when cancel or close are clicked',
-    async ({ buttonText }) => {
-      const { user } = setUp();
+  it.each([
+    { getButton: (screen: RenderResult) => screen.getByLabelText('Close dialog') },
+    { getButton: (screen) => screen.getByText('Cancel') },
+  ])('closes modal when cancel or close are clicked', async ({ getButton }) => {
+    const { user, ...screen } = await setUp();
 
-      expect(onClose).not.toHaveBeenCalled();
-      await user.click(screen.queryByLabelText(buttonText) ?? screen.getByText(buttonText));
-      expect(onClose).toHaveBeenCalled();
-    },
-  );
+    expect(onClose).not.toHaveBeenCalled();
+    await user.click(getButton(screen));
+    expect(onClose).toHaveBeenCalled();
+  });
 
   it('deletes server when confirm is clicked', async () => {
-    const { user } = setUp();
+    const { user, ...screen } = await setUp();
 
     await user.click(screen.getByRole('button', { name: 'Delete server' }));
     expect(onClose).toHaveBeenCalled();

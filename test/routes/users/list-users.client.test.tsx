@@ -1,6 +1,4 @@
 import type { Order } from '@shlinkio/shlink-frontend-kit';
-import { screen, waitFor } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import { SessionProvider } from '../../../app/auth/session-context';
@@ -8,6 +6,7 @@ import type { User } from '../../../app/entities/User';
 import ListUsers from '../../../app/routes/users/list-users';
 import type { UserOrderableFields } from '../../../app/users/UsersService.server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import type { RenderWithEventsResult } from '../../__helpers__/set-up-test';
 import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 // Mock the useNavigate hook so that we can test programmatic navigations
@@ -37,13 +36,7 @@ describe('list-users', () => {
         publicId: crypto.randomUUID(),
       });
 
-    const setUp = async ({
-      users = [],
-      totalPages = 1,
-      orderBy = {},
-      searchTerm,
-      currentUsername,
-    }: SetUpOptions = {}) => {
+    const setUp = ({ users = [], totalPages = 1, orderBy = {}, searchTerm, currentUsername }: SetUpOptions = {}) => {
       const Stub = createRoutesStub([
         {
           path: '/manage-users/1',
@@ -72,17 +65,11 @@ describe('list-users', () => {
           Component: () => <>Edit user</>,
         },
       ]);
-      const renderResult = renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
-
-      // Wait for the table to be rendered
-      await screen.findByRole('table');
-
-      return renderResult;
+      return renderWithEvents(<Stub initialEntries={['/manage-users/1']} />);
     };
 
-    const openDropdown = async (user: UserEvent, username: string) => {
-      await user.click(screen.getByLabelText(`Options for ${username}`));
-    };
+    const openDropdown = async ({ user, ...screen }: RenderWithEventsResult, username: string) =>
+      user.click(screen.getByLabelText(`Options for ${username}`));
 
     it.each([
       {},
@@ -92,21 +79,21 @@ describe('list-users', () => {
     ])('passes a11y checks', async ({ users, totalPages }) => checkAccessibility(setUp({ users, totalPages })));
 
     it('renders empty users list if no users are returned', async () => {
-      await setUp();
+      const screen = await setUp();
 
-      expect(screen.getByText('No users found')).toBeInTheDocument();
-      expect(screen.queryByTestId('paginator')).not.toBeInTheDocument();
+      await expect.element(screen.getByText('No users found')).toBeInTheDocument();
+      await expect.element(screen.getByTestId('paginator')).not.toBeInTheDocument();
     });
 
     it('renders list with returned users', async () => {
-      await setUp({
+      const screen = await setUp({
         users: [mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' })],
         totalPages: 5,
       });
 
-      expect(screen.queryByText('No users found')).not.toBeInTheDocument();
-      expect(screen.getByText('John Doe')).toBeInTheDocument();
-      expect(screen.getByTestId('paginator')).toBeInTheDocument();
+      await expect.element(screen.getByText('No users found')).not.toBeInTheDocument();
+      await expect.element(screen.getByText('John Doe')).toBeInTheDocument();
+      await expect.element(screen.getByTestId('paginator')).toBeInTheDocument();
     });
 
     it.each([
@@ -128,10 +115,15 @@ describe('list-users', () => {
         expectedOrderedColumn: 'Role',
       },
     ])('marks expected column as ordered', async ({ orderBy, expectedOrderedColumn }) => {
-      await setUp({ orderBy });
+      const screen = await setUp({ orderBy });
       const column = screen.getByText(expectedOrderedColumn);
+      const parentElement = column.element().parentElement;
 
-      expect(column.parentElement?.querySelector('svg')).toBeInTheDocument();
+      if (!parentElement) {
+        throw new Error('Parent element not set');
+      }
+
+      await expect.element(parentElement.querySelector('svg')).toBeInTheDocument();
     });
 
     it.each([
@@ -169,84 +161,86 @@ describe('list-users', () => {
         },
       },
     ])('includes order in header URLs', async ({ orderBy, expectedUrls }) => {
-      await setUp({ totalPages: 10, orderBy });
+      const screen = await setUp({ totalPages: 10, orderBy });
 
-      Object.entries(expectedUrls).forEach(([linkText, expectedUrl]) => {
-        expect(screen.getByRole('link', { name: linkText })).toHaveAttribute('href', `/manage-users/1?${expectedUrl}`);
-      });
+      await Promise.all(
+        Object.entries(expectedUrls).map(([linkText, expectedUrl]) =>
+          expect
+            .element(screen.getByRole('link', { name: linkText }))
+            .toHaveAttribute('href', `/manage-users/1?${expectedUrl}`),
+        ),
+      );
     });
 
     it('sets current search term in search input', async () => {
-      await setUp({ searchTerm: 'Hello' });
-      expect(screen.getByRole('searchbox')).toHaveValue('Hello');
+      const screen = await setUp({ searchTerm: 'Hello' });
+      await expect.element(screen.getByRole('searchbox')).toHaveValue('Hello');
     });
 
     it('navigates to search term when typing in search box', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // It should eventually navigate to the URL with the search term
-      await waitFor(() =>
-        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
-      );
+      await expect
+        .poll(() => navigate)
+        .toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true });
     });
 
     it('redirects to create user form', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
 
       await user.click(screen.getByRole('link', { name: /New user$/ }));
-      await waitFor(() => expect(screen.getByText('Create user')).toBeInTheDocument());
+      await expect.element(screen.getByText('Create user')).toBeInTheDocument();
     });
 
-    it('shows interaction buttons only for users other than current one', async () => {
+    it.each([
+      { username: 'foo', shouldHaveServers: false },
+      { username: 'bar', shouldHaveServers: false },
+      { username: 'baz', shouldHaveServers: true },
+    ])('shows interaction buttons only for users other than current one', async ({ username, shouldHaveServers }) => {
       const users = [
         mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
         mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
         mockUser({ username: 'current', displayName: 'John Doe', role: 'admin' }),
         mockUser({ username: 'baz', displayName: 'John Doe', role: 'managed-user' }),
       ];
-      const { user } = await setUp({ currentUsername: 'current', users });
+      const screen = await setUp({ currentUsername: 'current', users });
 
-      await openDropdown(user, 'foo');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
+      await openDropdown(screen, username);
+      await expect.element(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+      await expect.element(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
 
-      await openDropdown(user, 'bar');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.queryByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
+      if (shouldHaveServers) {
+        await expect.element(screen.getByRole('menuitem', { name: 'Servers' })).toBeInTheDocument();
+      } else {
+        await expect.element(screen.getByRole('menuitem', { name: 'Servers' })).not.toBeInTheDocument();
+      }
 
-      await openDropdown(user, 'baz');
-      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Reset password' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitem', { name: 'Servers' })).toBeInTheDocument();
-
-      expect(screen.queryByLabelText('Options for current')).not.toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Options for current')).not.toBeInTheDocument();
     });
 
-    it('shows information about the user to be deleted', async () => {
-      const { user } = await setUp({
+    it.each([
+      { username: 'foo', expectedText: /foo/ },
+      { username: 'bar', expectedText: /bar/ },
+    ])('shows information about the user to be deleted', async ({ username, expectedText }) => {
+      const { user, ...screen } = await setUp({
         users: [
           mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
           mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
         ],
       });
 
-      expect(screen.queryByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
 
-      await openDropdown(user, 'foo');
+      await openDropdown({ user, ...screen }, username);
       await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/foo/);
+
+      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(expectedText);
+
       await user.click(screen.getByText('Cancel'));
-
-      await openDropdown(user, 'bar');
-      await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
-      expect(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(/bar/);
     });
   });
 });
