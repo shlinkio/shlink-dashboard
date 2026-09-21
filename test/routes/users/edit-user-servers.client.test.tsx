@@ -4,13 +4,14 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-user-servers', () => {
   describe('<EditUserServers />', () => {
-    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
-    const action = vi.fn(async () => {
-      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
-      await promise;
-      return {};
-    });
-    const setUp = () => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
+      const action = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        await promise;
+        return {};
+      });
+
       const prevPath = '/manage-users/1';
       const path = '/manage-users/1/edit-servers';
       const Stub = createRoutesStub([
@@ -37,7 +38,8 @@ describe('edit-user-servers', () => {
         },
       ]);
 
-      return renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
+      const renderResult = await renderWithEvents(<Stub initialEntries={[prevPath, path]} />);
+      return { ...renderResult, action, resolveActionPromise };
     };
 
     it('navigates back when clicking Cancel button', async () => {
@@ -48,7 +50,7 @@ describe('edit-user-servers', () => {
     });
 
     it('invokes route action whn servers are saved', async () => {
-      const { user, ...screen } = await setUp();
+      const { user, action, resolveActionPromise, ...screen } = await setUp();
 
       expect(action).not.toHaveBeenCalled();
       await user.click(screen.getByRole('button', { name: 'Save servers' }));

@@ -5,13 +5,14 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-server', () => {
   describe('<CreateServer />', () => {
-    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
-    const action = vi.fn(async () => {
-      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
-      await promise;
-      return {};
-    });
-    const setUp = () => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
+      const action = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        await promise;
+        return {};
+      });
+
       const path = '/manage-servers/create';
       const Stub = createRoutesStub([
         {
@@ -22,7 +23,8 @@ describe('create-server', () => {
         },
       ]);
 
-      return renderWithEvents(<Stub initialEntries={[path]} />);
+      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
+      return { ...renderResult, action, resolveActionPromise };
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
@@ -36,7 +38,7 @@ describe('create-server', () => {
     });
 
     it('disables form while saving', async () => {
-      const { user, ...screen } = await setUp();
+      const { user, action, resolveActionPromise, ...screen } = await setUp();
 
       await user.type(screen.getByLabelText(/^Name/), 'The name');
       await user.type(screen.getByLabelText(/^URL/), 'https://example.com');

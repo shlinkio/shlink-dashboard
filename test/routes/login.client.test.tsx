@@ -4,13 +4,14 @@ import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('login', () => {
   describe('<Login />', () => {
-    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<boolean>();
-    const action = vi.fn(async () => {
-      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
-      const error = await promise;
-      return { error };
-    });
-    const setUp = () => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<boolean>();
+      const action = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        const error = await promise;
+        return { error };
+      });
+
       const Stub = createRoutesStub([
         {
           path: '/',
@@ -18,7 +19,9 @@ describe('login', () => {
           action,
         },
       ]);
-      return renderWithEvents(<Stub />);
+
+      const renderResult = await renderWithEvents(<Stub />);
+      return { ...renderResult, action, resolveActionPromise };
     };
 
     it('renders expected form controls', async () => {
@@ -30,7 +33,7 @@ describe('login', () => {
     });
 
     it('shows loading state while logging in', async () => {
-      const { user, ...screen } = await setUp();
+      const { user, action, resolveActionPromise, ...screen } = await setUp();
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
@@ -48,7 +51,7 @@ describe('login', () => {
     });
 
     it('renders error when present', async () => {
-      const { user, ...screen } = await setUp();
+      const { user, resolveActionPromise, ...screen } = await setUp();
 
       await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 

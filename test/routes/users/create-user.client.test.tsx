@@ -8,12 +8,13 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('create-user', () => {
   describe('<CreateUser />', () => {
-    const { promise, resolve: resolveActionPromise } = Promise.withResolvers<Awaited<ReturnType<typeof action>>>();
-    const actionMock = vi.fn(async () => {
-      // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
-      return await promise;
-    });
-    const setUp = () => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<Awaited<ReturnType<typeof action>>>();
+      const actionMock = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        return await promise;
+      });
+
       const path = '/manage-users/create';
       const Stub = createRoutesStub([
         {
@@ -27,7 +28,8 @@ describe('create-user', () => {
         },
       ]);
 
-      return renderWithEvents(<Stub initialEntries={[path]} />);
+      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
+      return { ...renderResult, actionMock, resolveActionPromise };
     };
 
     const submitForm = async ({ user, ...screen }: RenderWithEventsResult) => {
@@ -47,7 +49,7 @@ describe('create-user', () => {
     });
 
     it('renders loading state while saving', async () => {
-      const screen = await setUp();
+      const { actionMock, resolveActionPromise, ...screen } = await setUp();
 
       expect(actionMock).not.toHaveBeenCalled();
       await submitForm(screen);
@@ -58,8 +60,8 @@ describe('create-user', () => {
       resolveActionPromise(fromPartial({}));
     });
 
-    it.skip('renders error when saving fails', async () => {
-      const screen = await setUp();
+    it('renders error when saving fails', async () => {
+      const { resolveActionPromise, ...screen } = await setUp();
 
       resolveActionPromise({
         status: 'error',
@@ -70,8 +72,8 @@ describe('create-user', () => {
       await expect.element(screen.getByText('Error in user field')).toBeInTheDocument();
     });
 
-    it.skip('renders created user data on success', async () => {
-      const screen = await setUp();
+    it('renders created user data on success', async () => {
+      const { resolveActionPromise, ...screen } = await setUp();
 
       await submitForm(screen);
 
