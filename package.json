@@ -73,7 +73,7 @@
     "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.2",
     "@vitest/coverage-v8": "^4.1.2",
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "axe-core": "4.13.0",
     "chalk": "^6.0.0",
     "oxfmt": "^0.67.0",
