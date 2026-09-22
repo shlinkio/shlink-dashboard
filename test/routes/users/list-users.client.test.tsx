@@ -222,25 +222,27 @@ describe('list-users', () => {
       await expect.element(screen.getByLabelText('Options for current')).not.toBeInTheDocument();
     });
 
-    it.each([
-      { username: 'foo', expectedText: /foo/ },
-      { username: 'bar', expectedText: /bar/ },
-    ])('shows information about the user to be deleted', async ({ username, expectedText }) => {
-      const { user, ...screen } = await setUp({
-        users: [
-          mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
-          mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
-        ],
-      });
+    it.each([{ username: 'foo' }, { username: 'bar' }])(
+      'shows information about the user to be deleted',
+      async ({ username }) => {
+        const { user, ...screen } = await setUp({
+          users: [
+            mockUser({ username: 'foo', displayName: 'John Doe', role: 'admin' }),
+            mockUser({ username: 'bar', displayName: 'John Doe', role: 'advanced-user' }),
+          ],
+        });
 
-      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
+        await expect.element(screen.getByText(/^Are you sure you want to delete user/)).not.toBeInTheDocument();
 
-      await openDropdown({ user, ...screen }, username);
-      await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
+        await openDropdown({ user, ...screen }, username);
+        await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
 
-      await expect.element(screen.getByText(/^Are you sure you want to delete user/)).toHaveTextContent(expectedText);
+        await expect
+          .element(screen.getByText(/^Are you sure you want to delete user/))
+          .toHaveTextContent(`Are you sure you want to delete user ${username}?`);
 
-      await user.click(screen.getByText('Cancel'));
-    });
+        await user.click(screen.getByText('Cancel'));
+      },
+    );
   });
 });
