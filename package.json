@@ -41,7 +41,7 @@
     "@mikro-orm/sqlite": "^7.2.2",
     "@react-router/express": "^8.4.0",
     "@react-router/node": "^8.4.0",
-    "@shlinkio/shlink-frontend-kit": "^1.5.0",
+    "@shlinkio/shlink-frontend-kit": "^1.6.1",
     "@shlinkio/shlink-js-sdk": "^3.2.1",
     "@shlinkio/shlink-web-component": "^0.19.2",
     "argon2": "^0.45.1",
