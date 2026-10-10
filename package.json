@@ -49,7 +49,7 @@
     "express": "^5.2.1",
     "isbot": "^5.2.2",
     "libsql": "^0.5.29",
-    "pg": "^8.23.0",
+    "pg": "^8.23.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-external-link": "^2.8.0",
