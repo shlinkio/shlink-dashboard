@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 * [#1108](https://github.com/shlinkio/shlink-dashboard/pull/1108) Fix "TypeError: SSL profile must be an object" when using MySQL or MariaDB with encryption.
+* [#936](https://github.com/shlinkio/shlink-dashboard/issues/936) Fix mercure info and server health being requested on every page transition, instead of once per server load.
 
 
 ## [0.3.1] - 2026-08-07

@@ -1,8 +1,8 @@
 import type { Settings } from '@shlinkio/shlink-web-component/settings';
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
-import type { LoaderFunctionArgs } from 'react-router';
-import { useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import type { LoaderFunctionArgs, ShouldRevalidateFunctionArgs } from 'react-router';
+import { href } from 'react-router';
 import { ShlinkApiProxyClient } from '../api/ShlinkApiProxyClient.client';
 import { AuthHelper } from '../auth/auth-helper.server';
 import { ShlinkVersionsContainer } from '../common/ShlinkVersionsContainer';
@@ -29,17 +29,20 @@ export async function loader(
   return { settings, tagColors };
 }
 
+export function shouldRevalidate({
+  currentParams,
+  nextParams,
+  defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs): boolean {
+  // Do not revalidate when navigating inside the same server, as new settings/tagColors references would re-create
+  // ShlinkWebComponent and refetch mercure info and health.
+  return currentParams.serverId !== nextParams.serverId && defaultShouldRevalidate;
+}
+
 export default function ShlinkWebComponentContainer({ params, loaderData }: RouteComponentProps<Route.ComponentProps>) {
   const [component, setComponent] = useState<ReactNode>(null);
   const { settings, tagColors } = loaderData;
   const { serverId } = params;
-  const { pathname } = useLocation();
-  const prefix = useMemo(() => {
-    const rest = params['*'] ?? '';
-    const [pathPrefix] = pathname.split(rest);
-
-    return pathPrefix.endsWith('/') ? pathPrefix.slice(0, -1) : pathPrefix;
-  }, [params, pathname]);
   const [serverVersion, setServerVersion] = useState<string>();
 
   useEffect(() => {
@@ -47,6 +50,7 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
       return;
     }
 
+    const prefix = href('/server/:serverId', { serverId });
     const apiClient = new ShlinkApiProxyClient(serverId);
     Promise.all([
       // Just by importing shlink-web-component, some dependencies (like `leaflet`) try to access the window object.
@@ -72,7 +76,7 @@ export default function ShlinkWebComponentContainer({ params, loaderData }: Rout
         );
       })
       .catch(() => {});
-  }, [prefix, serverId, settings, tagColors]);
+  }, [serverId, settings, tagColors]);
 
   return (
     <>
