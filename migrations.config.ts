@@ -23,12 +23,16 @@ const DRIVER_MAP: Record<DbEngine, () => Promise<Options['driver']>> = {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-function resolveDriverOptions(): Dictionary {
-  if (process.env.SHLINK_DASHBOARD_DB_USE_ENCRYPTION === 'true') {
-    return { ssl: true };
+function resolveDriverOptions(type: DbEngine): Dictionary {
+  if (process.env.SHLINK_DASHBOARD_DB_USE_ENCRYPTION !== 'true') {
+    return {};
   }
 
-  return {};
+  if (['mysql', 'mariadb'].includes(type)) {
+    return { ssl: {} };
+  }
+
+  return { ssl: true };
 }
 
 async function resolveOptions(): Promise<Partial<Options>> {
@@ -41,7 +45,6 @@ async function resolveOptions(): Promise<Partial<Options>> {
     discovery: {
       warnWhenNoEntities: false, // We don't need entities just to run migrations
     },
-    driverOptions: resolveDriverOptions(),
   };
 
   const type = (process.env.SHLINK_DASHBOARD_DB_DRIVER ?? 'sqlite') as DbEngine | 'sqlite';
@@ -63,6 +66,7 @@ async function resolveOptions(): Promise<Partial<Options>> {
     user: process.env.SHLINK_DASHBOARD_DB_USER,
     password: process.env.SHLINK_DASHBOARD_DB_PASSWORD,
     dbName: process.env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink_dashboard',
+    driverOptions: resolveDriverOptions(type),
   };
 }
 
