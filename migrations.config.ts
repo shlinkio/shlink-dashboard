@@ -61,12 +61,12 @@ async function resolveOptions(): Promise<Partial<Options>> {
   return {
     ...commonOptions,
     driver,
+    driverOptions: resolveDriverOptions(type),
     host: process.env.SHLINK_DASHBOARD_DB_HOST,
     port,
     user: process.env.SHLINK_DASHBOARD_DB_USER,
     password: process.env.SHLINK_DASHBOARD_DB_PASSWORD,
     dbName: process.env.SHLINK_DASHBOARD_DB_NAME ?? 'shlink_dashboard',
-    driverOptions: resolveDriverOptions(type),
   };
 }
 
