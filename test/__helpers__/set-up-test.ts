@@ -1,7 +1,11 @@
-import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render as vitestRender } from 'vitest-browser-react';
+import { userEvent } from 'vitest/browser';
 
-export const renderWithEvents = (...args: Parameters<typeof render>) => ({
+export const render = vitestRender;
+
+export const renderWithEvents = async (...args: Parameters<typeof render>) => ({
   user: userEvent.setup(),
-  ...render(...args),
+  ...(await render(...args)),
 });
+
+export type RenderWithEventsResult = Awaited<ReturnType<typeof renderWithEvents>>;

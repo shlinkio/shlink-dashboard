@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import type { User } from '../../../app/entities/User';
@@ -8,7 +7,7 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 
 describe('edit-user', () => {
   describe('<EditUser />', () => {
-    const setUp = async (user: User) => {
+    const setUp = (user: User) => {
       const path = '';
       const Stub = createRoutesStub([
         {
@@ -20,10 +19,7 @@ describe('edit-user', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Edit user');
-
-      return result;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it('passes a11y checks', () =>
@@ -35,14 +31,14 @@ describe('edit-user', () => {
       [fromPartial<User>({ id: 'abc', username: 'foo', displayName: 'Foo Bar', role: 'advanced-user' })],
       [fromPartial<User>({ id: 'def', username: 'bar', displayName: 'Jane Doe', role: 'admin' })],
     ])('loads the form with the user data set on it', async (user) => {
-      await setUp(user);
+      const screen = await setUp(user);
 
       const usernameInput = screen.getByLabelText(/^Username/);
-      expect(usernameInput).toHaveValue(user.username);
-      expect(usernameInput).toHaveAttribute('readonly');
+      await expect.element(usernameInput).toHaveValue(user.username);
+      await expect.element(usernameInput).toHaveAttribute('readonly');
 
-      expect(screen.getByLabelText('Display name')).toHaveValue(user.displayName);
-      expect(screen.getByLabelText(/^Role/)).toHaveValue(user.role);
+      await expect.element(screen.getByLabelText('Display name')).toHaveValue(user.displayName);
+      await expect.element(screen.getByLabelText(/^Role/)).toHaveValue(user.role);
     });
   });
 });

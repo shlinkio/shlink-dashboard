@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { MemoryRouter } from 'react-router';
 import type { Server } from '../../../app/entities/Server';
 import { ServersList } from '../../../app/routes/index/ServersList';
 import { checkAccessibility } from '../../__helpers__/accessibility';
+import { render } from '../../__helpers__/set-up-test';
 
 describe('<ServersList />', () => {
   const setUp = (servers: Server[]) =>
@@ -22,9 +22,8 @@ describe('<ServersList />', () => {
     [[]],
     [['1', '2', '3'].map((name) => fromPartial<Server>({ name, publicId: name }))],
     [[fromPartial<Server>({ name: 'Foo', publicId: '1' })]],
-  ])('renders expected amount of links', (servers) => {
-    setUp(servers);
-
-    expect(screen.queryAllByRole('link')).toHaveLength(servers.length);
+  ])('renders expected amount of links', async (servers) => {
+    const screen = await setUp(servers);
+    expect(screen.getByRole('link').all()).toHaveLength(servers.length);
   });
 });

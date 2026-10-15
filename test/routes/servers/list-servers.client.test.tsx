@@ -1,4 +1,3 @@
-import { screen, waitFor } from '@testing-library/react';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { createRoutesStub } from 'react-router';
 import { SessionProvider } from '../../../app/auth/session-context';
@@ -26,7 +25,7 @@ describe('list-servers', () => {
       currentSearchTerm?: string;
     };
 
-    const setUp = async ({ role, servers = [], currentSearchTerm }: SetUpOptions = {}) => {
+    const setUp = ({ role, servers = [], currentSearchTerm }: SetUpOptions = {}) => {
       const path = '/manage-users/1';
       const Stub = createRoutesStub([
         {
@@ -45,32 +44,23 @@ describe('list-servers', () => {
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
-
-      // Wait for the table to render before returning...
-      await screen.findByRole('table');
-
-      return result;
+      return renderWithEvents(<Stub initialEntries={[path]} />);
     };
 
     it.each(['admin' as const, 'advanced-user' as const])(
       'displays amount of users when logged-in user is an admin',
       async (role) => {
-        await setUp({ role });
+        const screen = await setUp({ role });
+        const columns = [...screen.getByRole('table').element().querySelectorAll('th:not([aria-hidden="true"])')];
 
-        if (role === 'admin') {
-          expect(screen.getAllByRole('columnheader')).toHaveLength(3);
-          expect(screen.getByRole('columnheader', { name: 'Users' })).toBeInTheDocument();
-        } else {
-          expect(screen.getAllByRole('columnheader')).toHaveLength(2);
-          expect(screen.queryByRole('columnheader', { name: 'Users' })).not.toBeInTheDocument();
-        }
+        // Users column is included only for admins
+        expect(columns).toHaveLength(role === 'admin' ? 3 : 2);
       },
     );
 
     it('displays fallback message when there are no servers', async () => {
-      await setUp();
-      expect(screen.getByText('No servers found')).toBeInTheDocument();
+      const screen = await setUp();
+      await expect.element(screen.getByText('No servers found')).toBeInTheDocument();
     });
 
     it('shows list of servers', async () => {
@@ -82,46 +72,50 @@ describe('list-servers', () => {
           usersCount: id,
         }),
       );
-      const { user } = await setUp({ servers });
+      const { user, ...screen } = await setUp({ servers });
       const openRowMenu = async (serverName: string) =>
         await user.click(screen.getByLabelText(`Options for ${serverName}`));
 
       // We add 1 for the header row
-      expect(screen.getAllByRole('row')).toHaveLength(servers.length + 1);
+      expect(screen.getByRole('row').all()).toHaveLength(servers.length + 1);
 
       await Promise.all(
         servers.map(async (server) => {
-          expect(screen.getByRole('link', { name: server.name })).toHaveAttribute('href', `/server/${server.publicId}`);
-          expect(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
-          expect(screen.getByTestId(`users-count-${server.publicId}`)).toHaveTextContent(`${server.usersCount}`);
+          await expect
+            .element(screen.getByRole('link', { name: server.name }))
+            .toHaveAttribute('href', `/server/${server.publicId}`);
+          await expect.element(screen.getByRole('cell', { name: server.baseUrl })).toBeInTheDocument();
+          await expect
+            .element(screen.getByTestId(`users-count-${server.publicId}`))
+            .toHaveTextContent(`${server.usersCount}`);
 
           await openRowMenu(server.name);
-          expect(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
-          expect(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
+          await expect.element(screen.getByRole('menuitem', { name: 'Edit server' })).toBeInTheDocument();
+          await expect.element(screen.getByRole('menuitem', { name: 'Delete server' })).toBeInTheDocument();
         }),
       );
     });
 
     it('has a link to go to server creation page', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
       await user.click(screen.getByRole('link', { name: /Add a server/ }));
 
-      expect(screen.getByText('Server creation'));
+      await expect.element(screen.getByText('Server creation')).toBeInTheDocument();
     });
 
     it('initializes current search term', async () => {
-      await setUp({ currentSearchTerm: 'something' });
-      expect(screen.getByRole('searchbox')).toHaveValue('something');
+      const screen = await setUp({ currentSearchTerm: 'something' });
+      await expect.element(screen.getByRole('searchbox')).toHaveValue('something');
     });
 
     it('allows servers list to be filtered by search', async () => {
-      const { user } = await setUp();
+      const { user, ...screen } = await setUp();
       await user.type(screen.getByRole('searchbox'), 'hello');
 
       // Search is deferred. It should eventually navigate to the URL with the search term
-      await waitFor(() =>
-        expect(navigate).toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true }),
-      );
+      await expect
+        .poll(() => navigate)
+        .toHaveBeenCalledWith(expect.stringContaining('search-term=hello'), { replace: true });
     });
   });
 });

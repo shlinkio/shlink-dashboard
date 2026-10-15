@@ -1,4 +1,3 @@
-import { screen, waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
 import CreateServer from '../../../app/routes/servers/create-server';
 import { checkAccessibility } from '../../__helpers__/accessibility';
@@ -7,43 +6,51 @@ import { renderWithEvents } from '../../__helpers__/set-up-test';
 describe('create-server', () => {
   describe('<CreateServer />', () => {
     const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<void>();
+      const action = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        await promise;
+        return {};
+      });
+
       const path = '/manage-servers/create';
       const Stub = createRoutesStub([
         {
           path,
           Component: CreateServer,
           HydrateFallback: () => null,
-          action: () => ({}),
+          action,
         },
       ]);
 
-      const result = renderWithEvents(<Stub initialEntries={[path]} />);
-      await screen.findByText('Add new server');
-
-      return result;
+      const renderResult = await renderWithEvents(<Stub initialEntries={[path]} />);
+      return { ...renderResult, action, resolveActionPromise };
     };
 
     it('passes a11y checks', () => checkAccessibility(setUp()));
 
     it('renders form', async () => {
-      await setUp();
+      const screen = await setUp();
 
-      expect(screen.getByLabelText(/^Name/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/^URL/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/^API key/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^Name/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^URL/)).toBeInTheDocument();
+      await expect.element(screen.getByLabelText(/^API key/)).toBeInTheDocument();
     });
 
-    // TODO Investigate why this test does not pass, as there's a similar one in create-user test
-    it.skip('disables form while saving', async () => {
-      const { user } = await setUp();
+    it('disables form while saving', async () => {
+      const { user, action, resolveActionPromise, ...screen } = await setUp();
 
       await user.type(screen.getByLabelText(/^Name/), 'The name');
       await user.type(screen.getByLabelText(/^URL/), 'https://example.com');
-      await user.type(screen.getByLabelText(/^Name/), 'api-key');
-      const submitPromise = user.click(screen.getByRole('button', { name: 'Create server' }));
+      await user.type(screen.getByLabelText(/^API key/), 'api-key');
 
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled());
-      await submitPromise;
+      expect(action).not.toHaveBeenCalled();
+      await user.click(screen.getByRole('button', { name: 'Create server' }));
+
+      expect(action).toHaveBeenCalled();
+      await expect.element(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled();
+
+      resolveActionPromise();
     });
   });
 });

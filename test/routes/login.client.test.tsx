@@ -1,55 +1,68 @@
-import { screen, waitFor } from '@testing-library/react';
 import { createRoutesStub } from 'react-router';
 import Login from '../../app/routes/login';
 import { renderWithEvents } from '../__helpers__/set-up-test';
 
 describe('login', () => {
   describe('<Login />', () => {
-    const setUp = (error: boolean = false) => {
+    const setUp = async () => {
+      const { promise, resolve: resolveActionPromise } = Promise.withResolvers<boolean>();
+      const action = vi.fn(async () => {
+        // Make the action wait until we resolve it, so that we can test intermediary fetcher state transitions
+        const error = await promise;
+        return { error };
+      });
+
       const Stub = createRoutesStub([
         {
           path: '/',
           Component: Login,
-          action: () => ({ error }),
+          action,
         },
       ]);
-      return renderWithEvents(<Stub />);
+
+      const renderResult = await renderWithEvents(<Stub />);
+      return { ...renderResult, action, resolveActionPromise };
     };
 
     it('renders expected form controls', async () => {
-      setUp();
+      const screen = await setUp();
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
-      expect(screen.getByLabelText('Password:')).toBeInTheDocument();
-      expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
+      await expect.element(screen.getByLabelText('Password:')).toBeInTheDocument();
+      await expect.element(screen.getByTestId('error-message')).not.toBeInTheDocument();
     });
 
     it('shows loading state while logging in', async () => {
-      const { user } = setUp(true);
+      const { user, action, resolveActionPromise, ...screen } = await setUp();
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
       // Submit form with data
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
       await user.type(screen.getByLabelText('Password:'), 'incorrect');
-      // Do not wait for submit to finish, as the loading state will be reset afterward
-      const loginPromise = user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await waitFor(() => expect(screen.getByRole('button', { name: 'Logging in...' })).toBeInTheDocument());
-      await loginPromise;
+      expect(action).not.toHaveBeenCalled();
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(action).toHaveBeenCalled();
+      await expect.element(screen.getByRole('button', { name: 'Logging in...' })).toBeDisabled();
+
+      resolveActionPromise(true);
     });
 
     it('renders error when present', async () => {
-      const { user } = setUp(true);
+      const { user, resolveActionPromise, ...screen } = await setUp();
 
-      await waitFor(() => expect(screen.getByLabelText('Username:')).toBeInTheDocument());
+      await expect.element(screen.getByLabelText('Username:')).toBeInTheDocument();
 
       // Submit form with data
       await user.type(screen.getByLabelText('Username:'), 'incorrect');
       await user.type(screen.getByLabelText('Password:'), 'incorrect');
       await user.click(screen.getByRole('button', { name: 'Login' }));
 
-      await waitFor(() => expect(screen.getByText('Username or password are incorrect')).toBeInTheDocument());
+      resolveActionPromise(true);
+
+      await expect.element(screen.getByText('Username or password are incorrect')).toBeInTheDocument();
     });
   });
 });
