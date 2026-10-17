@@ -46,7 +46,7 @@
     "@shlinkio/shlink-web-component": "^0.20.0",
     "argon2": "^0.45.1",
     "bottlejs": "^2.0.1",
-    "express": "^5.2.1",
+    "express": "^5.3.0",
     "isbot": "^5.2.2",
     "libsql": "^0.5.29",
     "pg": "^8.23.1",
