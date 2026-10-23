@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+### Added
+* [#1127](https://github.com/shlinkio/shlink-dashboard/issues/1127) Add new `SHLINK_DASHBOARD_TRUST_PROXY` env var to configure express' `trust proxy` setting.
+
+### Changed
+* *Nothing*
+
+### Deprecated
+* *Nothing*
+
+### Removed
+* *Nothing*
+
+### Fixed
+* *Nothing*
+
+
 ## [0.3.2] - 2026-10-15
 ### Added
 * [shlink-web-component#1117](https://github.com/shlinkio/shlink-web-component/pull/1117) Add forward support for Mercure 1.0, as soon as Shlink exposes it.
