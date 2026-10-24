@@ -72,4 +72,6 @@ Configuration is provided via env vars. These are the ones currently supported:
     - `SHLINK_DASHBOARD_DB_USE_ENCRYPTION`: Enable or disable encrypted database connections. Defaults to `false`.
 2. Other
     - `SHLINK_DASHBOARD_SESSION_SECRETS`: A comma separated list of secrets used to sign session tokens. Make sure to provide something as complex and hard to guess as possible. Ideally long auto-generated random strings.
+    - `SHLINK_DASHBOARD_TRUST_PROXY`: Value for express' [`trust proxy`](https://expressjs.com/en/guide/behind-proxies.html) setting, so that `X-Forwarded-*` headers are honored when Shlink Dashboard is served behind a reverse proxy. Can be `true`, `false`, the number of hops between the client and the server, or a comma-separated list of trusted addresses/subnets (e.g. `loopback, 10.0.0.0/8`). Disabled by default.
 
+      The reverse proxy needs to set `X-Forwarded-Host` to the public host and `X-Forwarded-Proto` to the public protocol, and forward the original `Host` header. Otherwise, form submissions are rejected with `400 Bad Request`.

@@ -1,8 +1,21 @@
 import { createRequestHandler } from '@react-router/express';
 import express from 'express';
 
-const { NODE_ENV, SHLINK_DASHBOARD_PORT = '3005' } = process.env;
+const { NODE_ENV, SHLINK_DASHBOARD_PORT = '3005', SHLINK_DASHBOARD_TRUST_PROXY } = process.env;
 const isProd = NODE_ENV === 'production';
+
+/**
+ * Maps the raw env var into a value supported by express' "trust proxy" setting: a boolean, the number of hops, or
+ * a comma-separated list of trusted addresses/subnets (e.g. "loopback, 10.0.0.0/8")
+ */
+const parseTrustProxy = (value: string): boolean | number | string => {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true' || normalized === 'false') {
+    return normalized === 'true';
+  }
+
+  return /^\d+$/.test(normalized) ? Number(normalized) : value;
+};
 
 const viteDevServer = isProd
   ? null
@@ -13,6 +26,9 @@ const viteDevServer = isProd
     );
 
 const app = express();
+if (SHLINK_DASHBOARD_TRUST_PROXY) {
+  app.set('trust proxy', parseTrustProxy(SHLINK_DASHBOARD_TRUST_PROXY));
+}
 app.use(viteDevServer ? viteDevServer.middlewares : express.static('client'));
 
 const build = viteDevServer
