@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.3.3] - 2026-10-24
 ### Added
-* [#1127](https://github.com/shlinkio/shlink-dashboard/issues/1127) Add new `SHLINK_DASHBOARD_TRUST_PROXY` env var to configure express' `trust proxy` setting.
+* [#1127](https://github.com/shlinkio/shlink-dashboard/issues/1127) Add new `SHLINK_DASHBOARD_TRUST_PROXY` env var to configure express' `trust proxy` setting, fixing a regression due to a react-router update.
 
 ### Changed
 * *Nothing*
