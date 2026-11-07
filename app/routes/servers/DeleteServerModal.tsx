@@ -18,9 +18,9 @@ export type DeleteServerModalProps = {
 export const DeleteServerModal: FC<DeleteServerModalProps> = ({ serverToDelete, onClose, open }) => {
   const { submit, state } = useFetcher();
   const confirmDisabled = state !== 'idle';
+  const serverPublicId = serverToDelete?.publicId.toString();
 
   const deleteServer = useCallback(async () => {
-    const serverPublicId = serverToDelete?.publicId.toString();
     if (!serverPublicId) {
       return;
     }
@@ -34,7 +34,7 @@ export const DeleteServerModal: FC<DeleteServerModalProps> = ({ serverToDelete, 
       },
     );
     onClose();
-  }, [onClose, submit, serverToDelete?.publicId]);
+  }, [onClose, submit, serverPublicId]);
 
   return (
     <ClientOnly>
