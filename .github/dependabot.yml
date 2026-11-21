@@ -27,7 +27,8 @@ updates:
           - '@react-router/*'
       remix-auth:
         patterns:
-          - 'remix-auth*'
+          - 'remix-auth'
+          - 'remix-auth-*'
       orm:
         patterns:
           - '@mikro-orm/*'
